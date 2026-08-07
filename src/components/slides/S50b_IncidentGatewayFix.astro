@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s50b-incident-gateway-fix"
+  chapter="Production Incidents"
+  title="Gateway Route — Fix & Prevent"
+  notes="Root cause: HTTPRoute still routes /v2 prefix to old api-v1 Service — v1 doesn't serve /v2 paths. Fix: update HTTPRoute backendRef to api-v2. Prevent: smoke test public URL in deploy pipeline."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Callout type="tip" title="Root cause">
+      HTTPRoute still routes <code class="text-deck-cyan">/v2</code> prefix to old <code class="text-deck-cyan">api-v1</code> Service — v1 doesn't serve /v2 paths.
+    </Callout>
+
+    <CodeBlock
+      caption="Follow the route chain"
+      code={`kubectl get gateway,httproute -n prod
+kubectl describe httproute api-v2-route | grep -A10 Rules
+kubectl get svc api-v1 api-v2 -o wide`}
+    />
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="rounded-xl border border-deck-cyan/40 bg-deck-cyan/5 p-6">
+        <div class="font-display text-xl font-bold text-deck-cyan">Fix</div>
+        <p class="mt-2 text-lg text-deck-text/90">Update HTTPRoute backendRef to <code class="text-deck-cyan">api-v2</code> Service.</p>
+      </div>
+      <div class="rounded-xl border border-deck-amber/40 bg-deck-amber/5 p-6">
+        <div class="font-display text-xl font-bold text-deck-amber">Prevent</div>
+        <p class="mt-2 text-lg text-deck-text/90">Smoke test public URL in deploy pipeline; GitOps diff on HTTPRoute.</p>
+      </div>
+    </div>
+  </div>
+</Slide>

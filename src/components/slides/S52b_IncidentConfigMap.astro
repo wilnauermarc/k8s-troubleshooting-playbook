@@ -1,0 +1,38 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+---
+
+<Slide
+  id="s52b-incident-configmap"
+  chapter="Production Incidents"
+  title="Incident: Stale ConfigMap Rollout"
+  notes="ConfigMap updated but pods still serve old config — especially with subPath mounts."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Callout type="signal" title="Symptom">
+      ConfigMap updated (feature flag off) but app still serves old behavior. Pods Running, no errors.
+    </Callout>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-cyan">Narrow</div>
+        <p class="mt-2 text-lg text-deck-muted">subPath does not hot-reload — pod has a stale file.</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-amber">Fix</div>
+        <p class="mt-2 text-lg text-deck-muted">rollout restart · version ConfigMap names (config-v42).</p>
+      </div>
+    </div>
+
+    <CodeBlock
+      code={`kubectl exec db-0 -- cat /etc/config/app.yaml   # stale?
+kubectl rollout restart statefulset/app`}
+    />
+
+    <Callout type="tip">
+      Prevent with Reloader or a checksum annotation that triggers rollout on config change.
+    </Callout>
+  </div>
+</Slide>

@@ -1,0 +1,31 @@
+---
+import Slide from '../ui/Slide.astro';
+import BranchTree from '../ui/BranchTree.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s51-incident-dns-netpol"
+  chapter="Production Incidents"
+  title="Incident: Timeout — DNS or NetPol?"
+  notes="Same user pain, two causes. Branch on nslookup first."
+>
+  <div class="stagger space-y-8">
+    <Callout type="signal" title="Symptom">
+      App logs show DNS lookup errors <em>or</em> TCP i/o timeout to postgres — same pain.
+    </Callout>
+
+    <BranchTree
+      title="Connection timeout to postgres"
+      branches={[
+        {
+          question: 'nslookup postgres.prod works?',
+          yes: 'NetPol / path branch',
+          yesHint: 'Name resolves — check egress + port',
+          no: 'DNS branch',
+          noHint: 'CoreDNS, ConfigMap, upstream',
+        },
+      ]}
+    />
+  </div>
+</Slide>

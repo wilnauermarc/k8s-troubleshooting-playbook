@@ -1,0 +1,34 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+---
+
+<Slide
+  id="s42c-kubectl-narrow"
+  chapter="kubectl by Intention"
+  title="Narrow & Verify"
+  notes="logs vs --previous. Prefer debug over exec in prod. port-forward is not a prod path."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Matrix
+      headers={['Intent', 'Command', 'When NOT']}
+      rows={[
+        ['App output now?', 'kubectl logs POD -f --tail=100', 'Never started — use --previous'],
+        ['Last crash output?', 'kubectl logs POD --previous', 'No previous instance'],
+        ['Quick check inside?', 'kubectl exec … -- CMD', 'Prod deep debug — use debug'],
+        ['Isolated shell?', 'kubectl debug POD -it --image=…', 'First move — describe first'],
+        ['Rollout done?', 'kubectl rollout status deploy/X', 'Need history / undo'],
+        ['Reach from laptop?', 'kubectl port-forward svc/…', 'Prod traffic path'],
+      ]}
+    />
+
+    <CodeBlock
+      caption="Starter sequence"
+      code={`kubectl get pods -n NS -o wide
+kubectl describe pod POD -n NS
+kubectl logs POD -n NS --previous
+kubectl rollout status deployment/DEPLOY -n NS`}
+    />
+  </div>
+</Slide>

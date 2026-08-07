@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+---
+
+<Slide
+  id="s51b-incident-dns-netpol-fix"
+  chapter="Production Incidents"
+  title="DNS vs NetPol — Fix Paths"
+  notes="Spell out both fixes. Emphasize verify from the same namespace as the app."
+>
+  <div class="stagger grid gap-6 md:grid-cols-2">
+    <div class="rounded-2xl border-2 border-deck-cyan/40 bg-deck-cyan/5 p-8">
+      <div class="mb-3 font-display text-2xl font-bold text-deck-cyan">Branch A — DNS</div>
+      <p class="mb-4 text-lg leading-relaxed text-deck-text/90">
+        CoreDNS unhealthy or upstream broken → NXDOMAIN / lookup fails.
+      </p>
+      <p class="text-base text-deck-muted">Fix: CoreDNS limits, forward plugin, kube-dns Endpoints.</p>
+    </div>
+    <div class="rounded-2xl border-2 border-deck-rose/40 bg-deck-rose/5 p-8">
+      <div class="mb-3 font-display text-2xl font-bold text-deck-rose">Branch B — NetPol</div>
+      <p class="mb-4 text-lg leading-relaxed text-deck-text/90">
+        DNS works; TCP SYN dropped by default-deny egress.
+      </p>
+      <p class="text-base text-deck-muted">Fix: allow egress to postgres namespace:5432.</p>
+    </div>
+  </div>
+
+  <CodeBlock
+    class="mt-8"
+    caption="Verify from the app’s network namespace"
+    code={`kubectl debug -it pod/app-xyz --image=nicolaka/netshoot -- nslookup postgres.prod
+kubectl get netpol -n prod -o wide
+kubectl get pods -n kube-system -l k8s-app=kube-dns`}
+  />
+</Slide>

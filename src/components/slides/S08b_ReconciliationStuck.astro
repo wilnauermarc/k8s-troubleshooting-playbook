@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s08b-reconciliation-stuck"
+  chapter="Mindset"
+  title="Where the Loop Gets Stuck"
+  notes="Three common stall points. Diff = status never updates. Act = admission/quota/RBAC. Loop = CrashLoop forever."
+>
+  <div class="stagger grid gap-6 md:grid-cols-3">
+    <div class="rounded-2xl border-2 border-deck-cyan/40 bg-deck-cyan/5 p-8">
+      <div class="mb-3 font-display text-2xl font-bold text-deck-cyan">Stuck at Diff</div>
+      <p class="text-lg leading-relaxed text-deck-text/90">
+        Status never catches up — check kubelet, CRI, probes.
+      </p>
+    </div>
+    <div class="rounded-2xl border-2 border-deck-amber/40 bg-deck-amber/5 p-8">
+      <div class="mb-3 font-display text-2xl font-bold text-deck-amber">Stuck at Act</div>
+      <p class="text-lg leading-relaxed text-deck-text/90">
+        Action rejected — RBAC, quota, or admission webhook.
+      </p>
+    </div>
+    <div class="rounded-2xl border-2 border-deck-rose/40 bg-deck-rose/5 p-8">
+      <div class="mb-3 font-display text-2xl font-bold text-deck-rose">Stuck in Loop</div>
+      <p class="text-lg leading-relaxed text-deck-text/90">
+        CrashLoop — controller recreates; fix the exit cause.
+      </p>
+    </div>
+  </div>
+
+  <Callout type="rule" class="mt-8">
+    Find the stall. Don’t restart the pod hoping the loop heals itself.
+  </Callout>
+</Slide>

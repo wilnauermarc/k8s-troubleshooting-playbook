@@ -1,0 +1,27 @@
+---
+import Slide from '../ui/Slide.astro';
+import Goals from '../ui/Goals.astro';
+---
+
+<Slide
+  id="s14-chapter-layers"
+  chapter="Investigation"
+  title="Layer-by-Layer Investigation"
+  variant="chapter"
+  track="core"
+  notes="Bridge from models into practice. Goal: map a symptom to a layer before diving into logs."
+>
+  <div class="stagger flex max-w-3xl flex-col items-center gap-8 text-center">
+    <h2 class="font-display text-4xl font-bold text-deck-text md:text-5xl">
+      Layer-by-Layer<br />Investigation
+    </h2>
+    <Goals
+      class="w-full text-left"
+      goals={[
+        'Map a symptom to the likely Kubernetes layer',
+        'Name the first signal and command for that layer',
+        'Avoid skipping layers when the blast radius is wide',
+      ]}
+    />
+  </div>
+</Slide>

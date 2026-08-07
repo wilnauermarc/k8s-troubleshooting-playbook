@@ -1,0 +1,237 @@
+---
+import Presentation from '../layouts/Presentation.astro';
+
+import S01_Title from '../components/slides/S01_Title.astro';
+import S02_Agenda from '../components/slides/S02_Agenda.astro';
+import S03_Philosophy from '../components/slides/S03_Philosophy.astro';
+import S03b_PhilosophyMore from '../components/slides/S03b_PhilosophyMore.astro';
+import S04_Lifecycle from '../components/slides/S04_Lifecycle.astro';
+import S04b_LifecycleSteps from '../components/slides/S04b_LifecycleSteps.astro';
+import S05_WhyHard from '../components/slides/S05_WhyHard.astro';
+import S06_Distributed from '../components/slides/S06_Distributed.astro';
+import S07_DesiredState from '../components/slides/S07_DesiredState.astro';
+import S08_Reconciliation from '../components/slides/S08_Reconciliation.astro';
+import S08b_ReconciliationStuck from '../components/slides/S08b_ReconciliationStuck.astro';
+import S09_Myths from '../components/slides/S09_Myths.astro';
+import S09b_MythsMore from '../components/slides/S09b_MythsMore.astro';
+import S10_GoldenRules from '../components/slides/S10_GoldenRules.astro';
+import S10b_GoldenRulesMore from '../components/slides/S10b_GoldenRulesMore.astro';
+import S10c_EvidenceOrder from '../components/slides/S10c_EvidenceOrder.astro';
+import S11_Pyramid from '../components/slides/S11_Pyramid.astro';
+import S12_Onion from '../components/slides/S12_Onion.astro';
+import S12b_OnionInner from '../components/slides/S12b_OnionInner.astro';
+import S13_Signals from '../components/slides/S13_Signals.astro';
+import S13b_SymptomLayerMap from '../components/slides/S13b_SymptomLayerMap.astro';
+import S13c_FirstTriage from '../components/slides/S13c_FirstTriage.astro';
+import S14_ChapterLayers from '../components/slides/S14_ChapterLayers.astro';
+import S15_LayerInfra from '../components/slides/S15_LayerInfra.astro';
+import S15b_LayerInfraCommands from '../components/slides/S15b_LayerInfraCommands.astro';
+import S16_LayerCluster from '../components/slides/S16_LayerCluster.astro';
+import S16b_LayerClusterCommands from '../components/slides/S16b_LayerClusterCommands.astro';
+import S17_LayerControlPlane from '../components/slides/S17_LayerControlPlane.astro';
+import S17b_LayerControlPlaneCommands from '../components/slides/S17b_LayerControlPlaneCommands.astro';
+import S18_LayerNodes from '../components/slides/S18_LayerNodes.astro';
+import S18b_LayerNodesCommands from '../components/slides/S18b_LayerNodesCommands.astro';
+import S19_LayerScheduling from '../components/slides/S19_LayerScheduling.astro';
+import S19b_LayerSchedulingCommands from '../components/slides/S19b_LayerSchedulingCommands.astro';
+import S19c_RequestsLimitsQuotas from '../components/slides/S19c_RequestsLimitsQuotas.astro';
+import S20_LayerWorkloads from '../components/slides/S20_LayerWorkloads.astro';
+import S20b_LayerWorkloadsCommands from '../components/slides/S20b_LayerWorkloadsCommands.astro';
+import S21_LayerPods from '../components/slides/S21_LayerPods.astro';
+import S21b_LayerPodsCommands from '../components/slides/S21b_LayerPodsCommands.astro';
+import S21c_PodStatusBasics from '../components/slides/S21c_PodStatusBasics.astro';
+import S22_LayerContainers from '../components/slides/S22_LayerContainers.astro';
+import S22b_LayerContainersCommands from '../components/slides/S22b_LayerContainersCommands.astro';
+import S23_LayerStorage from '../components/slides/S23_LayerStorage.astro';
+import S23b_LayerStorageCommands from '../components/slides/S23b_LayerStorageCommands.astro';
+import S24_LayerNetworking from '../components/slides/S24_LayerNetworking.astro';
+import S24b_LayerNetworkingCommands from '../components/slides/S24b_LayerNetworkingCommands.astro';
+import S25_LayerApp from '../components/slides/S25_LayerApp.astro';
+import S25b_LayerAppCommands from '../components/slides/S25b_LayerAppCommands.astro';
+import S26_DecisionTreesIntro from '../components/slides/S26_DecisionTreesIntro.astro';
+import S27_TreePending from '../components/slides/S27_TreePending.astro';
+import S27b_TreePendingScheduled from '../components/slides/S27b_TreePendingScheduled.astro';
+import S28_TreeCrashLoop from '../components/slides/S28_TreeCrashLoop.astro';
+import S28b_TreeCrashLoopExit from '../components/slides/S28b_TreeCrashLoopExit.astro';
+import S29_Tree503 from '../components/slides/S29_Tree503.astro';
+import S29b_Tree503Path from '../components/slides/S29b_Tree503Path.astro';
+import S29c_CheckpointTrees from '../components/slides/S29c_CheckpointTrees.astro';
+import S30_FailuresCatalog from '../components/slides/S30_FailuresCatalog.astro';
+import S30b_FailuresPod from '../components/slides/S30b_FailuresPod.astro';
+import S30c_FailuresNet from '../components/slides/S30c_FailuresNet.astro';
+import S31_CrashLoop from '../components/slides/S31_CrashLoop.astro';
+import S32_ImagePull from '../components/slides/S32_ImagePull.astro';
+import S32b_ImagePullCauses from '../components/slides/S32b_ImagePullCauses.astro';
+import S33_ConfigErrors from '../components/slides/S33_ConfigErrors.astro';
+import S33b_ConfigErrorsDebug from '../components/slides/S33b_ConfigErrorsDebug.astro';
+import S34_OOMEvicted from '../components/slides/S34_OOMEvicted.astro';
+import S34b_EvictedPressure from '../components/slides/S34b_EvictedPressure.astro';
+import S35_PendingFailSched from '../components/slides/S35_PendingFailSched.astro';
+import S35b_PendingReasons from '../components/slides/S35b_PendingReasons.astro';
+import S36_MountMultiAttach from '../components/slides/S36_MountMultiAttach.astro';
+import S36b_MultiAttachCSI from '../components/slides/S36b_MultiAttachCSI.astro';
+import S37_Probes from '../components/slides/S37_Probes.astro';
+import S37b_ProbeFailures from '../components/slides/S37b_ProbeFailures.astro';
+import S38_NetDNS from '../components/slides/S38_NetDNS.astro';
+import S38b_NetDNSCommands from '../components/slides/S38b_NetDNSCommands.astro';
+import S38c_DNSFastPath from '../components/slides/S38c_DNSFastPath.astro';
+import S39_NetService from '../components/slides/S39_NetService.astro';
+import S39b_NetServiceCommands from '../components/slides/S39b_NetServiceCommands.astro';
+import S39c_EndpointSlices from '../components/slides/S39c_EndpointSlices.astro';
+import S40_NetIngressGateway from '../components/slides/S40_NetIngressGateway.astro';
+import S40b_TLSCerts from '../components/slides/S40b_TLSCerts.astro';
+import S41_NetPolicy from '../components/slides/S41_NetPolicy.astro';
+import S41b_NetPolicyDebug from '../components/slides/S41b_NetPolicyDebug.astro';
+import S42_KubectlPhilosophy from '../components/slides/S42_KubectlPhilosophy.astro';
+import S42b_KubectlObserve from '../components/slides/S42b_KubectlObserve.astro';
+import S42c_KubectlNarrow from '../components/slides/S42c_KubectlNarrow.astro';
+import S43_Observability from '../components/slides/S43_Observability.astro';
+import S43b_ObservabilityStack from '../components/slides/S43b_ObservabilityStack.astro';
+import S44_AdvancedDebug from '../components/slides/S44_AdvancedDebug.astro';
+import S44b_AdvancedCaution from '../components/slides/S44b_AdvancedCaution.astro';
+import S44c_ExecVsDebug from '../components/slides/S44c_ExecVsDebug.astro';
+import S45_IncidentsIntro from '../components/slides/S45_IncidentsIntro.astro';
+import S46_Incident503 from '../components/slides/S46_Incident503.astro';
+import S46b_Incident503Fix from '../components/slides/S46b_Incident503Fix.astro';
+import S47_IncidentSecret from '../components/slides/S47_IncidentSecret.astro';
+import S47b_IncidentSecretFix from '../components/slides/S47b_IncidentSecretFix.astro';
+import S48_IncidentAffinity from '../components/slides/S48_IncidentAffinity.astro';
+import S48b_IncidentAffinityFix from '../components/slides/S48b_IncidentAffinityFix.astro';
+import S49_IncidentOOM from '../components/slides/S49_IncidentOOM.astro';
+import S49b_IncidentOOMFix from '../components/slides/S49b_IncidentOOMFix.astro';
+import S50_IncidentGateway from '../components/slides/S50_IncidentGateway.astro';
+import S50b_IncidentGatewayFix from '../components/slides/S50b_IncidentGatewayFix.astro';
+import S51_IncidentDNSNetPol from '../components/slides/S51_IncidentDNSNetPol.astro';
+import S51b_IncidentDNSNetPolFix from '../components/slides/S51b_IncidentDNSNetPolFix.astro';
+import S52_IncidentPVCConfig from '../components/slides/S52_IncidentPVCConfig.astro';
+import S52b_IncidentConfigMap from '../components/slides/S52b_IncidentConfigMap.astro';
+import S53_Interview from '../components/slides/S53_Interview.astro';
+import S53b_Interview from '../components/slides/S53b_Interview.astro';
+import S54_InterviewMore from '../components/slides/S54_InterviewMore.astro';
+import S54b_InterviewMore from '../components/slides/S54b_InterviewMore.astro';
+import S55_CheatSheets from '../components/slides/S55_CheatSheets.astro';
+import S55b_CheatStatus from '../components/slides/S55b_CheatStatus.astro';
+import S55c_CheatNetPath from '../components/slides/S55c_CheatNetPath.astro';
+import S55d_CheckpointBasics from '../components/slides/S55d_CheckpointBasics.astro';
+import S56_FinalPlaybook from '../components/slides/S56_FinalPlaybook.astro';
+import S56b_FinalModels from '../components/slides/S56b_FinalModels.astro';
+import S57_Closing from '../components/slides/S57_Closing.astro';
+---
+
+<Presentation title="The Kubernetes Troubleshooting Playbook">
+  <S01_Title />
+  <S02_Agenda />
+  <S03_Philosophy />
+  <S03b_PhilosophyMore />
+  <S04_Lifecycle />
+  <S04b_LifecycleSteps />
+  <S05_WhyHard />
+  <S06_Distributed />
+  <S07_DesiredState />
+  <S08_Reconciliation />
+  <S08b_ReconciliationStuck />
+  <S09_Myths />
+  <S09b_MythsMore />
+  <S10_GoldenRules />
+  <S10b_GoldenRulesMore />
+  <S10c_EvidenceOrder />
+  <S11_Pyramid />
+  <S12_Onion />
+  <S12b_OnionInner />
+  <S13_Signals />
+  <S13b_SymptomLayerMap />
+  <S13c_FirstTriage />
+  <S14_ChapterLayers />
+  <S15_LayerInfra />
+  <S15b_LayerInfraCommands />
+  <S16_LayerCluster />
+  <S16b_LayerClusterCommands />
+  <S17_LayerControlPlane />
+  <S17b_LayerControlPlaneCommands />
+  <S18_LayerNodes />
+  <S18b_LayerNodesCommands />
+  <S19_LayerScheduling />
+  <S19b_LayerSchedulingCommands />
+  <S19c_RequestsLimitsQuotas />
+  <S20_LayerWorkloads />
+  <S20b_LayerWorkloadsCommands />
+  <S21_LayerPods />
+  <S21b_LayerPodsCommands />
+  <S21c_PodStatusBasics />
+  <S22_LayerContainers />
+  <S22b_LayerContainersCommands />
+  <S23_LayerStorage />
+  <S23b_LayerStorageCommands />
+  <S24_LayerNetworking />
+  <S24b_LayerNetworkingCommands />
+  <S25_LayerApp />
+  <S25b_LayerAppCommands />
+  <S26_DecisionTreesIntro />
+  <S27_TreePending />
+  <S27b_TreePendingScheduled />
+  <S28_TreeCrashLoop />
+  <S28b_TreeCrashLoopExit />
+  <S29_Tree503 />
+  <S29b_Tree503Path />
+  <S29c_CheckpointTrees />
+  <S30_FailuresCatalog />
+  <S30b_FailuresPod />
+  <S30c_FailuresNet />
+  <S31_CrashLoop />
+  <S32_ImagePull />
+  <S32b_ImagePullCauses />
+  <S33_ConfigErrors />
+  <S33b_ConfigErrorsDebug />
+  <S34_OOMEvicted />
+  <S34b_EvictedPressure />
+  <S35_PendingFailSched />
+  <S35b_PendingReasons />
+  <S36_MountMultiAttach />
+  <S36b_MultiAttachCSI />
+  <S37_Probes />
+  <S37b_ProbeFailures />
+  <S38_NetDNS />
+  <S38b_NetDNSCommands />
+  <S38c_DNSFastPath />
+  <S39_NetService />
+  <S39b_NetServiceCommands />
+  <S39c_EndpointSlices />
+  <S40_NetIngressGateway />
+  <S40b_TLSCerts />
+  <S41_NetPolicy />
+  <S41b_NetPolicyDebug />
+  <S42_KubectlPhilosophy />
+  <S42b_KubectlObserve />
+  <S42c_KubectlNarrow />
+  <S43_Observability />
+  <S43b_ObservabilityStack />
+  <S44_AdvancedDebug />
+  <S44b_AdvancedCaution />
+  <S44c_ExecVsDebug />
+  <S45_IncidentsIntro />
+  <S46_Incident503 />
+  <S46b_Incident503Fix />
+  <S47_IncidentSecret />
+  <S47b_IncidentSecretFix />
+  <S48_IncidentAffinity />
+  <S48b_IncidentAffinityFix />
+  <S49_IncidentOOM />
+  <S49b_IncidentOOMFix />
+  <S50_IncidentGateway />
+  <S50b_IncidentGatewayFix />
+  <S51_IncidentDNSNetPol />
+  <S51b_IncidentDNSNetPolFix />
+  <S52_IncidentPVCConfig />
+  <S52b_IncidentConfigMap />
+  <S53_Interview />
+  <S53b_Interview />
+  <S54_InterviewMore />
+  <S54b_InterviewMore />
+  <S55_CheatSheets />
+  <S55b_CheatStatus />
+  <S55c_CheatNetPath />
+  <S55d_CheckpointBasics />
+  <S56_FinalPlaybook />
+  <S56b_FinalModels />
+  <S57_Closing />
+</Presentation>

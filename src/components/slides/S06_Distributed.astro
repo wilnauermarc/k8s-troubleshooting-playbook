@@ -1,0 +1,43 @@
+---
+import Slide from '../ui/Slide.astro';
+import ArchRow from '../ui/ArchRow.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s06-distributed"
+  chapter="Mindset"
+  title="Kubernetes as a Distributed System"
+  notes="Point at each box left to right. etcd holds desired state; API is the front door; controllers and scheduler act; kubelets report actual state. Bugs live in the gap between desired and actual."
+>
+  <div class="stagger flex flex-col gap-10">
+    <ArchRow
+      boxes={[
+        { title: 'etcd', subtitle: 'Desired state', tone: 'cyan' },
+        { title: 'API Server', subtitle: 'Front door', tone: 'blue' },
+        { title: 'Controllers', subtitle: 'Reconcile', tone: 'amber' },
+        { title: 'Scheduler', subtitle: 'Bind pods', tone: 'violet' },
+        { title: 'kubelet', subtitle: 'Actual state', tone: 'rose' },
+      ]}
+    />
+
+    <div class="grid gap-5 md:grid-cols-3">
+      <div class="rounded-xl border border-deck-cyan/40 bg-deck-cyan/5 p-6">
+        <h3 class="mb-2 font-display text-xl font-bold text-deck-cyan">Desired</h3>
+        <p class="text-lg text-deck-muted">What you declared in YAML — stored in etcd.</p>
+      </div>
+      <div class="rounded-xl border border-deck-amber/40 bg-deck-amber/5 p-6">
+        <h3 class="mb-2 font-display text-xl font-bold text-deck-amber">Actual</h3>
+        <p class="text-lg text-deck-muted">What kubelets report — may lag or fail silently.</p>
+      </div>
+      <div class="rounded-xl border border-deck-rose/40 bg-deck-rose/5 p-6">
+        <h3 class="mb-2 font-display text-xl font-bold text-deck-rose">The Gap</h3>
+        <p class="text-lg text-deck-muted">Most incidents live between desired and actual.</p>
+      </div>
+    </div>
+
+    <Callout type="framework">
+      Always ask: <strong>which component owns this transition?</strong>
+    </Callout>
+  </div>
+</Slide>

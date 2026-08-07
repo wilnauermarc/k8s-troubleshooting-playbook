@@ -1,0 +1,43 @@
+---
+import Slide from '../ui/Slide.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Pill from '../ui/Pill.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s44-advanced-debug"
+  chapter="Advanced Debugging"
+  title="kubectl debug — Ephemeral Containers"
+  notes="Tools of last resort, not first resort. kubectl debug with ephemeral containers: copy debug image into running pod without changing main image. Node shell for CNI/kubelet — privileged, use sparingly. kubectl diff and rollout undo for config regressions. Next slide: when NOT to use invasive tools in prod."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="flex flex-wrap gap-2">
+      <Pill tone="cyan">Ephemeral Containers</Pill>
+      <Pill tone="blue">Node Debug</Pill>
+      <Pill tone="violet">rollout undo</Pill>
+    </div>
+
+    <CodeBlock
+      caption="Ephemeral debug container"
+      code={`kubectl debug -it pod/checkout-7f9c2 \\
+  --image=nicolaka/netshoot --target=app
+
+# Node shell (privileged — use sparingly)
+kubectl debug node/worker-3 -it \\
+  --image=ubuntu -- chroot /host bash`}
+    />
+
+    <CodeBlock
+      caption="Diff before change · undo after"
+      code={`kubectl diff -f deployment.yaml
+kubectl apply -f deployment.yaml
+kubectl rollout undo deployment/checkout
+kubectl rollout status deployment/checkout`}
+    />
+
+    <Callout type="tip">
+      Ephemeral debug proves network path, DNS, and TLS from the pod netns — with RBAC and audit.
+    </Callout>
+  </div>
+</Slide>

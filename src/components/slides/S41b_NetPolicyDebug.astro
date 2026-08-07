@@ -1,0 +1,39 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s41b-net-policy-debug"
+  chapter="Failure Patterns"
+  title="NetworkPolicy — Debug Commands"
+  notes="Debug: get networkpolicy, describe policy, compare pod labels to podSelector. Test with debug pod WITH and WITHOUT same labels. Cross-namespace: namespaceSelector matchLabels on namespace, not pod. Egress to 0.0.0.0/0:443 needs explicit rule under default-deny. Cilium Hubble / Calico flow logs show denied flows."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Matrix
+      headers={['Traffic path', 'Policy field', 'Missed rule']}
+      rows={[
+        ['App → DB', 'egress + port 5432', 'Forgot namespaceSelector on DB ns'],
+        ['Ingress → App', 'ingress podSelector', 'Health check from kube-system blocked'],
+        ['App → DNS', 'egress UDP/TCP 53', 'Default-deny egress breaks DNS'],
+        ['App → external API', 'egress :443', 'Egress allow missing under deny-all'],
+      ]}
+    />
+
+    <CodeBlock
+      caption="NetworkPolicy triage"
+      code={`kubectl get networkpolicy -n NAMESPACE
+kubectl describe networkpolicy POL -n NAMESPACE
+kubectl get pod POD -n NAMESPACE --show-labels
+
+kubectl run -it --rm np-test --image=nicolaka/netshoot --restart=Never -n NAMESPACE -- \\
+  curl -m5 -sv telnet://TARGET:PORT`}
+    />
+
+    <Callout type="tip">
+      Cilium Hubble / Calico flow logs show denied flows — use when available instead of guessing.
+    </Callout>
+  </div>
+</Slide>

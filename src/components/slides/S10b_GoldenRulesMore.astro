@@ -1,0 +1,25 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s10b-golden-rules-more"
+  chapter="Rules & Models"
+  title="Golden Rules (2/2)"
+  notes="Three rules under incident pressure. Don't change while observing is the hardest — snapshot state first. Validate after fix with metrics and real traffic, not just pod status. Prevent after validate: every fix should leave the system more observable than before."
+>
+  <div class="stagger flex flex-col gap-5">
+    <Callout type="rule" title="Don't Change While Observing">
+      Snapshot state first. Mutations destroy the evidence you need.
+    </Callout>
+
+    <Callout type="rule" title="Validate After Fix">
+      Confirm the fix with metrics, probes, and real traffic — not just pod status.
+    </Callout>
+
+    <Callout type="rule" title="Prevent After Validate">
+      Add alerts, runbooks, or guardrails so the same failure class can't hide again.
+    </Callout>
+  </div>
+</Slide>

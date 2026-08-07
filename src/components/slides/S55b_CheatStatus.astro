@@ -1,0 +1,34 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+---
+
+<Slide
+  id="s55b-cheat-status"
+  chapter="Reference"
+  title="Cheat Sheet — Status Meanings"
+  notes="Status meanings: Pending=scheduling, CrashLoop=restart loop, OOMKilled=137, Evicted=node pressure. Probe cheat: liveness=restart, readiness=traffic, startup=boot grace. Walk each row quickly — attendees use this as lookup during incidents."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Matrix
+      headers={['Status / Reason', 'Meaning', 'Next step']}
+      rows={[
+        ['Pending', 'Not scheduled yet', 'describe pod → FailedScheduling'],
+        ['CrashLoopBackOff', 'Container exit loop', 'describe + logs --previous'],
+        ['OOMKilled (137)', 'Memory limit hit', 'top pod · check limits'],
+        ['Evicted', 'Node resource pressure', 'describe node · pressure conditions'],
+        ['CreateContainerConfigError', 'Missing secret/config', 'describe → secret/configmap ref'],
+        ['ImagePullBackOff', 'Registry/auth/tag issue', 'describe → pull events'],
+      ]}
+    />
+
+    <Matrix
+      headers={['Probe', 'Fails when', 'Effect']}
+      rows={[
+        ['Startup', 'App still booting', 'Blocks liveness until pass'],
+        ['Readiness', 'Can\'t serve traffic', 'Removed from Endpoints — no kill'],
+        ['Liveness', 'Process deadlocked', 'Container restart — use carefully'],
+      ]}
+    />
+  </div>
+</Slide>

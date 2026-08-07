@@ -1,0 +1,24 @@
+---
+interface Props {
+  goals: string[];
+  class?: string;
+}
+
+const { goals, class: className = '' } = Astro.props;
+---
+
+<div class:list={['rounded-2xl border border-deck-cyan/30 bg-deck-cyan/5 p-6 md:p-8', className]}>
+  <div class="mb-4 font-display text-sm font-semibold uppercase tracking-[0.16em] text-deck-cyan">
+    After this section, you can…
+  </div>
+  <ul class="space-y-3">
+    {
+      goals.map((g) => (
+        <li class="flex gap-3 text-lg text-deck-text/90 md:text-xl">
+          <span class="text-deck-cyan">▸</span>
+          <span>{g}</span>
+        </li>
+      ))
+    }
+  </ul>
+</div>

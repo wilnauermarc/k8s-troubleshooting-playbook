@@ -1,0 +1,18 @@
+---
+interface Props {
+  code: string;
+  lang?: string;
+  caption?: string;
+  class?: string;
+}
+
+const { code, lang = 'bash', caption, class: className = '' } = Astro.props;
+---
+
+<figure class:list={['overflow-hidden rounded-xl border border-deck-border bg-[#060a12]', className]}>
+  <div class="flex items-center justify-between border-b border-deck-border px-4 py-2">
+    <span class="font-mono text-xs uppercase tracking-wider text-deck-muted">{lang}</span>
+    {caption && <span class="text-sm text-deck-muted">{caption}</span>}
+  </div>
+  <pre class="overflow-x-auto p-5 font-mono text-sm leading-relaxed text-deck-cyan/95 md:text-base"><code>{code.trim()}</code></pre>
+</figure>

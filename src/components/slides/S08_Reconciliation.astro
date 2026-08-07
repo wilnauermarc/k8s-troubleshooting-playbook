@@ -1,0 +1,15 @@
+---
+import Slide from '../ui/Slide.astro';
+import ReconcileLoop from '../ui/ReconcileLoop.astro';
+---
+
+<Slide
+  id="s08-reconciliation"
+  chapter="Mindset"
+  title="The Reconciliation Loop"
+  notes="Controllers watch, observe, diff, act, update status, emit events. Debugging finds where the loop stalls."
+>
+  <div class="stagger">
+    <ReconcileLoop />
+  </div>
+</Slide>

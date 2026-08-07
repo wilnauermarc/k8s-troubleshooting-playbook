@@ -1,0 +1,35 @@
+---
+import Slide from '../ui/Slide.astro';
+import BranchTree from '../ui/BranchTree.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s27-tree-pending"
+  chapter="Decision Trees"
+  title="Pod Pending — First Branch"
+  notes="Start with PodScheduled. If false, read FailedScheduling events. If true, look at init / mounts / image."
+>
+  <div class="stagger space-y-8">
+    <BranchTree
+      title="Pod is Pending"
+      branches={[
+        {
+          question: 'PodScheduled = true?',
+          yes: 'Check Init / mounts / image',
+          yesHint: 'ContainerCreating or Init:…',
+          no: 'Read FailedScheduling Events',
+          noHint: 'describe pod → Events',
+        },
+        {
+          question: 'Message mentions resources?',
+          yes: 'Free capacity or lower requests',
+          no: 'Check taints, affinity, topology',
+        },
+      ]}
+    />
+    <Callout type="tip">
+      First move: <code class="text-deck-cyan">kubectl describe pod</code> — Events pick your branch.
+    </Callout>
+  </div>
+</Slide>

@@ -1,0 +1,38 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s24b-layer-networking-commands"
+  chapter="Layers"
+  title="Networking — Commands"
+  notes="Path verification: svc/endpoints, netshoot debug pod for nslookup and curl, netpol, ingress/gateway. Myth: Service exists so traffic flows — without ready endpoints it's an empty shell."
+>
+  <div class="stagger flex flex-col gap-6">
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Typical commands</h3>
+      <CodeBlock
+        lang="bash"
+        caption="Path verification"
+        code={`kubectl get svc,endpoints -n <ns>
+kubectl run dbg --rm -it --image=nicolaka/netshoot -- bash
+# inside: nslookup my-svc.my-ns.svc.cluster.local
+# inside: curl -v http://my-svc:8080/health
+kubectl describe netpol -n <ns>
+kubectl get ingress,gateway -A`}
+      />
+    </section>
+
+    <Callout type="myth">
+      A Service exists so traffic flows. Without ready endpoints and matching selectors, the Service is an empty shell.
+    </Callout>
+
+    <div class="flex flex-wrap items-center gap-2 border-t border-deck-border/60 pt-4">
+      <Pill tone="amber">Decision hint</Pill>
+      <span class="text-lg text-deck-muted">Walk the onion outside-in: DNS → endpoints → policy → route.</span>
+    </div>
+  </div>
+</Slide>

@@ -1,0 +1,37 @@
+---
+import Slide from '../ui/Slide.astro';
+import PyramidDraw from '../ui/PyramidDraw.astro';
+import OnionDraw from '../ui/OnionDraw.astro';
+import SignalTriangleMini from '../ui/SignalTriangleMini.astro';
+---
+
+<Slide
+  id="s56b-final-models"
+  chapter="Synthesis"
+  title="Three Models to Take Home"
+  notes="Pyramid = where to start. Onion = how to peel. Triangle = which signal answers the question."
+>
+  <div class="stagger grid items-start gap-6 lg:grid-cols-3">
+    <div class="text-center">
+      <div class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Pyramid</div>
+      <PyramidDraw class="max-w-sm" />
+    </div>
+    <div class="text-center">
+      <div class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Onion</div>
+      <OnionDraw
+        class="max-w-sm"
+        layers={[
+          { name: 'Ingress', color: '#fb7185' },
+          { name: 'Service', color: '#fbbf24' },
+          { name: 'DNS / NetPol', color: '#2dd4bf' },
+          { name: 'Pod / Probes', color: '#60a5fa' },
+          { name: 'Process', color: '#a78bfa' },
+        ]}
+      />
+    </div>
+    <div class="text-center">
+      <div class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-blue">Signals</div>
+      <SignalTriangleMini class="mt-8 max-w-sm" />
+    </div>
+  </div>
+</Slide>

@@ -1,0 +1,80 @@
+---
+interface Props {
+  id: string;
+  chapter?: string;
+  title?: string;
+  notes?: string;
+  variant?: 'default' | 'title' | 'chapter' | 'dark' | 'quote';
+  /** Study track — shown in chrome for navigation */
+  track?: 'core' | 'practice' | 'reference';
+  class?: string;
+}
+
+const {
+  id,
+  chapter,
+  title,
+  notes = '',
+  variant = 'default',
+  track,
+  class: className = '',
+} = Astro.props;
+
+const variantClass = {
+  default: 'justify-start',
+  title: 'justify-center items-center text-center',
+  chapter: 'justify-center',
+  dark: 'justify-start',
+  quote: 'justify-center items-center text-center',
+}[variant];
+
+const trackLabel = track
+  ? { core: 'Core', practice: 'Practice', reference: 'Reference' }[track]
+  : '';
+
+const trackClass = track
+  ? {
+      core: 'border-deck-cyan/40 bg-deck-cyan/10 text-deck-cyan',
+      practice: 'border-deck-amber/40 bg-deck-amber/10 text-deck-amber',
+      reference: 'border-deck-blue/40 bg-deck-blue/10 text-deck-blue',
+    }[track]
+  : '';
+---
+
+<section
+  class:list={['slide px-10 py-8 md:px-16 md:py-10', variantClass, className]}
+  data-slide-id={id}
+  data-notes={notes}
+  data-chapter={chapter ?? ''}
+  data-title={title ?? ''}
+  data-track={track ?? ''}
+  aria-label={title ?? id}
+>
+  {
+    (chapter || track) && variant !== 'title' && variant !== 'chapter' && (
+      <div class="mb-4 flex flex-wrap items-center gap-3 text-sm font-medium uppercase tracking-[0.18em] text-deck-cyan/80">
+        {chapter && (
+          <>
+            <span class="h-px w-8 bg-deck-cyan/50" />
+            {chapter}
+          </>
+        )}
+        {track && (
+          <span class:list={['rounded-md border px-2 py-0.5 text-[11px] tracking-wider normal-case', trackClass]}>
+            {trackLabel}
+          </span>
+        )}
+      </div>
+    )
+  }
+  {
+    title && variant !== 'title' && variant !== 'chapter' && (
+      <h2 class="mb-8 max-w-5xl font-display text-4xl font-bold leading-tight tracking-tight text-deck-text md:text-5xl">
+        {title}
+      </h2>
+    )
+  }
+  <div class:list={['slide-body flex-1', variant === 'title' || variant === 'chapter' || variant === 'quote' ? 'flex w-full flex-col items-center justify-center' : '']}>
+    <slot />
+  </div>
+</section>

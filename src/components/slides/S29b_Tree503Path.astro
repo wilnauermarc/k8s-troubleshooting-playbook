@@ -1,0 +1,23 @@
+---
+import Slide from '../ui/Slide.astro';
+import Flow from '../ui/Flow.astro';
+---
+
+<Slide
+  id="s29b-tree-503-path"
+  chapter="Decision Trees"
+  title="503 — Outside-In Path"
+  notes="If Endpoints look good, walk outside-in: client → LB → Ingress/Gateway → Service → Pod."
+>
+  <div class="stagger">
+    <Flow
+      nodes={[
+        { label: 'Client / Load Balancer', kind: 'start' },
+        { label: 'Ingress or Gateway route correct?', kind: 'decision' },
+        { label: 'Service selector + targetPort', kind: 'action' },
+        { label: 'Pod Ready + listening on port', kind: 'action' },
+        { label: 'App returns non-503 locally?', kind: 'ok', hint: 'port-forward to isolate the layer' },
+      ]}
+    />
+  </div>
+</Slide>

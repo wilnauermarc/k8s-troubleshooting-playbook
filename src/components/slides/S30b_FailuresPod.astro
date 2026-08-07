@@ -1,0 +1,27 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s30b-failures-pod"
+  chapter="Failure Patterns"
+  title="Catalog — Pod & Resources"
+  notes="Walk six rows slowly. Emphasize first command is Observe, not Fix."
+>
+  <div class="stagger space-y-6">
+    <Matrix
+      headers={['Pattern', 'First Signal', 'First Command']}
+      rows={[
+        ['CrashLoopBackOff', 'RESTARTS ↑, Last State Terminated', 'logs --previous'],
+        ['ImagePullBackOff', 'Failed to pull image', 'describe pod → Events'],
+        ['CreateContainerConfigError', 'secret / configmap missing', 'describe pod'],
+        ['OOMKilled / Evicted', 'Reason: OOMKilled or Evicted', 'describe + top'],
+        ['Pending / FailedScheduling', '0/N nodes available', 'describe → Events'],
+        ['FailedMount / MultiAttach', 'Unable to attach / mount', 'describe + get pvc'],
+      ]}
+    />
+    <Callout type="rule">Status says where. Events say why.</Callout>
+  </div>
+</Slide>

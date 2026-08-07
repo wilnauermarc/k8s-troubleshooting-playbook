@@ -1,0 +1,19 @@
+---
+import Slide from '../ui/Slide.astro';
+import NetHops from '../ui/NetHops.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s55c-cheat-net-path"
+  chapter="Reference"
+  title="Cheat Sheet — Networking Quick Path"
+  notes="Walk hops left to right. curl pod IP first, then Service DNS, then Ingress URL, then DNS/NetPol."
+>
+  <div class="stagger flex flex-col items-center gap-6">
+    <NetHops />
+    <Callout type="framework" class="max-w-2xl">
+      Fail at hop N → debug layer N.
+    </Callout>
+  </div>
+</Slide>

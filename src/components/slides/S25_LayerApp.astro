@@ -1,0 +1,48 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+---
+
+<Slide
+  id="s25-layer-app"
+  chapter="Layers"
+  title="Application & Business Logic"
+  notes="Top of the stack. Platform can be perfect while the app returns 200 with errors in JSON, wrong tenant data, or silent partial failure. Reproduce from inside the cluster to remove DNS/LB variables. Commands on next slide."
+>
+  <div class="stagger flex flex-col gap-6">
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Purpose</h3>
+      <p class="text-lg leading-relaxed text-deck-text/90 md:text-xl">
+        Business rules, application code, dependencies, and config — everything above a healthy pod and network path.
+      </p>
+    </section>
+
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-rose">Typical failures</h3>
+      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
+        <li>• Application bug with correct HTTP status</li>
+        <li>• 200 OK with error payload or empty data</li>
+        <li>• Config drift between environments</li>
+        <li>• Upstream dependency timeout (DB, queue, SaaS)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
+      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
+        <li>• Users see wrong business outcome despite green pods</li>
+        <li>• Works in staging, fails in prod with same image</li>
+        <li>• In-cluster curl fails while pod phase is Running</li>
+      </ul>
+    </section>
+
+    <Matrix
+      headers={['Pattern', 'What users see']}
+      rows={[
+        ['App bug', 'Correct HTTP code, wrong business outcome'],
+        ['200 that lies', '200 OK but error payload / empty data'],
+        ['Config drift', 'Works in staging, fails in prod secret/key'],
+      ]}
+    />
+  </div>
+</Slide>

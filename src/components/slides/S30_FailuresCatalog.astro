@@ -1,0 +1,25 @@
+---
+import Slide from '../ui/Slide.astro';
+import Goals from '../ui/Goals.astro';
+---
+
+<Slide
+  id="s30-failures-catalog"
+  chapter="Failure Patterns"
+  title="Failure Pattern Catalog"
+  variant="chapter"
+  track="reference"
+  notes="Reference map of patterns. Use after triage to pick the deep-dive slide."
+>
+  <div class="stagger flex max-w-3xl flex-col items-center gap-8 text-center">
+    <h2 class="font-display text-4xl font-extrabold text-deck-text md:text-5xl">Failure Patterns</h2>
+    <Goals
+      class="w-full text-left"
+      goals={[
+        'Match a STATUS/reason to a first command',
+        'Separate pod lifecycle failures from network failures',
+        'Jump to the deep-dive slide for that pattern',
+      ]}
+    />
+  </div>
+</Slide>

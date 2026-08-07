@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s19b-layer-scheduling-commands"
+  chapter="Layers"
+  title="Scheduling — Commands"
+  notes="describe pod Events for FailedScheduling. Check node taints and top nodes if metrics-server installed. Myth: Pending always means not enough CPU — taints, affinity, PVC binding, and ResourceQuota block without touching CPU graphs."
+>
+  <div class="stagger flex flex-col gap-6">
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Typical commands</h3>
+      <CodeBlock
+        lang="bash"
+        caption="Why Pending?"
+        code={`kubectl describe pod <pod> -n <ns>   # Events: FailedScheduling
+kubectl get events -n <ns> --field-selector involvedObject.name=<pod>
+kubectl describe nodes | grep -A5 Taints
+kubectl top nodes   # if metrics-server installed`}
+      />
+    </section>
+
+    <Callout type="myth">
+      Pending always means not enough CPU. Taints, affinity, PVC binding, and ResourceQuota block scheduling without touching CPU graphs.
+    </Callout>
+
+    <div class="flex flex-wrap items-center gap-2 border-t border-deck-border/60 pt-4">
+      <Pill tone="amber">Decision hint</Pill>
+      <span class="text-lg text-deck-muted">Copy the FailedScheduling reason — it usually names the fix.</span>
+    </div>
+  </div>
+</Slide>

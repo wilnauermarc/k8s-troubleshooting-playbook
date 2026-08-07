@@ -1,0 +1,44 @@
+---
+/**
+ * Horizontal architecture / layer boxes connected with arrows.
+ */
+interface Box {
+  title: string;
+  subtitle?: string;
+  tone?: 'cyan' | 'amber' | 'blue' | 'rose' | 'violet' | 'muted';
+}
+
+interface Props {
+  boxes: Box[];
+  class?: string;
+}
+
+const { boxes, class: className = '' } = Astro.props;
+
+const tones: Record<string, string> = {
+  cyan: 'border-deck-cyan/50 text-deck-cyan',
+  amber: 'border-deck-amber/50 text-deck-amber',
+  blue: 'border-deck-blue/50 text-deck-blue',
+  rose: 'border-deck-rose/50 text-deck-rose',
+  violet: 'border-deck-violet/50 text-deck-violet',
+  muted: 'border-deck-border text-deck-muted',
+};
+---
+
+<div class:list={['flex flex-wrap items-center justify-center gap-3 md:gap-4', className]}>
+  {
+    boxes.map((box, i) => (
+      <>
+        <div class:list={['arch-box min-w-[140px] max-w-[220px] flex-1', tones[box.tone ?? 'cyan']]}>
+          <div class="font-display text-lg font-bold md:text-xl">{box.title}</div>
+          {box.subtitle && <div class="mt-1 text-sm text-deck-muted">{box.subtitle}</div>}
+        </div>
+        {i < boxes.length - 1 && (
+          <span class="hidden font-display text-2xl text-deck-border md:inline" aria-hidden="true">
+            →
+          </span>
+        )}
+      </>
+    ))
+  }
+</div>

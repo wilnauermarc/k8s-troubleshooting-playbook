@@ -1,0 +1,33 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+---
+
+<Slide
+  id="s38b-net-dns-commands"
+  chapter="Failure Patterns"
+  title="DNS — Diagnose Fast"
+  notes="Show the matrix, then run through the commands verbally. Always compare short name vs FQDN."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Matrix
+      headers={['Result', 'Likely cause', 'Next step']}
+      rows={[
+        ['NXDOMAIN for *.svc', 'Wrong name / namespace', 'get svc + test FQDN'],
+        ['Timeout on :53', 'NetworkPolicy / CoreDNS down', 'get endpoints kube-dns'],
+        ['External names fail', 'forward / upstream broken', 'CoreDNS logs'],
+        ['Works only with FQDN', 'ndots / search path', 'cat /etc/resolv.conf'],
+      ]}
+    />
+
+    <CodeBlock
+      caption="First 30 seconds"
+      code={`kubectl run -it --rm dnsdebug --image=busybox:1.36 --restart=Never -- \\
+  nslookup my-svc.my-ns.svc.cluster.local
+
+kubectl get svc,endpoints -n kube-system -l k8s-app=kube-dns
+kubectl logs -n kube-system -l k8s-app=kube-dns --tail=50`}
+    />
+  </div>
+</Slide>

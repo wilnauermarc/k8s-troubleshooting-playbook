@@ -1,0 +1,18 @@
+---
+import Slide from '../ui/Slide.astro';
+import LifecycleRing from '../ui/LifecycleRing.astro';
+---
+
+<Slide
+  id="s04-lifecycle"
+  chapter="Mindset"
+  title="The Investigation Lifecycle"
+  notes="Walk the ring clockwise. Observe is non-negotiable on novel failures. Validate and Prevent are where most teams stop short."
+>
+  <div class="stagger flex flex-col items-center gap-6">
+    <LifecycleRing />
+    <p class="max-w-2xl text-center text-lg text-deck-muted md:text-xl">
+      Same loop at every layer — from load balancer to business logic.
+    </p>
+  </div>
+</Slide>

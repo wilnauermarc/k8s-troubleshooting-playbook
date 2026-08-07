@@ -1,0 +1,19 @@
+---
+import Slide from '../ui/Slide.astro';
+import ProbeDiagram from '../ui/ProbeDiagram.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s37-probes"
+  chapter="Failure Patterns"
+  title="Probes: Ready ≠ Alive"
+  notes="Three boxes, three different kubelet actions. Readiness drains traffic; liveness restarts; startup protects slow boots."
+>
+  <div class="stagger flex flex-col items-center gap-6">
+    <ProbeDiagram />
+    <Callout type="myth" class="max-w-3xl">
+      “Not Ready means the pod is dead.” — It’s alive; Service just won’t send traffic.
+    </Callout>
+  </div>
+</Slide>

@@ -1,0 +1,23 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s09b-myths-more"
+  chapter="Rules & Models"
+  title="Common Debugging Myths (2/2)"
+  notes="Two more myths to round out the set. Delete-pod myth: you lose node placement, ephemeral state, and event history. More-replicas myth: replicas spread load but don't fix broken configs or dependencies. Transition to golden rules as the antidote."
+>
+  <div class="stagger flex flex-col gap-5">
+    <Callout type="myth" title="Myth">
+      "Delete the pod to debug — it'll come back fresh."
+      <p class="mt-2 text-base text-deck-muted md:text-lg">You lose node placement, ephemeral state, and event history.</p>
+    </Callout>
+
+    <Callout type="myth" title="Myth">
+      "More replicas = more healthy."
+      <p class="mt-2 text-base text-deck-muted md:text-lg">Replicas spread load; they don't fix broken configs, bad images, or failing dependencies.</p>
+    </Callout>
+  </div>
+</Slide>

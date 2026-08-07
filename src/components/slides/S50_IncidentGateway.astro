@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s50-incident-gateway"
+  chapter="Production Incidents"
+  title="Incident: Gateway API Route Misconfiguration"
+  notes="Symptom: new API version returns 404 at public URL; internal ClusterIP works fine. Observe: Gateway shows Programmed=True, HTTPRoute Accepted=True — looks healthy. Locate: HTTPRoute backendRefs point to Service api-v1 but new deployment is api-v2 with different Service name. Narrow: parentRefs correct (gateway in right namespace), but path match /v2 routes to wrong backend. Verify: kubectl get httproute -o yaml shows backendRef name api-v1. Fix: update HTTPRoute backendRef to api-v2 Service, wait for controller sync. Validate: external curl returns 200, Gateway status unchanged. Prevent: GitOps diff on HTTPRoute, integration test hitting public URL post-deploy."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Callout type="signal" title="Symptom">
+      Public URL <code class="font-mono">/v2/orders</code> returns 404. In-cluster curl to Service works. Gateway "looks fine".
+    </Callout>
+
+    <div class="grid gap-6 md:grid-cols-3">
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-cyan">Observe</div>
+        <p class="mt-2 text-lg text-deck-muted">404 external, 200 in-cluster</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-amber">Locate</div>
+        <p class="mt-2 text-lg text-deck-muted">Gateway Programmed, route Accepted</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-rose">Narrow</div>
+        <p class="mt-2 text-lg text-deck-muted">backendRef → <strong class="text-deck-text">wrong Service name</strong></p>
+      </div>
+    </div>
+
+    <Callout type="rule">
+      Healthy Gateway ≠ correct routing.
+    </Callout>
+  </div>
+</Slide>

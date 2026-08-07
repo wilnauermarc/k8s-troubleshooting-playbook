@@ -1,0 +1,29 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s10-golden-rules"
+  chapter="Rules & Models"
+  title="Golden Rules (1/2)"
+  notes="Contrast directly with the myths slide. These four rules are non-negotiable for platform engineers. Events before logs saves time on every incident. Hypothesize before the next command keeps you honest. Eliminate layers and outside-in prevent rabbit holes. Three more rules on the next slide."
+>
+  <div class="stagger flex flex-col gap-5">
+    <Callout type="rule" title="Events before Logs">
+      Check <code class="text-deck-cyan">kubectl describe</code> and events first — they're fast and cluster-scoped.
+    </Callout>
+
+    <Callout type="rule" title="Hypothesize">
+      Write down what you think is wrong before running the next command.
+    </Callout>
+
+    <Callout type="rule" title="Eliminate Layers">
+      Rule out infra and cluster before diving into application code.
+    </Callout>
+
+    <Callout type="rule" title="Outside-In / Bottom-Up">
+      Start from user impact, eliminate from infrastructure upward.
+    </Callout>
+  </div>
+</Slide>

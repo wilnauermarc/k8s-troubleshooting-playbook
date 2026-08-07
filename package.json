@@ -1,0 +1,25 @@
+{
+  "name": "k8s-troubleshooting-playbook",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "start": "astro preview",
+    "export:md": "node scripts/export-markdown.mjs",
+    "prebuild": "node scripts/export-markdown.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.12.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/tailwind": "^6.0.2",
+    "@tailwindcss/typography": "^0.5.16",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3"
+  }
+}

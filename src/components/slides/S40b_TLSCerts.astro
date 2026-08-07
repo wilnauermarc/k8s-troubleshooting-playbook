@@ -1,0 +1,45 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Callout from '../ui/Callout.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s40b-tls-certs"
+  chapter="Failure Patterns"
+  title="TLS & cert-manager"
+  notes="TLS failures: cert warnings, expired secret, cert-manager renewal failed. Check Certificate status, secret tls type. cert-manager challenges failing — DNS01 vs HTTP01. describe certificate for events. Test expiry with openssl s_client. Multiple ingress controllers — wrong ingressClassName routes nowhere."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="flex flex-wrap items-center gap-2">
+      <Pill tone="amber">TLS</Pill>
+      <Pill tone="violet">cert-manager</Pill>
+    </div>
+
+    <Matrix
+      headers={['Symptom', 'Layer', 'Check']}
+      rows={[
+        ['Cert expired / warning', 'TLS secret outdated', 'get certificate + describe'],
+        ['502 at edge', 'Backend', 'get endpoints + readiness'],
+        ['404 at edge', 'Routing rules', 'ingress spec vs Host header'],
+        ['Challenge pending', 'cert-manager', 'CertificateRequest events'],
+      ]}
+    />
+
+    <CodeBlock
+      caption="TLS & routing checks"
+      code={`kubectl describe ingress ING -n NAMESPACE
+kubectl get certificate,secret -n NAMESPACE
+kubectl describe certificate CERT -n NAMESPACE
+
+openssl s_client -connect HOST:443 -servername HOST </dev/null 2>/dev/null | \\
+  openssl x509 -noout -dates`}
+    />
+
+    <Callout type="tip">
+      Gateway API: check <code class="text-deck-cyan">Accepted=True</code> on parent Gateway before debugging HTTPRoute.
+    </Callout>
+  </div>
+</Slide>

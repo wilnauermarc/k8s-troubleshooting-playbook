@@ -1,0 +1,38 @@
+---
+import Slide from '../ui/Slide.astro';
+---
+
+<Slide
+  id="s17-layer-control-plane"
+  chapter="Layers"
+  title="Control Plane"
+  notes="API server, etcd, scheduler, controller-manager. Cluster-wide create/update failures, mass Pending, or stale object status often trace here. On managed clusters you escalate — but you still need to recognize the pattern. Commands on next slide."
+>
+  <div class="stagger flex flex-col gap-6">
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Purpose</h3>
+      <p class="text-lg leading-relaxed text-deck-text/90 md:text-xl">
+        Brain of the cluster: API server (front door), etcd (source of truth), scheduler (placement), controller-manager (reconciliation loops).
+      </p>
+    </section>
+
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-rose">Typical failures</h3>
+      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
+        <li>• etcd full or slow</li>
+        <li>• API server overload</li>
+        <li>• Scheduler unavailable</li>
+        <li>• Controller manager stuck</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
+      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
+        <li>• Timeouts and flaky writes across namespaces</li>
+        <li>• HTTP 429/503, watch disconnects</li>
+        <li>• Everything Pending; stale replicas or missing endpoints</li>
+      </ul>
+    </section>
+  </div>
+</Slide>

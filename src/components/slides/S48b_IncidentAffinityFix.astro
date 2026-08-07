@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s48b-incident-affinity-fix"
+  chapter="Production Incidents"
+  title="Affinity & Taints — Fix & Prevent"
+  notes="Root cause: Required node affinity gpu=true copied from ML template — but missing toleration for GPU node taint. Fix: remove erroneous affinity OR add matching toleration. Prevent: policy check: affinity requires toleration audit."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Callout type="tip" title="Root cause">
+      Required node affinity <code class="text-deck-cyan">gpu=true</code> copied from ML template — missing toleration for GPU node taint.
+    </Callout>
+
+    <CodeBlock
+      caption="Scheduler tells you why"
+      code={`kubectl describe pod worker-abc12 | grep -A8 Events
+kubectl get nodes -L gpu --show-labels
+kubectl describe node gpu-node-1 | grep -i taint`}
+    />
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="rounded-xl border border-deck-cyan/40 bg-deck-cyan/5 p-6">
+        <div class="font-display text-xl font-bold text-deck-cyan">Fix</div>
+        <p class="mt-2 text-lg text-deck-text/90">Remove erroneous affinity OR add matching toleration.</p>
+      </div>
+      <div class="rounded-xl border border-deck-amber/40 bg-deck-amber/5 p-6">
+        <div class="font-display text-xl font-bold text-deck-amber">Prevent</div>
+        <p class="mt-2 text-lg text-deck-text/90">CI lint for affinity/toleration pairs; document node pool contracts.</p>
+      </div>
+    </div>
+  </div>
+</Slide>

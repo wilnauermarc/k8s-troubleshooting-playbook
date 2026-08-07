@@ -1,0 +1,35 @@
+---
+import Slide from '../ui/Slide.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s57-closing"
+  chapter="Closing"
+  title="Closing — Keep the Thought Process"
+  variant="quote"
+  track="core"
+  notes="Study close: the takeaway is the process, not the command list. Revisit Core models weekly; use Reference during incidents; drill Practice until the first question is automatic."
+>
+  <div class="stagger flex max-w-3xl flex-col items-center gap-8">
+    <blockquote class="font-display text-2xl font-bold leading-snug text-deck-text md:text-4xl">
+      Don't memorize kubectl commands.<br />
+      <span class="text-deck-cyan">Memorize the engineering thought process.</span>
+    </blockquote>
+
+    <p class="max-w-xl text-center text-lg text-deck-muted">
+      Observe → Locate → Narrow → Verify → Fix → Validate → Prevent
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-2">
+      <Pill tone="cyan">Events first</Pill>
+      <Pill tone="amber">One hypothesis</Pill>
+      <Pill tone="blue">Layer by layer</Pill>
+      <Pill tone="violet">Prevent recurrence</Pill>
+    </div>
+
+    <p class="text-center text-base text-deck-muted">
+      Export: <span class="text-deck-cyan">MD</span> · Overview: <span class="text-deck-cyan">O</span> · Revisit Core before Practice.
+    </p>
+  </div>
+</Slide>

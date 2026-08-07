@@ -1,0 +1,48 @@
+---
+/** Outside-in networking debug hops. */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+const hops = [
+  { label: 'Pod IP', hint: 'app listening?', color: '#2dd4bf' },
+  { label: 'Service', hint: 'endpoints?', color: '#60a5fa' },
+  { label: 'Ingress', hint: 'route / TLS?', color: '#fbbf24' },
+  { label: 'DNS', hint: 'resolve?', color: '#a78bfa' },
+  { label: 'NetPol', hint: 'allowed?', color: '#fb7185' },
+];
+---
+
+<svg
+  viewBox="0 0 800 200"
+  class:list={['mx-auto h-auto w-full max-w-5xl', className]}
+  role="img"
+  aria-label="Networking debug hops from pod to NetworkPolicy"
+>
+  {
+    hops.map((hop, i) => {
+      const x = 30 + i * 155;
+      return (
+        <g>
+          <rect x={x} y="50" width="130" height="90" rx="14" fill="#0d1526" stroke={hop.color} stroke-width="2.5" />
+          <text x={x + 65} y="90" text-anchor="middle" fill={hop.color} font-family="Sora, sans-serif" font-size="16" font-weight="700">
+            {hop.label}
+          </text>
+          <text x={x + 65} y="118" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="13">
+            {hop.hint}
+          </text>
+          {i < hops.length - 1 && (
+            <text x={x + 138} y="100" fill="#8b9bb8" font-size="24">
+              →
+            </text>
+          )}
+        </g>
+      );
+    })
+  }
+  <text x="400" y="180" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="14">
+    Fail at hop N → debug layer N. Don’t skip hops.
+  </text>
+</svg>

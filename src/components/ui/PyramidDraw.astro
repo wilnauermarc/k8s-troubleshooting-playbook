@@ -1,0 +1,72 @@
+---
+/** Troubleshooting pyramid as a drawn graphic. */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+const levels = [
+  { label: 'Business', detail: 'SLOs · users · impact', y: 28, w: 200, color: '#a78bfa' },
+  { label: 'Application', detail: 'code · deps · probes', y: 88, w: 280, color: '#60a5fa' },
+  { label: 'Workload', detail: 'Deploy · Service · Ingress', y: 148, w: 360, color: '#2dd4bf' },
+  { label: 'Cluster', detail: 'control plane · nodes · CNI', y: 208, w: 440, color: '#fbbf24' },
+  { label: 'Infrastructure', detail: 'cloud · DNS · LB · storage', y: 268, w: 520, color: '#fb7185' },
+];
+---
+
+<svg
+  viewBox="0 0 560 360"
+  class:list={['mx-auto h-auto w-full max-w-2xl', className]}
+  role="img"
+  aria-label="Troubleshooting pyramid from infrastructure up to business"
+>
+  {
+    levels.map((level) => {
+      const x = (560 - level.w) / 2;
+      return (
+        <g>
+          <rect
+            x={x}
+            y={level.y}
+            width={level.w}
+            height="52"
+            rx="12"
+            fill="#0d1526"
+            stroke={level.color}
+            stroke-width="2.5"
+          />
+          <text
+            x="280"
+            y={level.y + 24}
+            text-anchor="middle"
+            fill={level.color}
+            font-family="Sora, sans-serif"
+            font-size="17"
+            font-weight="700"
+          >
+            {level.label}
+          </text>
+          <text
+            x="280"
+            y={level.y + 42}
+            text-anchor="middle"
+            fill="#8b9bb8"
+            font-family="Source Sans 3, sans-serif"
+            font-size="13"
+          >
+            {level.detail}
+          </text>
+        </g>
+      );
+    })
+  }
+
+  <!-- Arrow up -->
+  <text x="30" y="180" fill="#8b9bb8" font-family="Sora, sans-serif" font-size="12" font-weight="600" transform="rotate(-90 30 180)">
+    IMPACT ↑
+  </text>
+  <text x="545" y="200" fill="#8b9bb8" font-family="Sora, sans-serif" font-size="12" font-weight="600" transform="rotate(90 545 200)">
+    ELIMINATE ↑
+  </text>
+</svg>

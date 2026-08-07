@@ -1,0 +1,64 @@
+---
+/**
+ * Concentric onion rings. Pass layers outermost → innermost.
+ */
+interface Props {
+  layers: { name: string; color?: string }[];
+  class?: string;
+}
+
+const { layers, class: className = '' } = Astro.props;
+
+const colors = ['#fb7185', '#fbbf24', '#2dd4bf', '#60a5fa', '#a78bfa', '#2dd4bf', '#60a5fa'];
+const cx = 280;
+const cy = 280;
+const maxR = 250;
+const step = maxR / (layers.length + 0.35);
+---
+
+<svg
+  viewBox="0 0 560 560"
+  class:list={['mx-auto h-auto w-full max-w-lg', className]}
+  role="img"
+  aria-label="Kubernetes onion layers"
+>
+  {
+    layers.map((layer, i) => {
+      const r = maxR - i * step;
+      const color = layer.color ?? colors[i % colors.length];
+      return (
+        <g>
+          <circle cx={cx} cy={cy} r={r} fill="#070b14" fill-opacity={0.35 + i * 0.08} stroke={color} stroke-width="2.5" stroke-opacity="0.85" />
+          {i < layers.length - 1 ? (
+            <text
+              x={cx}
+              y={cy - r + step * 0.55}
+              text-anchor="middle"
+              fill={color}
+              font-family="Sora, sans-serif"
+              font-size="15"
+              font-weight="700"
+            >
+              {layer.name}
+            </text>
+          ) : (
+            <>
+              <circle cx={cx} cy={cy} r={Math.max(r - 8, 36)} fill="#0d1526" stroke={color} stroke-width="2" />
+              <text
+                x={cx}
+                y={cy + 6}
+                text-anchor="middle"
+                fill={color}
+                font-family="Sora, sans-serif"
+                font-size="16"
+                font-weight="700"
+              >
+                {layer.name}
+              </text>
+            </>
+          )}
+        </g>
+      );
+    })
+  }
+</svg>

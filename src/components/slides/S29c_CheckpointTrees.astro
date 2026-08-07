@@ -1,0 +1,27 @@
+---
+import Slide from '../ui/Slide.astro';
+import Checkpoint from '../ui/Checkpoint.astro';
+---
+
+<Slide
+  id="s29c-checkpoint-trees"
+  chapter="Decision Trees"
+  title="Checkpoint — Decision Trees"
+  track="practice"
+  notes="Have the learner answer before revealing. Three questions cover the three trees."
+>
+  <div class="stagger grid gap-5 lg:grid-cols-3">
+    <Checkpoint
+      prompt="Pending and PodScheduled=False — first check?"
+      answer="kubectl describe pod → FailedScheduling Events (resources, taints, affinity, PVC topology)."
+    />
+    <Checkpoint
+      prompt="CrashLoop + empty current logs — next?"
+      answer="kubectl logs POD --previous, then Last State / exit code in describe."
+    />
+    <Checkpoint
+      prompt="Service exists, no traffic — what proves backends?"
+      answer="kubectl get endpoints / endpointslices — empty means selector or Not Ready."
+    />
+  </div>
+</Slide>

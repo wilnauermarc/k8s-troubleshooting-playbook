@@ -1,0 +1,38 @@
+---
+interface Props {
+  headers: string[];
+  rows: string[][];
+  class?: string;
+}
+
+const { headers, rows, class: className = '' } = Astro.props;
+---
+
+<div class:list={['overflow-x-auto rounded-xl border border-deck-border', className]}>
+  <table class="w-full min-w-[640px] border-collapse text-left text-base">
+    <thead>
+      <tr class="border-b border-deck-border bg-deck-panel">
+        {
+          headers.map((h) => (
+            <th class="px-4 py-3.5 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">
+              {h}
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr class="border-b border-deck-border/70 last:border-0 hover:bg-white/[0.02]">
+            {row.map((cell, i) => (
+              <td class:list={['px-4 py-3.5 leading-snug text-deck-text/90', i === 0 && 'font-semibold text-deck-text']}>
+                {cell}
+              </td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

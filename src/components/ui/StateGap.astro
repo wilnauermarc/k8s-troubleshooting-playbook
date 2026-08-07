@@ -1,0 +1,75 @@
+---
+/** Desired state vs current state with visible reconciliation gap. */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 720 320"
+  class:list={['mx-auto h-auto w-full max-w-4xl', className]}
+  role="img"
+  aria-label="Desired state versus current state with reconciliation gap"
+>
+  <defs>
+    <linearGradient id="gap-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.35" />
+      <stop offset="50%" stop-color="#fb7185" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.35" />
+    </linearGradient>
+  </defs>
+
+  <!-- Desired -->
+  <rect x="40" y="60" width="220" height="200" rx="20" fill="#0d1526" stroke="#2dd4bf" stroke-width="3" />
+  <text x="150" y="110" text-anchor="middle" fill="#2dd4bf" font-family="Sora, sans-serif" font-size="22" font-weight="700">
+    Desired
+  </text>
+  <text x="150" y="140" text-anchor="middle" fill="#8b9bb8" font-family="Sora, sans-serif" font-size="14" letter-spacing="0.12em">
+    spec
+  </text>
+  <text x="150" y="185" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    replicas: 3
+  </text>
+  <text x="150" y="212" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    image: v2.1
+  </text>
+  <text x="150" y="239" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    port: 8080
+  </text>
+
+  <!-- Gap -->
+  <rect x="290" y="100" width="140" height="120" rx="16" fill="url(#gap-grad)" stroke="#fb7185" stroke-width="2" stroke-dasharray="8 6" />
+  <text x="360" y="145" text-anchor="middle" fill="#fb7185" font-family="Sora, sans-serif" font-size="16" font-weight="700">
+    THE GAP
+  </text>
+  <text x="360" y="175" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="14">
+    Controllers
+  </text>
+  <text x="360" y="198" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="14">
+    reconcile here
+  </text>
+
+  <!-- Arrows -->
+  <path d="M260 160 L285 160" stroke="#2dd4bf" stroke-width="2.5" marker-end="url(#arrow)" />
+  <path d="M430 160 L455 160" stroke="#fbbf24" stroke-width="2.5" />
+
+  <!-- Current -->
+  <rect x="460" y="60" width="220" height="200" rx="20" fill="#0d1526" stroke="#fbbf24" stroke-width="3" />
+  <text x="570" y="110" text-anchor="middle" fill="#fbbf24" font-family="Sora, sans-serif" font-size="22" font-weight="700">
+    Current
+  </text>
+  <text x="570" y="140" text-anchor="middle" fill="#8b9bb8" font-family="Sora, sans-serif" font-size="14" letter-spacing="0.12em">
+    status
+  </text>
+  <text x="570" y="185" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    ready: 2/3
+  </text>
+  <text x="570" y="212" text-anchor="middle" fill="#fb7185" font-family="Source Sans 3, sans-serif" font-size="16">
+    1× CrashLoop
+  </text>
+  <text x="570" y="239" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    events tell WHAT
+  </text>
+</svg>

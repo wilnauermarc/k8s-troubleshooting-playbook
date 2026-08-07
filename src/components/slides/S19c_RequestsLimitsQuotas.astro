@@ -1,0 +1,28 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s19c-requests-limits-quotas"
+  chapter="Layers"
+  title="Requests, Limits, Quotas & LimitRanges"
+  track="core"
+  notes="Scheduling vs runtime. Requests place the pod; limits kill/throttle it; quotas/LimitRanges reshape or block admission."
+>
+  <div class="stagger flex flex-col gap-6">
+    <Matrix
+      headers={['Knob', 'Affects', 'Typical symptom']}
+      rows={[
+        ['requests', 'Scheduling (fit on nodes)', 'Pending / FailedScheduling'],
+        ['limits', 'Runtime cgroup enforce', 'OOMKilled, CPU throttle'],
+        ['ResourceQuota', 'Namespace totals', 'Forbidden create / stuck scale'],
+        ['LimitRange', 'Defaults & min/max per pod', 'Surprise defaults, admission deny'],
+      ]}
+    />
+    <Callout type="tip">
+      Pending ≠ OOM. Pending is often requests/fit; OOM is limits at runtime. Check both before changing one.
+    </Callout>
+  </div>
+</Slide>

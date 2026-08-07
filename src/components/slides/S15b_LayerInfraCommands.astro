@@ -1,0 +1,39 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s15b-layer-infra-commands"
+  chapter="Layers"
+  title="Infrastructure Layer — Commands"
+  notes="External path first: dig and curl prove what users see. Node health cluster-wide before pod logs. Myth: one working kubectl path hides broken worker networking or load balancers."
+>
+  <div class="stagger flex flex-col gap-6">
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Typical commands</h3>
+      <CodeBlock
+        lang="bash"
+        caption="External + cluster sanity"
+        code={`# External path
+dig +short api.example.com
+curl -vI https://app.example.com
+
+# Cluster-wide node health
+kubectl get nodes -o wide
+kubectl get events -A --field-selector type=Warning | tail -20`}
+      />
+    </section>
+
+    <Callout type="myth">
+      If <code class="text-deck-cyan/90">kubectl</code> works, infrastructure is fine. One working admin path hides broken worker networking, DNS, or load balancers.
+    </Callout>
+
+    <div class="flex flex-wrap items-center gap-2 border-t border-deck-border/60 pt-4">
+      <Pill tone="amber">Decision hint</Pill>
+      <span class="text-lg text-deck-muted">Cluster-wide + external impact → verify region, DNS, and LB before diving into pod logs.</span>
+    </div>
+  </div>
+</Slide>

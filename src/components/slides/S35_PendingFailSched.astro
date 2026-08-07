@@ -1,0 +1,39 @@
+---
+import Slide from '../ui/Slide.astro';
+import SignalGrid from '../ui/SignalGrid.astro';
+import Lifecycle from '../ui/Lifecycle.astro';
+import Callout from '../ui/Callout.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s35-pending-failsched"
+  chapter="Failure Patterns"
+  title="Pending — Nothing Scheduled Yet"
+  notes="Pending means no node accepted the pod — scheduler or admission blocking. FailedScheduling Events list exact reasons. 0/N nodes breakdown — each reason is a filter pass. PVC Pending blocks pod with WaitForFirstConsumer. Don't confuse with ContainerCreating — that's post-schedule. Next slide: reason matrix and commands."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="flex flex-wrap items-center gap-2">
+      <Pill tone="amber">Pending</Pill>
+      <Pill tone="rose">FailedScheduling</Pill>
+      <Pill tone="muted">0/N Ready</Pill>
+    </div>
+
+    <SignalGrid
+      class="lg:grid-cols-2"
+      items={[
+        { label: 'Status', value: 'Scheduled to no node yet (or waiting on PVC)' },
+        { label: 'First signal', value: 'Events: 0/N nodes available: insufficient memory, …' },
+        { label: 'Not scheduled', value: 'No nodeName in pod spec — still in scheduler queue' },
+        { label: 'Related', value: 'PVC Pending blocks pod with volumeClaimTemplates' },
+      ]}
+    />
+
+    <Lifecycle steps={['describe pod Events', 'check requests/limits', 'node labels/taints', 'PVC status', 'fix spec or scale']} active={0} />
+
+    <Callout type="framework" title="Decision">
+      Resource in Events? Compare pod <code class="text-deck-cyan">requests</code> to node <code class="text-deck-cyan">Allocatable</code>.
+      Affinity/taints? Compare pod spec to <code class="text-deck-cyan">describe node</code>.
+    </Callout>
+  </div>
+</Slide>

@@ -1,0 +1,47 @@
+---
+import Slide from '../ui/Slide.astro';
+import Lifecycle from '../ui/Lifecycle.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s04b-lifecycle-steps"
+  chapter="Mindset"
+  title="What Each Step Means"
+  notes="Quick definitions. Emphasize hypothesis in Narrow and evidence in Verify."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Lifecycle class="justify-center" />
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-5">
+        <div class="font-display text-lg font-bold text-deck-cyan">Observe</div>
+        <p class="mt-2 text-base text-deck-muted">Events, metrics, symptoms — don’t change yet.</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-5">
+        <div class="font-display text-lg font-bold text-deck-cyan">Locate</div>
+        <p class="mt-2 text-base text-deck-muted">Which layer failed: infra → app?</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-5">
+        <div class="font-display text-lg font-bold text-deck-cyan">Narrow</div>
+        <p class="mt-2 text-base text-deck-muted">Hypothesis — eliminate options.</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-5">
+        <div class="font-display text-lg font-bold text-deck-cyan">Verify</div>
+        <p class="mt-2 text-base text-deck-muted">Prove root cause with evidence.</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-5">
+        <div class="font-display text-lg font-bold text-deck-amber">Fix</div>
+        <p class="mt-2 text-base text-deck-muted">Smallest change for the root cause.</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-5">
+        <div class="font-display text-lg font-bold text-deck-amber">Validate</div>
+        <p class="mt-2 text-base text-deck-muted">Users, SLOs, downstream deps OK?</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-5 sm:col-span-2">
+        <div class="font-display text-lg font-bold text-deck-amber">Prevent</div>
+        <p class="mt-2 text-base text-deck-muted">Alerts, runbooks, tests — so this class can’t recur silently.</p>
+      </div>
+    </div>
+    <Callout type="rule">Never skip Observe on a failure you’ve never seen before.</Callout>
+  </div>
+</Slide>

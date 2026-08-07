@@ -1,0 +1,31 @@
+---
+import Slide from '../ui/Slide.astro';
+import Checkpoint from '../ui/Checkpoint.astro';
+---
+
+<Slide
+  id="s55d-checkpoint-basics"
+  chapter="Reference"
+  title="Checkpoint — Core Basics"
+  track="practice"
+  notes="Quick self-test before closing. If any fail, revisit Core models and evidence order."
+>
+  <div class="stagger grid gap-5 md:grid-cols-2">
+    <Checkpoint
+      prompt="Ready=False but STATUS=Running — traffic?"
+      answer="No — removed from Endpoints/EndpointSlices. Pod can still be 'alive'."
+    />
+    <Checkpoint
+      prompt="requests vs limits — which causes Pending?"
+      answer="Usually requests (scheduling fit). Limits cause runtime OOM/throttle."
+    />
+    <Checkpoint
+      prompt="Evidence order — what comes before exec?"
+      answer="describe → events → logs/--previous → YAML/spec."
+    />
+    <Checkpoint
+      prompt="DNS fail — name the four fast-path checks."
+      answer="resolv.conf → nslookup debug pod → CoreDNS pods/endpoints → CoreDNS logs."
+    />
+  </div>
+</Slide>

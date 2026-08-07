@@ -1,0 +1,42 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Callout from '../ui/Callout.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s36b-multiattach-csi"
+  chapter="Failure Patterns"
+  title="MultiAttach, CSI & Volume Triage"
+  notes="MultiAttach for RWO: second pod on another node tries same ReadWriteOnce PVC — classic with Deployments using RWO instead of RWX or StatefulSet. RWO = one node at a time. FailedAttachVolume: cloud or CSI controller — check VolumeAttachment, CSINode, CSIDriver, driver pods in kube-system. Stuck Terminating pod may hold attachment. Fix MultiAttach: scale to 1, use StatefulSet, or RWX storage class."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="flex flex-wrap items-center gap-2">
+      <Pill tone="amber">MultiAttach</Pill>
+      <Pill tone="violet">CSI driver</Pill>
+    </div>
+
+    <Matrix
+      headers={['Event', 'Typical cause', 'Fix']}
+      rows={[
+        ['MultiAttach error for Volume', 'RWO + pods on multiple nodes', 'StatefulSet or RWX class'],
+        ['CSI driver not found', 'Driver not on node', 'Check CSINode + daemonset'],
+        ['FailedAttachVolume', 'AZ mismatch, stale attachment', 'VolumeAttachment + cloud console'],
+      ]}
+    />
+
+    <CodeBlock
+      caption="Volume attach/mount triage"
+      code={`kubectl describe pod POD -n NAMESPACE
+kubectl get pvc,pv -n NAMESPACE
+kubectl get volumeattachment | grep VOLUME
+kubectl get csidriver,csinode`}
+    />
+
+    <Callout type="rule">
+      ReadWriteOnce = one node. Deployments with RWO PVC → MultiAttach waiting to happen.
+    </Callout>
+  </div>
+</Slide>

@@ -1,0 +1,75 @@
+---
+/** Readiness vs Liveness vs Startup — visual comparison. */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 760 340"
+  class:list={['mx-auto h-auto w-full max-w-5xl', className]}
+  role="img"
+  aria-label="Probe comparison: readiness, liveness, startup"
+>
+  <!-- Readiness -->
+  <rect x="20" y="40" width="220" height="260" rx="18" fill="#0d1526" stroke="#2dd4bf" stroke-width="3" />
+  <text x="130" y="85" text-anchor="middle" fill="#2dd4bf" font-family="Sora, sans-serif" font-size="22" font-weight="700">
+    Readiness
+  </text>
+  <text x="130" y="115" text-anchor="middle" fill="#8b9bb8" font-family="Sora, sans-serif" font-size="13" letter-spacing="0.1em">
+    CAN TAKE TRAFFIC?
+  </text>
+  <circle cx="130" cy="175" r="36" fill="#2dd4bf" fill-opacity="0.15" stroke="#2dd4bf" stroke-width="2.5" />
+  <text x="130" y="182" text-anchor="middle" fill="#2dd4bf" font-family="Sora, sans-serif" font-size="28" font-weight="700">→</text>
+  <text x="130" y="240" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    Remove from
+  </text>
+  <text x="130" y="264" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    Endpoints
+  </text>
+  <text x="130" y="290" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="14">
+    Pod stays Running
+  </text>
+
+  <!-- Liveness -->
+  <rect x="270" y="40" width="220" height="260" rx="18" fill="#0d1526" stroke="#fb7185" stroke-width="3" />
+  <text x="380" y="85" text-anchor="middle" fill="#fb7185" font-family="Sora, sans-serif" font-size="22" font-weight="700">
+    Liveness
+  </text>
+  <text x="380" y="115" text-anchor="middle" fill="#8b9bb8" font-family="Sora, sans-serif" font-size="13" letter-spacing="0.1em">
+    PROCESS WEDGED?
+  </text>
+  <circle cx="380" cy="175" r="36" fill="#fb7185" fill-opacity="0.15" stroke="#fb7185" stroke-width="2.5" />
+  <text x="380" y="182" text-anchor="middle" fill="#fb7185" font-family="Sora, sans-serif" font-size="28" font-weight="700">↻</text>
+  <text x="380" y="240" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    Kill &amp; restart
+  </text>
+  <text x="380" y="264" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    container
+  </text>
+  <text x="380" y="290" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="14">
+    CrashLoop risk
+  </text>
+
+  <!-- Startup -->
+  <rect x="520" y="40" width="220" height="260" rx="18" fill="#0d1526" stroke="#fbbf24" stroke-width="3" />
+  <text x="630" y="85" text-anchor="middle" fill="#fbbf24" font-family="Sora, sans-serif" font-size="22" font-weight="700">
+    Startup
+  </text>
+  <text x="630" y="115" text-anchor="middle" fill="#8b9bb8" font-family="Sora, sans-serif" font-size="13" letter-spacing="0.1em">
+    STILL BOOTING?
+  </text>
+  <circle cx="630" cy="175" r="36" fill="#fbbf24" fill-opacity="0.15" stroke="#fbbf24" stroke-width="2.5" />
+  <text x="630" y="182" text-anchor="middle" fill="#fbbf24" font-family="Sora, sans-serif" font-size="28" font-weight="700">⏳</text>
+  <text x="630" y="240" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    Blocks other
+  </text>
+  <text x="630" y="264" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
+    probes until OK
+  </text>
+  <text x="630" y="290" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="14">
+    Slow JVM / ML apps
+  </text>
+</svg>

@@ -1,0 +1,32 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s54b-interview-more"
+  chapter="Interview Prep"
+  title="Interview Bank — Questions 25–32"
+  notes="Q25-28: security and multi-tenancy. Q29-32: design and prevention mindset. Q25: RBAC 403 — RoleBinding, namespace, impersonation. Q26: Quota caps namespace; LimitRange per-pod defaults. Q27: delete pod treats symptom — Deployment recreates same spec. Q28: HPA needs metrics-server; VPA needs admission. Q29: readiness checks dependency; liveness stays local. Q30: post-incident — timeline, root cause, prevention ticket. Q31: GitOps drift — kubectl diff / Argo OutOfSync. Q32: observe before changing — one change, then validate. Total 32 questions across four slides."
+>
+  <div class="stagger flex flex-col gap-6">
+    <Matrix
+      headers={['#', 'Question', 'Ideal Answer (1 line)']}
+      rows={[
+        ['25', 'RBAC 403 on kubectl?', 'Check RoleBinding subject, namespace scope, and impersonation headers'],
+        ['26', 'ResourceQuota vs LimitRange?', 'Quota caps namespace totals; LimitRange sets per-pod defaults & min/max'],
+        ['27', 'Why avoid kubectl delete pod for fix?', 'Treats symptom — Deployment recreates same broken spec'],
+        ['28', 'Horizontal vs Vertical scaling debug?', 'HPA needs metrics-server; VPA needs admission controller & eviction'],
+        ['29', 'Design probe for external dependency?', 'Readiness checks dependency; liveness stays lightweight & local'],
+        ['30', 'Post-incident — top 3 actions?', 'Timeline, root cause, detection gap, prevention ticket with owner'],
+        ['31', 'GitOps drift detection?', 'kubectl diff / Argo CD OutOfSync — compare live vs desired state'],
+        ['32', 'Golden rule under incident pressure?', 'Observe before changing — hypothesis, then one change, then validate'],
+      ]}
+    />
+
+    <Callout type="tip">
+      32 questions total. In interviews: narrate your investigation lifecycle out loud.
+    </Callout>
+  </div>
+</Slide>

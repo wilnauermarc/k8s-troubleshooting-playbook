@@ -1,0 +1,23 @@
+---
+import Slide from '../ui/Slide.astro';
+import PyramidDraw from '../ui/PyramidDraw.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s11-pyramid"
+  chapter="Rules & Models"
+  title="The Troubleshooting Pyramid"
+  notes="Bottom-up elimination: rule out infra before blaming the app. Top gives user impact context. Rule of thumb: many pods → cluster; one pod → workload/app."
+>
+  <div class="stagger flex flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-10">
+    <div class="flex-1">
+      <PyramidDraw />
+    </div>
+    <div class="flex w-full flex-col gap-4 lg:w-72">
+      <Callout type="tip">Eliminate lower layers before blaming the app.</Callout>
+      <Callout type="signal">Start from user impact, then drill down.</Callout>
+      <Callout type="rule">50% pods fail → cluster. 1 pod fails → workload/app.</Callout>
+    </div>
+  </div>
+</Slide>

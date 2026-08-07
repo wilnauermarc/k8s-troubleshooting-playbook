@@ -1,0 +1,25 @@
+---
+interface Props {
+  levels: { title: string; detail: string }[];
+  class?: string;
+}
+
+const { levels, class: className = '' } = Astro.props;
+---
+
+<div class:list={['mx-auto flex w-full max-w-3xl flex-col-reverse gap-3', className]}>
+  {
+    levels.map((level, i) => {
+      const opacity = 0.45 + (i / Math.max(levels.length - 1, 1)) * 0.55;
+      return (
+        <div
+          class="rounded-xl border border-deck-amber/30 px-6 py-4"
+          style={`background: rgba(251, 191, 36, ${0.04 + i * 0.03}); opacity: ${opacity}`}
+        >
+          <div class="font-display text-lg font-bold text-deck-amber md:text-xl">{level.title}</div>
+          <div class="mt-1 text-base text-deck-muted">{level.detail}</div>
+        </div>
+      );
+    })
+  }
+</div>

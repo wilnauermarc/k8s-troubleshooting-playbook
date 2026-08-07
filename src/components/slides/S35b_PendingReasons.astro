@@ -1,0 +1,34 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+---
+
+<Slide
+  id="s35b-pending-reasons"
+  chapter="Failure Patterns"
+  title="FailedScheduling — Reasons & Commands"
+  notes="Matrix: insufficient cpu/memory, node affinity mismatch, taints without toleration, volume topology, max pods. get events --field-selector involvedObject.name=POD. describe nodes Allocatable vs requests. Preemption events for lower priority pods. Fix: reduce requests, add toleration, fix selector, scale cluster."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Matrix
+      headers={['Event reason', 'Meaning', 'Action']}
+      rows={[
+        ['Insufficient cpu/memory', 'Requests exceed allocatable', 'Reduce requests or add nodes'],
+        ['didn\'t match node affinity', 'nodeSelector/affinity too strict', 'Fix labels or relax affinity'],
+        ['didn\'t tolerate taint', 'Node tainted, no toleration', 'Add toleration or untaint'],
+        ['volume node affinity conflict', 'AZ/topology mismatch', 'Check PV node affinity'],
+        ['max pod limit', 'Node at maxPods', 'Spread workloads or raise limit'],
+      ]}
+    />
+
+    <CodeBlock
+      caption="Scheduler forensics"
+      code={`kubectl describe pod POD -n NAMESPACE
+kubectl get events -n NAMESPACE \\
+  --field-selector involvedObject.name=POD --sort-by='.lastTimestamp'
+kubectl describe nodes | grep -A5 'Allocatable\\|Allocated'
+kubectl get pvc -n NAMESPACE`}
+    />
+  </div>
+</Slide>

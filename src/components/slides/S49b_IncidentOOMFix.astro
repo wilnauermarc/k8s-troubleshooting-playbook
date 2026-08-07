@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s49b-incident-oom-fix"
+  chapter="Production Incidents"
+  title="OOMKilled — Fix & Prevent"
+  notes="Root cause: Memory leak in HTTP client connection pool — RSS climbs until cgroup limit, kernel sends SIGKILL (137). Fix: patch connection pool leak; temporary limit bump. Prevent: memory SLO alert + OOMKilled event monitor."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Callout type="tip" title="Root cause">
+      Memory leak in HTTP client connection pool — RSS climbs until cgroup limit, kernel sends SIGKILL (137).
+    </Callout>
+
+    <CodeBlock
+      caption="137 = OOMKilled"
+      code={`kubectl describe pod cache-9xk2p | grep -E "Reason|Exit|Limits"
+kubectl top pod cache-9xk2p --containers
+kubectl logs cache-9xk2p --previous | tail -20`}
+    />
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="rounded-xl border border-deck-cyan/40 bg-deck-cyan/5 p-6">
+        <div class="font-display text-xl font-bold text-deck-cyan">Fix</div>
+        <p class="mt-2 text-lg text-deck-text/90">Patch connection pool leak; temporary limit bump to buy time.</p>
+      </div>
+      <div class="rounded-xl border border-deck-amber/40 bg-deck-amber/5 p-6">
+        <div class="font-display text-xl font-bold text-deck-amber">Prevent</div>
+        <p class="mt-2 text-lg text-deck-text/90">Memory SLO alert at 80% limit; track OOMKilled events.</p>
+      </div>
+    </div>
+  </div>
+</Slide>

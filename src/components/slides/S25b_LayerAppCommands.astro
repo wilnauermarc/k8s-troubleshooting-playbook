@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s25b-layer-app-commands"
+  chapter="Layers"
+  title="Application & Business Logic — Commands"
+  notes="Separate platform from app: exec curl localhost, logs, port-forward and inspect response body with jq. Myth: platform fine because pod Running — process started ≠ business logic works."
+>
+  <div class="stagger flex flex-col gap-6">
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Typical commands</h3>
+      <CodeBlock
+        lang="bash"
+        caption="Separate platform from app"
+        code={`kubectl exec -it deploy/<app> -n <ns> -- curl -s localhost:8080/health
+kubectl logs deploy/<app> -n <ns> --since=10m
+kubectl port-forward svc/<app> 8080:80 -n <ns>
+curl -s localhost:8080/api/orders | jq .   # inspect body, not just status`}
+      />
+    </section>
+
+    <Callout type="myth">
+      The platform is fine because the pod is Running. Running only means the process started — not that business logic or integrations work.
+    </Callout>
+
+    <div class="flex flex-wrap items-center gap-2 border-t border-deck-border/60 pt-4">
+      <Pill tone="amber">Decision hint</Pill>
+      <span class="text-lg text-deck-muted">In-cluster curl + response body — if that fails, it is not "just Ingress."</span>
+    </div>
+  </div>
+</Slide>

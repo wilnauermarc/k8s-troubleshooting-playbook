@@ -1,0 +1,42 @@
+---
+import Slide from '../ui/Slide.astro';
+import ArchRow from '../ui/ArchRow.astro';
+import SignalGrid from '../ui/SignalGrid.astro';
+import Callout from '../ui/Callout.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s36-failed-mount"
+  chapter="Failure Patterns"
+  title="FailedMount — Kubelet Can't Mount Volume"
+  notes="FailedMount: kubelet mount step failed — wrong fsType, missing secret for encrypted volume, path permissions, bind path issues. Long ContainerCreating often means mount retry loop. Teach attach vs mount: attach is control plane / CSI controller; mount is kubelet on the node. describe pod Events cite the exact error. Next slide covers MultiAttach and CSI failures."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="flex flex-wrap items-center gap-2">
+      <Pill tone="rose">FailedMount</Pill>
+      <Pill tone="muted">ContainerCreating</Pill>
+    </div>
+
+    <ArchRow
+      boxes={[
+        { title: 'PVC bound', subtitle: 'control plane', tone: 'blue' },
+        { title: 'Attach', subtitle: 'CSI / cloud', tone: 'cyan' },
+        { title: 'Mount', subtitle: 'kubelet', tone: 'rose' },
+        { title: 'Pod running', subtitle: 'success', tone: 'muted' },
+      ]}
+    />
+
+    <SignalGrid
+      items={[
+        { label: 'FailedMount', value: 'Kubelet mount step failed — permissions, fstype, bind path' },
+        { label: 'First signal', value: 'describe Events: Unable to mount volumes' },
+        { label: 'Common causes', value: 'fsGroup / NFS rootSquash · wrong fsType · missing encryption secret' },
+      ]}
+    />
+
+    <Callout type="rule">
+      Read the Event message — it names the volume and the mount error. Fix spec, not the pod restart loop.
+    </Callout>
+  </div>
+</Slide>

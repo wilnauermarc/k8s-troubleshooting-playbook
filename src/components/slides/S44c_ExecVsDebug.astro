@@ -1,0 +1,27 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s44c-exec-vs-debug"
+  chapter="Advanced Debugging"
+  title="exec vs kubectl debug"
+  track="core"
+  notes="exec = quick read-only-ish check in existing container. debug = ephemeral toolbox without baking tools into the app image. Neither is step 1."
+>
+  <div class="stagger flex flex-col gap-6">
+    <Matrix
+      headers={['Tool', 'Use when', 'Avoid when']}
+      rows={[
+        ['kubectl exec', 'Quick file/env/port check in running container', 'CrashLoop (no running process), hardened images, need tcpdump'],
+        ['kubectl debug (ephemeral)', 'Need netshoot tools / share namespaces', 'Before describe/events; unrestricted prod without audit'],
+        ['debug node / hostNetwork', 'Node-level CNI / kubelet networking', 'First reflex — high blast radius'],
+      ]}
+    />
+    <Callout type="danger">
+      Invasive debugging is not triage. describe → events → logs first; then exec/debug with a hypothesis.
+    </Callout>
+  </div>
+</Slide>

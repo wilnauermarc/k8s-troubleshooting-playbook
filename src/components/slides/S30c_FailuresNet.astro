@@ -1,0 +1,24 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+---
+
+<Slide
+  id="s30c-failures-net"
+  chapter="Failure Patterns"
+  title="Catalog — Probes & Network"
+  notes="Network rows often look like app bugs. First command isolates the layer."
+>
+  <div class="stagger">
+    <Matrix
+      headers={['Pattern', 'First Signal', 'First Command']}
+      rows={[
+        ['Probe failures', 'Unhealthy / 0/N Ready', 'describe → probe lines'],
+        ['DNS failure', 'NXDOMAIN / timeout *.svc', 'nslookup from debug pod'],
+        ['No Service endpoints', 'endpoints empty', 'get endpoints -o wide'],
+        ['Ingress / Gateway / TLS', '502/503 or cert expired', 'describe ingress + cert check'],
+        ['NetworkPolicy block', 'timeout (works without NP)', 'get networkpolicy'],
+      ]}
+    />
+  </div>
+</Slide>

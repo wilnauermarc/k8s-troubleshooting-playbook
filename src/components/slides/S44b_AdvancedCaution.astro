@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import Callout from '../ui/Callout.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s44b-advanced-caution"
+  chapter="Advanced Debugging"
+  title="When NOT to Use Invasive Tools"
+  notes="Senior engineers only — invasive tools in prod need change control, blast-radius limits, exit plan. tcpdump on production ingress can itself cause an outage. strace high overhead. Chaos engineering validates fixes — staging first. No hypothesis yet, peak traffic, no rollback plan — stop. Exhaust read-only signals first: events, metrics, traces."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="flex flex-wrap gap-2">
+      <Pill tone="amber">strace / tcpdump</Pill>
+      <Pill tone="rose">Chaos Validation</Pill>
+    </div>
+
+    <Matrix
+      headers={['Technique', 'Proves', 'Prod-safe?']}
+      rows={[
+        ['kubectl debug (ephemeral)', 'Network, DNS, TLS from pod netns', 'Yes — with RBAC + audit'],
+        ['strace -p PID', 'Syscall blocking (I/O, locks)', 'Rarely — high overhead'],
+        ['tcpdump -i any port 443', 'Packet reachability, RST, TLS', 'Careful — CPU & capture size'],
+        ['Chaos Mesh / Litmus', 'Fix survives kill, partition', 'Staging first, then controlled prod'],
+      ]}
+    />
+
+    <Callout type="danger">
+      When NOT to use invasive tools: no hypothesis yet, peak traffic window, no rollback plan,
+      or when read-only signals (events, metrics, traces) haven't been exhausted.
+      strace and tcpdump on hot paths can become the incident.
+    </Callout>
+  </div>
+</Slide>

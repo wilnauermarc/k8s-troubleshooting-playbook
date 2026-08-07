@@ -1,0 +1,39 @@
+---
+/**
+ * Vertical decision / process flow — readable on a projector.
+ */
+interface Node {
+  label: string;
+  kind?: 'start' | 'decision' | 'action' | 'ok' | 'bad';
+  hint?: string;
+}
+
+interface Props {
+  nodes: Node[];
+  class?: string;
+}
+
+const { nodes, class: className = '' } = Astro.props;
+
+const kindClass: Record<string, string> = {
+  start: 'flow-node-start',
+  decision: 'flow-node-decision',
+  action: 'flow-node-action',
+  ok: 'flow-node-ok',
+  bad: 'flow-node-bad',
+};
+---
+
+<div class:list={['mx-auto flex w-full max-w-3xl flex-col items-stretch', className]}>
+  {
+    nodes.map((node, i) => (
+      <>
+        <div class:list={['flow-node', kindClass[node.kind ?? 'action']]}>
+          {node.label}
+          {node.hint && <div class="mt-1 font-sans text-sm font-normal text-deck-muted">{node.hint}</div>}
+        </div>
+        {i < nodes.length - 1 && <div class="flow-arrow" aria-hidden="true">↓</div>}
+      </>
+    ))
+  }
+</div>

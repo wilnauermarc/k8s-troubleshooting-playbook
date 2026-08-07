@@ -1,0 +1,48 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+---
+
+<Slide
+  id="s23-layer-storage"
+  chapter="Layers"
+  title="Storage"
+  notes="PVC Bound only means a PV is claimed — mount happens at pod start. FailedMount, MultiAttachError, and permission errors show in pod events. CSI driver logs matter for dynamic provisioning. Commands on next slide."
+>
+  <div class="stagger flex flex-col gap-6">
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Purpose</h3>
+      <p class="text-lg leading-relaxed text-deck-text/90 md:text-xl">
+        Persistent data via PV/PVC and CSI drivers — attach, mount, filesystem permissions, and access modes (RWO, RWX).
+      </p>
+    </section>
+
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-rose">Typical failures</h3>
+      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
+        <li>• PVC stuck Pending</li>
+        <li>• FailedMount at pod start</li>
+        <li>• MultiAttachError on RWO volume</li>
+        <li>• fsGroup or permission mismatch</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
+      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
+        <li>• ContainerCreating forever</li>
+        <li>• App starts but cannot write to volume</li>
+        <li>• Pod events name attach or mount failure</li>
+      </ul>
+    </section>
+
+    <Matrix
+      headers={['Failure', 'Symptom']}
+      rows={[
+        ['PVC Pending', 'No matching PV / StorageClass / quota'],
+        ['FailedMount', 'ContainerCreating forever, mount path wrong'],
+        ['MultiAttachError', 'RWO volume on second node (StatefulSet?)'],
+      ]}
+    />
+  </div>
+</Slide>

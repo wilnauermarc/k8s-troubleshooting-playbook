@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import BranchTree from '../ui/BranchTree.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s13c-first-triage"
+  chapter="Rules & Models"
+  title="First Triage: Pod, Service, DNS, or App?"
+  track="core"
+  notes="The first troubleshooting task is classification. Wrong class = wasted hour in the wrong logs."
+>
+  <div class="stagger flex flex-col gap-8">
+    <BranchTree
+      title="Users report failure — classify"
+      branches={[
+        {
+          question: 'Pod not Running / not Ready?',
+          yes: 'Pod / container / probe path',
+          yesHint: 'describe pod first',
+          no: 'Traffic or name resolution?',
+        },
+        {
+          question: 'DNS lookup fails?',
+          yes: 'DNS path (CoreDNS / resolv.conf)',
+          no: 'Service / EndpointSlice / Ingress path',
+          noHint: 'Or app returns errors with healthy routing',
+        },
+      ]}
+    />
+    <Callout type="tip">
+      Also ask: scheduling? storage? Many pods vs one pod? Blast radius picks the pyramid level.
+    </Callout>
+  </div>
+</Slide>

@@ -1,0 +1,33 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+---
+
+<Slide
+  id="s33b-config-errors-debug"
+  chapter="Failure Patterns"
+  title="Config Errors — Matrix & Commands"
+  notes="Matrix walk: secret not found, configmap not found, key missing, subPath missing, permission denied. Trace pod yaml envFrom/volumes against get secret/configmap. subPath file must exist in configmap. Compare with known-good pod."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Matrix
+      headers={['Error snippet', 'Root cause', 'Check']}
+      rows={[
+        ['secret "foo" not found', 'Secret deleted or wrong ns', 'get secret -n NS'],
+        ['configmap "bar" not found', 'CM missing or typo', 'get cm + pod yaml envFrom'],
+        ['couldn\'t find key X in Secret', 'Key renamed', 'get secret -o yaml'],
+        ['failed to prepare subPath', 'subPath missing in volume', 'get cm -o yaml keys'],
+        ['permission denied on mount', 'fsGroup / securityContext', 'compare SA + pod security'],
+      ]}
+    />
+
+    <CodeBlock
+      caption="Trace config references"
+      code={`kubectl describe pod POD -n NAMESPACE
+kubectl get pod POD -o yaml | grep -A20 'envFrom\\|volumes\\|volumeMounts'
+kubectl get secret,configmap -n NAMESPACE
+kubectl get secret SEC -o jsonpath='{.data}' | jq 'keys'`}
+    />
+  </div>
+</Slide>

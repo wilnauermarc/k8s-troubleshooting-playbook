@@ -1,0 +1,25 @@
+---
+import Slide from '../ui/Slide.astro';
+import Goals from '../ui/Goals.astro';
+---
+
+<Slide
+  id="s26-decision-trees-intro"
+  chapter="Decision Trees"
+  title="Decision Trees"
+  variant="chapter"
+  track="core"
+  notes="Muscle memory for the first question. Drill Pending, CrashLoop, 503 until the branch is automatic."
+>
+  <div class="stagger flex max-w-3xl flex-col items-center gap-8 text-center">
+    <h2 class="font-display text-4xl font-bold text-deck-text md:text-5xl">Decision Trees</h2>
+    <Goals
+      class="w-full text-left"
+      goals={[
+        'Ask the right first question for Pending',
+        'Branch CrashLoop by OOM vs exit code vs probes',
+        'Trace HTTP 503 outside-in to Endpoints / Ready',
+      ]}
+    />
+  </div>
+</Slide>

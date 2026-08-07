@@ -1,0 +1,21 @@
+---
+interface Props {
+  items: { label: string; value: string }[];
+  class?: string;
+}
+
+const { items, class: className = '' } = Astro.props;
+---
+
+<div class:list={['grid gap-4 sm:grid-cols-2 lg:grid-cols-4', className]}>
+  {
+    items.map((item) => (
+      <div class="rounded-xl border border-deck-border bg-deck-panel/80 p-5">
+        <div class="mb-2 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">
+          {item.label}
+        </div>
+        <div class="text-base leading-snug text-deck-text/90 md:text-lg">{item.value}</div>
+      </div>
+    ))
+  }
+</div>

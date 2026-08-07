@@ -1,0 +1,32 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s43b-observability-stack"
+  chapter="Observability"
+  title="Stack — Which Tool Answers Which Question?"
+  notes="CNCF stack: Prometheus scrapes metrics, Grafana correlates dashboards, Loki indexes logs, Tempo stores traces, OpenTelemetry instruments apps. Match question type to signal — matrix walkthrough. Pod restarting: events then Loki. Latency spike: Grafana then Tempo. Cross-service: traceID to correlated logs."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="flex flex-wrap gap-2">
+      <Pill tone="cyan">Prometheus</Pill>
+      <Pill tone="blue">Grafana</Pill>
+      <Pill tone="amber">Loki</Pill>
+      <Pill tone="violet">Tempo</Pill>
+      <Pill tone="muted">OpenTelemetry</Pill>
+    </div>
+
+    <Matrix
+      headers={['Question', 'First signal', 'Tool / query']}
+      rows={[
+        ['Pod keeps restarting', 'Events → Logs', 'describe pod · Loki {namespace="prod"}'],
+        ['Latency spike at 14:32', 'Metrics → Traces', 'Grafana · Tempo service.name=checkout'],
+        ['503 but pods Running', 'Events → Metrics', 'Endpoints count · error rate'],
+        ['Memory climbing over days', 'Metrics → Profiling', 'working_set · pprof / Pyroscope'],
+      ]}
+    />
+  </div>
+</Slide>

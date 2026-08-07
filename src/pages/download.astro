@@ -1,0 +1,100 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+const mdPath = path.join(process.cwd(), 'public/kubernetes-troubleshooting-playbook.md');
+const markdown = fs.existsSync(mdPath)
+  ? fs.readFileSync(mdPath, 'utf8')
+  : '# Playbook missing\n\nRun `npm run export:md` first.\n';
+
+const bytes = Buffer.from(markdown, 'utf8');
+const base64 = bytes.toString('base64');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Download — Kubernetes Troubleshooting Playbook</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #070b14;
+        color: #e8eef9;
+        font-family: system-ui, sans-serif;
+      }
+      .card {
+        max-width: 28rem;
+        padding: 2rem;
+        border: 1px solid #1a2744;
+        border-radius: 1rem;
+        background: #0d1526;
+        text-align: center;
+      }
+      h1 {
+        font-size: 1.25rem;
+        margin: 0 0 0.75rem;
+      }
+      p {
+        color: #8b9bb8;
+        margin: 0 0 1.5rem;
+        line-height: 1.5;
+      }
+      button,
+      a.btn {
+        display: inline-block;
+        border: 1px solid rgba(45, 212, 191, 0.45);
+        background: rgba(45, 212, 191, 0.12);
+        color: #2dd4bf;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.75rem;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      a.back {
+        display: inline-block;
+        margin-top: 1rem;
+        color: #8b9bb8;
+        font-size: 0.875rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Kubernetes Troubleshooting Playbook</h1>
+      <p>Markdown export ({(bytes.length / 1024).toFixed(0)} KB) — click to save the file.</p>
+      <button type="button" id="dl">Download .md</button>
+      <div>
+        <a class="back" href="/">← Back to presentation</a>
+      </div>
+    </div>
+
+    <script is:inline define:vars={{ base64 }}>
+      const filename = 'kubernetes-troubleshooting-playbook.md';
+      function download() {
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const blob = new Blob([bytes], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+      document.getElementById('dl')?.addEventListener('click', download);
+      // Auto-start download when opened via MD button
+      if (new URLSearchParams(location.search).has('auto')) {
+        download();
+      }
+    </script>
+  </body>
+</html>

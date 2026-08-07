@@ -1,0 +1,28 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s21c-pod-status-basics"
+  chapter="Layers"
+  title="Pod Status: Phase ≠ Conditions ≠ Containers"
+  track="core"
+  notes="STATUS column is a hint. Phase is coarse. Conditions and container statuses carry the diagnosis."
+>
+  <div class="stagger flex flex-col gap-6">
+    <Matrix
+      headers={['Field', 'What it tells you', 'Limitation']}
+      rows={[
+        ['Phase (Pending/Running/…)', 'Coarse lifecycle bucket', 'Running can still be broken'],
+        ['Conditions (Ready, …)', 'Boolean gates for traffic / schedule', 'Need Message/Reason for why'],
+        ['Container statuses', 'Restarts, exit code, OOM, waiting', 'Per-container — check each'],
+        ['Reason / Message', 'Human-readable failure text', 'Can be truncated — still gold'],
+      ]}
+    />
+    <Callout type="rule">
+      Trust <strong>Conditions + container status + Events</strong> over the STATUS column alone.
+    </Callout>
+  </div>
+</Slide>

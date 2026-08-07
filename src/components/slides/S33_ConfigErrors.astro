@@ -1,0 +1,38 @@
+---
+import Slide from '../ui/Slide.astro';
+import SignalGrid from '../ui/SignalGrid.astro';
+import Callout from '../ui/Callout.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s33-config-errors"
+  chapter="Failure Patterns"
+  title="CreateContainerConfigError vs CreateContainerError"
+  notes="Kubelet cannot create container — config invalid or dependencies missing. ConfigError: secret/configmap/volume ref doesn't exist. CreateError: runtime rejected spec — mount, securityContext, bad command. Event message names the missing object — verify in that namespace. Myth: ConfigError is not bad image — pull succeeded. Next slide: error matrix and commands."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="flex flex-wrap items-center gap-2">
+      <Pill tone="rose">CreateContainerConfigError</Pill>
+      <Pill tone="amber">CreateContainerError</Pill>
+      <Pill tone="muted">ContainerCreating</Pill>
+    </div>
+
+    <SignalGrid
+      items={[
+        { label: 'ConfigError', value: 'Missing Secret/ConfigMap, invalid key, bad envFrom ref' },
+        { label: 'CreateError', value: 'Runtime rejected spec — mount, securityContext, bad command' },
+        { label: 'First signal', value: 'describe Events: Error: secret "X" not found' },
+        { label: 'Layer', value: 'Workload spec — not runtime app logic' },
+      ]}
+    />
+
+    <Callout type="rule">
+      The Event names the missing object — verify it exists in <em>that namespace</em>.
+    </Callout>
+
+    <Callout type="myth" title="Myth">
+      "CreateContainerConfigError means the image is bad." — Pull succeeded; config reference failed.
+    </Callout>
+  </div>
+</Slide>

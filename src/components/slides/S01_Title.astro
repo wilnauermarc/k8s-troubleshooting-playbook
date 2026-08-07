@@ -1,0 +1,40 @@
+---
+import Slide from '../ui/Slide.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s01-title"
+  chapter="Opening"
+  title="The Kubernetes Troubleshooting Playbook"
+  variant="title"
+  track="core"
+  notes="Study framing: this is a self-study playbook. Work linearly the first time; later jump via overview (O) or Markdown export. Goal is judgment under pressure, not memorizing kubectl alphabetically."
+>
+  <div class="stagger flex max-w-4xl flex-col items-center gap-8">
+    <div class="flex h-16 w-16 items-center justify-center rounded-2xl border border-deck-cyan/40 bg-deck-cyan/10 font-display text-3xl font-bold text-deck-cyan shadow-glow">
+      ⎈
+    </div>
+
+    <div>
+      <h1 class="font-display text-4xl font-extrabold leading-tight tracking-tight text-deck-text md:text-6xl">
+        The Kubernetes<br />Troubleshooting Playbook
+      </h1>
+      <p class="mt-4 font-display text-xl font-medium text-deck-cyan md:text-2xl">
+        Think Like a Platform Engineer
+      </p>
+    </div>
+
+    <p class="max-w-2xl text-lg leading-relaxed text-deck-muted md:text-xl">
+      A systematic study guide for finding root cause — layers, signals, and decision trees you can reuse under pressure.
+    </p>
+
+    <div class="flex flex-wrap items-center justify-center gap-2">
+      <Pill tone="cyan">Self-study</Pill>
+      <Pill tone="blue">Platform / SRE</Pill>
+      <Pill tone="amber">DevOps</Pill>
+      <Pill tone="violet">Developers on K8s</Pill>
+      <Pill tone="muted">Reference later</Pill>
+    </div>
+  </div>
+</Slide>

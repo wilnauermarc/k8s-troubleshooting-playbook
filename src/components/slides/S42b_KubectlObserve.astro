@@ -1,0 +1,21 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+---
+
+<Slide
+  id="s42b-kubectl-observe"
+  chapter="kubectl by Intention"
+  title="Observe & Locate"
+  notes="get = snapshot. describe = Events + why. Never stop at get during an incident."
+>
+  <Matrix
+    headers={['Intent', 'Command', 'When NOT']}
+    rows={[
+      ['What exists?', 'kubectl get pods,svc,deploy -n NS', 'Need Events or history'],
+      ['Why this state?', 'kubectl describe pod|node|pvc', 'Live logs or metrics'],
+      ['CPU / RAM use?', 'kubectl top pod|node', 'No metrics-server'],
+      ['Manifest drift?', 'kubectl diff -f manifest.yaml', 'Hotfixes not in Git'],
+    ]}
+  />
+</Slide>

@@ -1,0 +1,31 @@
+---
+import Slide from '../ui/Slide.astro';
+---
+
+<Slide
+  id="s03-philosophy"
+  chapter="Mindset"
+  title="Core Mantras"
+  notes="Read each aloud with a real example. Status fields lie by omission."
+>
+  <div class="stagger grid gap-6 md:grid-cols-3">
+    <div class="rounded-2xl border-2 border-deck-rose/40 bg-deck-rose/5 p-8">
+      <div class="mb-3 font-display text-3xl font-bold text-deck-rose">Running ≠ Healthy</div>
+      <p class="text-lg leading-relaxed text-deck-text/90">
+        Process can run while the app is broken or serving errors.
+      </p>
+    </div>
+    <div class="rounded-2xl border-2 border-deck-amber/40 bg-deck-amber/5 p-8">
+      <div class="mb-3 font-display text-3xl font-bold text-deck-amber">Ready ≠ Alive</div>
+      <p class="text-lg leading-relaxed text-deck-text/90">
+        Readiness gates traffic; liveness only restarts.
+      </p>
+    </div>
+    <div class="rounded-2xl border-2 border-deck-blue/40 bg-deck-blue/5 p-8">
+      <div class="mb-3 font-display text-3xl font-bold text-deck-blue">Scheduled ≠ Working</div>
+      <p class="text-lg leading-relaxed text-deck-text/90">
+        On a node ≠ mounts, network, and probes succeeded.
+      </p>
+    </div>
+  </div>
+</Slide>

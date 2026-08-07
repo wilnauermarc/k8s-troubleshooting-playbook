@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import SignalGrid from '../ui/SignalGrid.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s43-observability"
+  chapter="Observability"
+  title="Signals — WHAT, WHY, WHEN, WHERE"
+  notes="Kubernetes tells you WHAT happened; other signals tell you WHY, WHEN, WHERE, and HOW MUCH. Walk SignalGrid: events are free and fast, logs are narrative, metrics are trends, traces are paths. Profiling: which code path under load. Don't reach for traces when events already explain the scheduling failure. Next slide: stack mapping (Prom/Grafana/Loki/Tempo/OTel)."
+>
+  <div class="stagger flex flex-col gap-8">
+    <SignalGrid
+      items={[
+        { label: 'Events — WHAT', value: 'What changed? Who acted? (scheduler, kubelet, probe)' },
+        { label: 'Logs — WHY', value: 'Why did it fail? Stack traces, config, app narrative' },
+        { label: 'Metrics — WHEN', value: 'When did it start? How bad? Rate, saturation, SLO burn' },
+        { label: 'Traces — WHERE', value: 'Where is latency? Which hop dropped the request?' },
+      ]}
+    />
+
+    <div class="rounded-xl border border-deck-border bg-deck-panel/60 p-6">
+      <div class="mb-2 font-display text-lg font-semibold uppercase tracking-wider text-deck-amber">
+        Profiling — HOW MUCH in code
+      </div>
+      <p class="text-lg text-deck-text/90">
+        CPU / heap flame graphs — <span class="text-deck-muted">Which code path consumes resources under load?</span>
+      </p>
+    </div>
+
+    <Callout type="rule">
+      Events before logs. Metrics confirm timing. Traces locate the hop. Never skip the free signals.
+    </Callout>
+  </div>
+</Slide>

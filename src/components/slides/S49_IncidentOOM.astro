@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s49-incident-oom"
+  chapter="Production Incidents"
+  title="Incident: OOMKilled — Memory Leak"
+  notes="Symptom: service degrades over hours then pods restart in a loop. Observe: describe shows Last State Terminated Reason OOMKilled, Exit Code 137. Locate: memory working set metric climbs linearly — classic leak, not spike. Narrow: only one container in the deployment; limits at 512Mi, requests at 256Mi. Verify: kubectl logs --previous shows no error — JVM/process killed mid-GC. Fix: short-term raise limit to buy time; real fix is leak in connection cache (code). Validate: memory plateaus after fix deploy. Prevent: alert on memory approaching limit at 80%, track OOMKilled events, load test in CI."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Callout type="signal" title="Symptom">
+      Slow responses over 6 hours → sudden pod restarts → CrashLoopBackOff. No deploy, no traffic spike.
+    </Callout>
+
+    <div class="grid gap-6 md:grid-cols-3">
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-cyan">Observe</div>
+        <p class="mt-2 text-lg text-deck-muted">Restarts ↑, latency ↑ over hours</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-amber">Locate</div>
+        <p class="mt-2 text-lg text-deck-muted"><strong class="text-deck-text">OOMKilled</strong>, exit 137 in describe</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-rose">Narrow</div>
+        <p class="mt-2 text-lg text-deck-muted">Grafana: memory linear climb to limit</p>
+      </div>
+    </div>
+
+    <Callout type="rule">
+      Exit 137 = OOMKilled — not an app error in logs.
+    </Callout>
+  </div>
+</Slide>

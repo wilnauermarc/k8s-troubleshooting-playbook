@@ -1,0 +1,37 @@
+---
+import Slide from '../ui/Slide.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s39c-endpointslices"
+  chapter="Failure Patterns"
+  title="EndpointSlices — Ready Backends Proof"
+  track="core"
+  notes="Modern clusters use EndpointSlices; Endpoints may still exist as compatibility. Empty slices = no Ready backends. Always check both when traffic dies."
+>
+  <div class="stagger flex flex-col gap-6">
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-5">
+        <div class="font-display text-lg font-bold text-deck-cyan">Endpoints</div>
+        <p class="mt-2 text-lg text-deck-muted">Legacy aggregate view of ready pod IPs.</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-5">
+        <div class="font-display text-lg font-bold text-deck-amber">EndpointSlice</div>
+        <p class="mt-2 text-lg text-deck-muted">Scalable, partitioned ready backends — what kube-proxy often consumes.</p>
+      </div>
+    </div>
+
+    <CodeBlock
+      caption="Service exists but no traffic"
+      code={`kubectl get endpoints SERVICE -n NS -o wide
+kubectl get endpointslices -n NS -l kubernetes.io/service-name=SERVICE -o wide
+# Empty addresses / conditions → selector or readiness problem`}
+    />
+
+    <Callout type="rule">
+      Selector mismatch and Not Ready pods both produce empty EndpointSlices. Fix labels/probes before blaming CNI.
+    </Callout>
+  </div>
+</Slide>

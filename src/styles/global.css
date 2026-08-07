@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --deck-bg: #070b14;
+  --deck-panel: #0d1526;
+  --deck-border: #1a2744;
+  --deck-muted: #8b9bb8;
+  --deck-text: #e8eef9;
+  --deck-cyan: #2dd4bf;
+  --deck-amber: #fbbf24;
+  --deck-rose: #fb7185;
+  --deck-blue: #60a5fa;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--deck-bg);
+  color: var(--deck-text);
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  font-size: 18px;
+  overflow: hidden;
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(45, 212, 191, 0.08), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 90% 10%, rgba(96, 165, 250, 0.06), transparent 45%),
+    radial-gradient(ellipse 50% 30% at 50% 100%, rgba(251, 191, 36, 0.04), transparent 40%);
+}
+
+::selection {
+  background: rgba(45, 212, 191, 0.35);
+  color: white;
+}
+
+.slide {
+  display: none;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.slide.is-active {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger > * {
+  opacity: 0;
+  animation: fadeUp 0.45s ease-out both;
+}
+
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.12s; }
+.stagger > *:nth-child(3) { animation-delay: 0.19s; }
+.stagger > *:nth-child(4) { animation-delay: 0.26s; }
+.stagger > *:nth-child(5) { animation-delay: 0.33s; }
+.stagger > *:nth-child(6) { animation-delay: 0.4s; }
+.stagger > *:nth-child(7) { animation-delay: 0.47s; }
+.stagger > *:nth-child(8) { animation-delay: 0.54s; }
+
+.kbd {
+  @apply inline-flex items-center justify-center rounded border border-deck-border bg-deck-panel px-2 py-0.5 font-mono text-xs text-deck-muted;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #2dd4bf, #60a5fa 60%, #fbbf24);
+  transition: width 0.25s ease;
+}
+
+.speaker-notes {
+  scrollbar-width: thin;
+  scrollbar-color: #1a2744 transparent;
+}
+
+/* CSS flow diagrams — projector-readable */
+.flow-node {
+  @apply rounded-xl border-2 px-5 py-3 text-center font-display text-base font-semibold leading-snug md:text-lg;
+}
+
+.flow-node-start {
+  @apply border-deck-cyan/60 bg-deck-cyan/15 text-deck-cyan;
+}
+
+.flow-node-decision {
+  @apply border-deck-amber/60 bg-deck-amber/10 text-deck-amber;
+}
+
+.flow-node-action {
+  @apply border-deck-blue/50 bg-deck-blue/10 text-deck-blue;
+}
+
+.flow-node-ok {
+  @apply border-deck-cyan/50 bg-deck-panel text-deck-text;
+}
+
+.flow-node-bad {
+  @apply border-deck-rose/50 bg-deck-rose/10 text-deck-rose;
+}
+
+.flow-arrow {
+  @apply flex items-center justify-center py-1 font-display text-xl text-deck-muted;
+}
+
+.flow-label {
+  @apply px-2 text-sm font-medium text-deck-muted;
+}
+
+.arch-box {
+  @apply rounded-2xl border-2 border-deck-border bg-deck-panel/90 px-5 py-4 text-center;
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow: auto;
+    font-size: 16px;
+  }
+}

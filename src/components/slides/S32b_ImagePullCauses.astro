@@ -1,0 +1,33 @@
+---
+import Slide from '../ui/Slide.astro';
+import Matrix from '../ui/Matrix.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+---
+
+<Slide
+  id="s32b-imagepull-causes"
+  chapter="Failure Patterns"
+  title="ImagePull — Event Matrix & Commands"
+  notes="Walk matrix: manifest unknown=wrong tag, pull access denied=secret, authorization failed=expired token/ECR/GCR, rate limit, i/o timeout=network. Verify SA imagePullSecrets, secret type dockerconfigjson. crane manifest locally. ImagePullPolicy IfNotPresent won't re-pull cached bad layer."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Matrix
+      headers={['Event message', 'Likely cause', 'Fix']}
+      rows={[
+        ['manifest unknown', 'Wrong tag or deleted image', 'Verify tag in registry'],
+        ['pull access denied', 'Missing imagePullSecret', 'Check SA secrets + RBAC'],
+        ['authorization failed', 'Expired registry token', 'Refresh creds, IRSA/WI'],
+        ['rate limit exceeded', 'Registry throttle', 'Mirror, cache, authenticate'],
+        ['i/o timeout', 'Network to registry', 'Egress, proxy, DNS'],
+      ]}
+    />
+
+    <CodeBlock
+      caption="Diagnose pull failures"
+      code={`kubectl describe pod POD -n NAMESPACE
+kubectl get sa default -n NAMESPACE -o yaml
+kubectl get secret -n NAMESPACE | grep docker
+crane manifest REGISTRY/ORG/IMAGE:TAG`}
+    />
+  </div>
+</Slide>

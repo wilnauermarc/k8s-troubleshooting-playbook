@@ -1,0 +1,19 @@
+---
+import Slide from '../ui/Slide.astro';
+import ServicePath from '../ui/ServicePath.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s39-net-service"
+  chapter="Failure Patterns"
+  title="Service: Selectors & Endpoints"
+  notes="Walk the path left to right. Endpoints are the Ready gate — Not Ready pods never receive traffic even if Running."
+>
+  <div class="stagger flex flex-col items-center gap-6">
+    <ServicePath />
+    <Callout type="rule" class="max-w-3xl">
+      No endpoints = no traffic path. Fix labels and readiness before touching kube-proxy.
+    </Callout>
+  </div>
+</Slide>

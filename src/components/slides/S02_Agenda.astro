@@ -1,0 +1,41 @@
+---
+import Slide from '../ui/Slide.astro';
+import Lifecycle from '../ui/Lifecycle.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s02-agenda"
+  chapter="Opening"
+  title="How to Use This Deck"
+  track="core"
+  notes="Three tracks: Core = mental models and must-know; Practice = incidents + interview drills; Reference = cheat sheets and command matrices. First pass: Core → Decision Trees → one incident. Then revisit Reference as needed."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="rounded-xl border border-deck-violet/30 bg-deck-violet/5 p-6">
+      <p class="mb-4 font-display text-base font-semibold uppercase tracking-wider text-deck-violet">
+        Recurring framework
+      </p>
+      <Lifecycle />
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-3">
+      <div class="rounded-xl border border-deck-cyan/40 bg-deck-cyan/5 p-5">
+        <Pill tone="cyan">Core</Pill>
+        <p class="mt-3 text-lg text-deck-text/90">Models, layers, decision trees, first triage</p>
+      </div>
+      <div class="rounded-xl border border-deck-amber/40 bg-deck-amber/5 p-5">
+        <Pill tone="amber">Practice</Pill>
+        <p class="mt-3 text-lg text-deck-text/90">Incidents, checkpoints, interview bank</p>
+      </div>
+      <div class="rounded-xl border border-deck-blue/40 bg-deck-blue/5 p-5">
+        <Pill tone="blue">Reference</Pill>
+        <p class="mt-3 text-lg text-deck-text/90">Cheat sheets, command matrices, catalogs</p>
+      </div>
+    </div>
+
+    <p class="text-lg text-deck-muted">
+      Tip: press <span class="kbd">O</span> for overview · <span class="kbd">N</span> for notes · <span class="kbd">MD</span> to export Markdown.
+    </p>
+  </div>
+</Slide>

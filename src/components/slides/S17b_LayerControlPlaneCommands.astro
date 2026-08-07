@@ -1,0 +1,38 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s17b-layer-control-plane-commands"
+  chapter="Layers"
+  title="Control Plane — Commands"
+  notes="Health endpoints on API server. Self-managed: check static pods on control plane nodes. Myth: managed K8s means control plane is never the problem — you can't fix it but mis-attributing wastes hours."
+>
+  <div class="stagger flex flex-col gap-6">
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Typical commands</h3>
+      <CodeBlock
+        lang="bash"
+        caption="Control plane health signals"
+        code={`kubectl get --raw='/readyz?verbose'
+kubectl get --raw='/healthz'
+
+# Self-managed: static pods on control plane nodes
+kubectl get pods -n kube-system \\
+  -l 'component in (kube-apiserver,etcd,kube-scheduler,kube-controller-manager)'`}
+      />
+    </section>
+
+    <Callout type="myth">
+      Managed Kubernetes means the control plane is never the problem. You cannot fix it — but mis-attributing cluster-wide API slowness to "a bad pod" wastes hours.
+    </Callout>
+
+    <div class="flex flex-wrap items-center gap-2 border-t border-deck-border/60 pt-4">
+      <Pill tone="amber">Decision hint</Pill>
+      <span class="text-lg text-deck-muted">API errors + many namespaces affected → look up before describe pod.</span>
+    </div>
+  </div>
+</Slide>

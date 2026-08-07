@@ -1,0 +1,38 @@
+---
+interface Props {
+  steps?: string[];
+  active?: number;
+  class?: string;
+}
+
+const {
+  steps = ['Observe', 'Locate', 'Narrow', 'Verify', 'Fix', 'Validate', 'Prevent'],
+  active = -1,
+  class: className = '',
+} = Astro.props;
+---
+
+<div class:list={['flex flex-wrap items-center gap-2', className]} role="list">
+  {
+    steps.map((step, i) => (
+      <>
+        <div
+          role="listitem"
+          class:list={[
+            'rounded-lg border px-4 py-2 font-display text-sm font-semibold tracking-wide md:text-base',
+            active === i
+              ? 'border-deck-cyan bg-deck-cyan/15 text-deck-cyan shadow-glow'
+              : 'border-deck-border bg-deck-panel text-deck-muted',
+          ]}
+        >
+          {step}
+        </div>
+        {i < steps.length - 1 && (
+          <span class="text-deck-border text-lg" aria-hidden="true">
+            →
+          </span>
+        )}
+      </>
+    ))
+  }
+</div>

@@ -1,0 +1,44 @@
+---
+import Slide from '../ui/Slide.astro';
+import Flow from '../ui/Flow.astro';
+import SignalGrid from '../ui/SignalGrid.astro';
+import Callout from '../ui/Callout.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s41-net-policy"
+  chapter="Failure Patterns"
+  title="NetworkPolicy: Default-Deny Mental Model"
+  notes="NetworkPolicy defaults to allow-all — until someone applies deny. Then only explicitly allowed traffic passes; everything else silently dropped (timeout, not ICMP unreachable). NP is ingress and/or egress: podSelector + namespaceSelector + port. Prerequisite: CNI must enforce NP (Calico, Cilium) — on kind/flannel NPs are no-ops. default-deny namespace pattern: apply deny-all then add granular allows. kube-system needs egress to DNS (UDP/TCP 53). Next slide: debug commands."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="flex flex-wrap items-center gap-2">
+      <Pill tone="rose">NetworkPolicy</Pill>
+      <Pill tone="amber">Silent timeout</Pill>
+      <Pill tone="violet">CNI required</Pill>
+    </div>
+
+    <Flow
+      nodes={[
+        { label: 'No NetworkPolicy in namespace', kind: 'ok', hint: 'allow-all (default)' },
+        { label: 'default-deny applied', kind: 'decision', hint: 'only explicit allows pass' },
+        { label: 'Traffic allowed by rule', kind: 'ok' },
+        { label: 'Everything else', kind: 'bad', hint: 'silent drop — looks like host down' },
+      ]}
+    />
+
+    <SignalGrid
+      class="lg:grid-cols-2"
+      items={[
+        { label: 'Symptom', value: 'Connection timeout — worked yesterday, NP deployed today' },
+        { label: 'Silent drop', value: 'No rejection packet — remote host appears down' },
+        { label: 'Prerequisite', value: 'Verify CNI enforces NP before blaming policy' },
+      ]}
+    />
+
+    <Callout type="danger" title="Anti-pattern">
+      Default-deny without allowing DNS (UDP/TCP 53) to kube-system — cluster-wide outage.
+    </Callout>
+  </div>
+</Slide>

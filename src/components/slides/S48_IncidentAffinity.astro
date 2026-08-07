@@ -1,0 +1,36 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s48-incident-affinity"
+  chapter="Production Incidents"
+  title="Incident: Pending from Affinity &amp; Taints"
+  notes="Symptom: new microservice pods stuck Pending for 20+ minutes. Observe: kubectl get pods shows Pending, no restarts. Locate: describe pod events show FailedScheduling — 0/5 nodes available: 3 Insufficient gpu, 2 node(s) had taint gpu=true. Narrow: pod has required node affinity for gpu=true AND toleration missing for dedicated GPU nodes. Verify: check node labels and taints — GPU nodes exist but are tainted; pod spec lacks toleration. Fix: add toleration for gpu=true:NoSchedule OR relax affinity if GPU not actually needed (copy-paste from ML team template). Validate: pod schedules within seconds. Prevent: CI lint for affinity/toleration pairs, document node pool contracts."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Callout type="signal" title="Symptom">
+      New service pods Pending 20+ min. HPA can't scale. Team blames "cluster capacity" and requests 10 more nodes.
+    </Callout>
+
+    <div class="grid gap-6 md:grid-cols-3">
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-cyan">Observe</div>
+        <p class="mt-2 text-lg text-deck-muted">Pending, no container starts</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-amber">Locate</div>
+        <p class="mt-2 text-lg text-deck-muted">FailedScheduling in events</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-rose">Narrow</div>
+        <p class="mt-2 text-lg text-deck-muted">0/5 nodes: <strong class="text-deck-text">affinity + taint mismatch</strong></p>
+      </div>
+    </div>
+
+    <Callout type="rule">
+      FailedScheduling events name the constraint — don't buy nodes first.
+    </Callout>
+  </div>
+</Slide>

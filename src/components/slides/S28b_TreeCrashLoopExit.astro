@@ -1,0 +1,30 @@
+---
+import Slide from '../ui/Slide.astro';
+import BranchTree from '../ui/BranchTree.astro';
+---
+
+<Slide
+  id="s28b-tree-crashloop-exit"
+  chapter="Decision Trees"
+  title="CrashLoop — Exit Code Path"
+  notes="Exit 0 with restarts often means liveness killing a healthy process. Exit 1 → app/config. Empty logs → --previous."
+>
+  <div class="stagger">
+    <BranchTree
+      title="Not OOM — what is the exit code?"
+      branches={[
+        {
+          question: 'Exit 0 + restarts?',
+          yes: 'Liveness probe killing the container',
+          yesHint: 'Fix probe timing or startup',
+          no: 'Check exit 1 / other',
+        },
+        {
+          question: 'Config / secret / env error in logs?',
+          yes: 'Fix mount, key, or env var',
+          no: 'Test dependency: DNS + TCP from debug pod',
+        },
+      ]}
+    />
+  </div>
+</Slide>

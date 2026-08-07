@@ -1,0 +1,28 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s09-myths"
+  chapter="Rules & Models"
+  title="Common Debugging Myths (1/2)"
+  notes="These myths are deeply ingrained — many teams learn them from Stack Overflow. For each myth, ask for a show of hands who has done it. The restart myth is the most dangerous: it clears evidence and masks intermittent failures. Two more myths on the next slide."
+>
+  <div class="stagger flex flex-col gap-5">
+    <Callout type="myth" title="Myth">
+      "Restart the pod — that usually fixes it."
+      <p class="mt-2 text-base text-deck-muted md:text-lg">Restarts clear crash evidence and treat symptoms, not root cause.</p>
+    </Callout>
+
+    <Callout type="myth" title="Myth">
+      "Start with logs — they'll tell you everything."
+      <p class="mt-2 text-base text-deck-muted md:text-lg">Logs explain why <em>inside</em> a container. Events tell you why K8s acted.</p>
+    </Callout>
+
+    <Callout type="myth" title="Myth">
+      "Status Running means the app is healthy."
+      <p class="mt-2 text-base text-deck-muted md:text-lg">Running only means the main process hasn't exited. Probes and SLOs matter.</p>
+    </Callout>
+  </div>
+</Slide>

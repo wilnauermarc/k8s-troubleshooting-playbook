@@ -1,0 +1,37 @@
+---
+import Slide from '../ui/Slide.astro';
+import SignalGrid from '../ui/SignalGrid.astro';
+import Lifecycle from '../ui/Lifecycle.astro';
+import Callout from '../ui/Callout.astro';
+import Pill from '../ui/Pill.astro';
+---
+
+<Slide
+  id="s31-crashloop"
+  chapter="Failure Patterns"
+  title="CrashLoopBackOff"
+  notes="CrashLoopBackOff is the most common pod status and the most misdiagnosed. BackOff is kubelet throttling restarts — the container IS starting and dying. Root cause is almost never Kubernetes itself. Walk lifecycle: get → describe → logs --previous → fix → rollout status. Exit codes: 137=OOM/SIGKILL, 1=app error, 126/127=cmd missing. Myth: restarting pod rarely fixes CrashLoop. Liveness on slow-start looks identical — see S37."
+>
+  <div class="stagger flex flex-col gap-8">
+    <div class="flex flex-wrap items-center gap-2">
+      <Pill tone="rose">CrashLoopBackOff</Pill>
+      <Pill tone="amber">Error</Pill>
+      <Pill tone="muted">RESTARTS &gt; 0</Pill>
+    </div>
+
+    <SignalGrid
+      items={[
+        { label: 'Status', value: 'Kubelet exponential backoff between restarts' },
+        { label: 'First signal', value: 'RESTARTS climbing; Last State: Terminated in describe' },
+        { label: 'Exit codes', value: '1 = app error · 137 = SIGKILL/OOM · 126/127 = cmd missing' },
+        { label: 'Not the cause', value: 'The BackOff itself — symptom of crash, not the bug' },
+      ]}
+    />
+
+    <Lifecycle steps={['get pods', 'describe', 'logs --previous', 'fix app/config', 'rollout status']} active={2} />
+
+    <Callout type="rule">
+      Always check <code class="text-deck-cyan">--previous</code> first. Current container may have no logs yet.
+    </Callout>
+  </div>
+</Slide>

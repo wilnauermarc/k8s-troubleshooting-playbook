@@ -1,0 +1,39 @@
+---
+import Slide from '../ui/Slide.astro';
+---
+
+<Slide
+  id="s15-layer-infra"
+  chapter="Layers"
+  title="Infrastructure Layer"
+  notes="Start here when symptoms are cluster-wide or external: DNS, LB, AZ outages. kubectl working does not prove infra is healthy — it only proves one path to the API server works. Commands and decision hints on the next slide."
+>
+  <div class="stagger flex flex-col gap-6">
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Purpose</h3>
+      <p class="text-lg leading-relaxed text-deck-text/90 md:text-xl">
+        Physical and cloud foundation — compute, networking, storage, DNS, load balancers, and regional availability.
+      </p>
+    </section>
+
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-rose">Typical failures</h3>
+      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
+        <li>• AZ or region outage</li>
+        <li>• Disk full on worker nodes</li>
+        <li>• Network partition between sites</li>
+        <li>• Load balancer or TLS misconfiguration</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
+      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
+        <li>• All nodes NotReady; external users down</li>
+        <li>• Mass evictions and ImagePull failures</li>
+        <li>• Flaky API access, etcd timeouts</li>
+      </ul>
+    </section>
+
+  </div>
+</Slide>

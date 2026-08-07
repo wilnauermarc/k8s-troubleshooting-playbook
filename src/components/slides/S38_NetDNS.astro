@@ -1,0 +1,43 @@
+---
+import Slide from '../ui/Slide.astro';
+import ArchRow from '../ui/ArchRow.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s38-net-dns"
+  chapter="Failure Patterns"
+  title="DNS Path Through the Cluster"
+  notes="Walk the boxes: app → resolv.conf → kube-dns Service → CoreDNS → upstream for external names."
+>
+  <div class="stagger flex flex-col gap-10">
+    <ArchRow
+      boxes={[
+        { title: 'App', subtitle: 'getaddrinfo', tone: 'rose' },
+        { title: 'resolv.conf', subtitle: 'search + ndots', tone: 'amber' },
+        { title: 'kube-dns :53', subtitle: 'ClusterIP', tone: 'blue' },
+        { title: 'CoreDNS', subtitle: 'pods', tone: 'cyan' },
+        { title: 'Upstream', subtitle: 'external only', tone: 'violet' },
+      ]}
+    />
+
+    <div class="grid gap-5 md:grid-cols-3">
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-rose">NXDOMAIN</div>
+        <p class="mt-2 text-lg text-deck-muted">Name wrong or wrong namespace</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-amber">Timeout</div>
+        <p class="mt-2 text-lg text-deck-muted">NP block or CoreDNS down</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-blue">Slow / flaky</div>
+        <p class="mt-2 text-lg text-deck-muted">CoreDNS overload or ndots</p>
+      </div>
+    </div>
+
+    <Callout type="tip">
+      One <code class="text-deck-cyan">nslookup</code> from a debug pod beats an hour of app logs.
+    </Callout>
+  </div>
+</Slide>

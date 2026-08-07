@@ -1,0 +1,56 @@
+---
+/** Circular controller reconciliation loop. */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 520 520"
+  class:list={['mx-auto h-auto w-full max-w-lg', className]}
+  role="img"
+  aria-label="Controller reconciliation loop"
+>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2dd4bf" />
+    </marker>
+  </defs>
+
+  <circle cx="260" cy="260" r="150" fill="none" stroke="#2dd4bf" stroke-width="3" stroke-opacity="0.4" stroke-dasharray="10 8" />
+
+  <!-- Center -->
+  <circle cx="260" cy="260" r="58" fill="#0d1526" stroke="#60a5fa" stroke-width="2.5" />
+  <text x="260" y="255" text-anchor="middle" fill="#60a5fa" font-family="Sora, sans-serif" font-size="14" font-weight="700">Controller</text>
+  <text x="260" y="275" text-anchor="middle" fill="#8b9bb8" font-family="Sora, sans-serif" font-size="12">loop</text>
+
+  <!-- Nodes around -->
+  <g>
+    <rect x="190" y="40" width="140" height="56" rx="12" fill="#0d1526" stroke="#2dd4bf" stroke-width="2.5" />
+    <text x="260" y="74" text-anchor="middle" fill="#2dd4bf" font-family="Sora, sans-serif" font-size="15" font-weight="700">Watch API</text>
+  </g>
+  <g>
+    <rect x="380" y="160" width="120" height="56" rx="12" fill="#0d1526" stroke="#fbbf24" stroke-width="2.5" />
+    <text x="440" y="186" text-anchor="middle" fill="#fbbf24" font-family="Sora, sans-serif" font-size="14" font-weight="700">Diff</text>
+    <text x="440" y="204" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="12">spec == status?</text>
+  </g>
+  <g>
+    <rect x="360" y="340" width="130" height="56" rx="12" fill="#0d1526" stroke="#60a5fa" stroke-width="2.5" />
+    <text x="425" y="374" text-anchor="middle" fill="#60a5fa" font-family="Sora, sans-serif" font-size="15" font-weight="700">Act</text>
+  </g>
+  <g>
+    <rect x="30" y="340" width="140" height="56" rx="12" fill="#0d1526" stroke="#a78bfa" stroke-width="2.5" />
+    <text x="100" y="366" text-anchor="middle" fill="#a78bfa" font-family="Sora, sans-serif" font-size="14" font-weight="700">Update status</text>
+    <text x="100" y="384" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="12">+ Events</text>
+  </g>
+  <g>
+    <rect x="20" y="160" width="130" height="56" rx="12" fill="#0d1526" stroke="#2dd4bf" stroke-width="2.5" />
+    <text x="85" y="194" text-anchor="middle" fill="#2dd4bf" font-family="Sora, sans-serif" font-size="15" font-weight="700">Observe</text>
+  </g>
+
+  <text x="260" y="500" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="14">
+    Debugging = finding where this loop stalls
+  </text>
+</svg>

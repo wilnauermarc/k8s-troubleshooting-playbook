@@ -1,0 +1,34 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+---
+
+<Slide
+  id="s52-incident-pvc-config"
+  chapter="Production Incidents"
+  title="Incident: PVC MultiAttach"
+  notes="RWO volume still attached to old node while new pod waits."
+>
+  <div class="stagger flex flex-col gap-8">
+    <Callout type="signal" title="Symptom">
+      StatefulSet pod ContainerCreating 10+ min. Event: Multi-Attach — volume exclusively attached elsewhere.
+    </Callout>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-cyan">Narrow</div>
+        <p class="mt-2 text-lg text-deck-muted">RWO PVC; old pod on node-a still holds the volume.</p>
+      </div>
+      <div class="rounded-xl border border-deck-border bg-deck-panel p-6">
+        <div class="font-display text-xl font-bold text-deck-amber">Fix</div>
+        <p class="mt-2 text-lg text-deck-muted">Delete stuck pod; wait for detach; check VolumeAttachment.</p>
+      </div>
+    </div>
+
+    <CodeBlock
+      code={`kubectl describe pod db-0 | grep -A8 Events
+kubectl get volumeattachment | grep pvc-data-db-0`}
+    />
+  </div>
+</Slide>

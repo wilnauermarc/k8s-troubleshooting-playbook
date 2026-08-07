@@ -1,0 +1,19 @@
+---
+import Slide from '../ui/Slide.astro';
+import StateGap from '../ui/StateGap.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s07-desired-state"
+  chapter="Mindset"
+  title="Desired State vs Current State"
+  notes="Point at THE GAP — controllers live there. Spec is what you want; status is what K8s reports; events explain what was tried."
+>
+  <div class="stagger flex flex-col items-center gap-8">
+    <StateGap />
+    <Callout type="framework" class="max-w-3xl">
+      Kubernetes explains <strong>WHAT</strong> — apps explain <strong>WHY</strong>.
+    </Callout>
+  </div>
+</Slide>

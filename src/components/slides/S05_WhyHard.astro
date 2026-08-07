@@ -1,0 +1,62 @@
+---
+import Slide from '../ui/Slide.astro';
+---
+
+<Slide
+  id="s05-why-hard"
+  chapter="Mindset"
+  title="Why Kubernetes Is Hard to Debug"
+  notes="Validate the audience's frustration — K8s debugging is genuinely harder than monolith debugging. Walk through each pain point with a nod to experience: eventual consistency explains 'it worked after 5 minutes,' indirection explains 'the Service looks fine but nothing connects.' This slide earns trust before teaching the framework."
+>
+  <div class="stagger grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div class="rounded-xl border border-deck-border bg-deck-panel/70 p-5">
+      <div class="mb-2 flex items-center gap-2">
+        <span class="font-display text-2xl font-bold text-deck-cyan">01</span>
+        <h3 class="font-display text-lg font-bold text-deck-text">Many Layers</h3>
+      </div>
+      <p class="text-lg leading-relaxed text-deck-muted">
+        Infra, CNI, kubelet, scheduler, controllers, sidecars, app code — failure can hide at any stratum.
+      </p>
+    </div>
+
+    <div class="rounded-xl border border-deck-border bg-deck-panel/70 p-5">
+      <div class="mb-2 flex items-center gap-2">
+        <span class="font-display text-2xl font-bold text-deck-cyan">02</span>
+        <h3 class="font-display text-lg font-bold text-deck-text">Eventual Consistency</h3>
+      </div>
+      <p class="text-lg leading-relaxed text-deck-muted">
+        Desired state propagates asynchronously. Symptoms appear, disappear, and shift during reconciliation.
+      </p>
+    </div>
+
+    <div class="rounded-xl border border-deck-border bg-deck-panel/70 p-5">
+      <div class="mb-2 flex items-center gap-2">
+        <span class="font-display text-2xl font-bold text-deck-cyan">03</span>
+        <h3 class="font-display text-lg font-bold text-deck-text">Indirection</h3>
+      </div>
+      <p class="text-lg leading-relaxed text-deck-muted">
+        Deployments → ReplicaSets → Pods → Containers. Services → Endpoints → Pods. Labels everywhere.
+      </p>
+    </div>
+
+    <div class="rounded-xl border border-deck-border bg-deck-panel/70 p-5">
+      <div class="mb-2 flex items-center gap-2">
+        <span class="font-display text-2xl font-bold text-deck-rose">04</span>
+        <h3 class="font-display text-lg font-bold text-deck-text">Shared Fate</h3>
+      </div>
+      <p class="text-lg leading-relaxed text-deck-muted">
+        Noisy neighbors, node pressure, and control-plane issues affect unrelated workloads on the same cluster.
+      </p>
+    </div>
+
+    <div class="rounded-xl border border-deck-border bg-deck-panel/70 p-5 md:col-span-2">
+      <div class="mb-2 flex items-center gap-2">
+        <span class="font-display text-2xl font-bold text-deck-rose">05</span>
+        <h3 class="font-display text-lg font-bold text-deck-text">Opaque Failures</h3>
+      </div>
+      <p class="text-lg leading-relaxed text-deck-muted">
+        <code class="text-deck-cyan">CrashLoopBackOff</code>, <code class="text-deck-cyan">ImagePullBackOff</code>, and <code class="text-deck-cyan">Pending</code> describe symptoms — not causes. The API surface hides implementation details behind abstractions.
+      </p>
+    </div>
+  </div>
+</Slide>

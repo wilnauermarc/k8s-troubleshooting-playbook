@@ -1,0 +1,25 @@
+---
+interface Props {
+  layers: { name: string; hint: string }[];
+  class?: string;
+}
+
+const { layers, class: className = '' } = Astro.props;
+---
+
+<div class:list={['mx-auto flex w-full max-w-2xl flex-col gap-2', className]}>
+  {
+    layers.map((layer, i) => {
+      const width = 100 - i * 4;
+      return (
+        <div
+          class="mx-auto rounded-xl border border-deck-cyan/30 bg-gradient-to-r from-deck-cyan/10 to-deck-blue/5 px-5 py-3 text-center"
+          style={`width: ${width}%`}
+        >
+          <div class="font-display text-base font-semibold text-deck-text md:text-lg">{layer.name}</div>
+          <div class="text-sm text-deck-muted">{layer.hint}</div>
+        </div>
+      );
+    })
+  }
+</div>

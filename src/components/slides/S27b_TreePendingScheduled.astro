@@ -1,0 +1,31 @@
+---
+import Slide from '../ui/Slide.astro';
+import BranchTree from '../ui/BranchTree.astro';
+---
+
+<Slide
+  id="s27b-tree-pending-scheduled"
+  chapter="Decision Trees"
+  title="Pending but Scheduled"
+  notes="Once scheduled, Pending usually means init containers, volume mounts, or image pull."
+>
+  <div class="stagger">
+    <BranchTree
+      title="PodScheduled = true, still Pending"
+      branches={[
+        {
+          question: 'Init containers finished?',
+          yes: 'Look at main container state',
+          no: 'kubectl logs pod -c INIT',
+          noHint: 'Init often hides the real error',
+        },
+        {
+          question: 'ContainerCreating?',
+          yes: 'Mount / image / pull secrets',
+          yesHint: 'describe Events: FailedMount, ErrImagePull',
+          no: 'Quota, PriorityClass, webhooks',
+        },
+      ]}
+    />
+  </div>
+</Slide>

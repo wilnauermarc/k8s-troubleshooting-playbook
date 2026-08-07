@@ -1,0 +1,36 @@
+---
+interface Props {
+  type?: 'rule' | 'myth' | 'tip' | 'danger' | 'signal' | 'framework';
+  title?: string;
+  class?: string;
+}
+
+const { type = 'tip', title, class: className = '' } = Astro.props;
+
+const styles = {
+  rule: 'border-deck-cyan/40 bg-deck-cyan/5 text-deck-cyan',
+  myth: 'border-deck-rose/40 bg-deck-rose/5 text-deck-rose',
+  tip: 'border-deck-blue/40 bg-deck-blue/5 text-deck-blue',
+  danger: 'border-deck-rose/50 bg-deck-rose/10 text-deck-rose',
+  signal: 'border-deck-amber/40 bg-deck-amber/5 text-deck-amber',
+  framework: 'border-deck-violet/40 bg-deck-violet/5 text-deck-violet',
+}[type];
+
+const labels = {
+  rule: 'Golden Rule',
+  myth: 'Myth',
+  tip: 'Tip',
+  danger: 'Anti-pattern',
+  signal: 'Signal',
+  framework: 'Framework',
+}[type];
+---
+
+<div class:list={['rounded-xl border px-5 py-4', styles, className]}>
+  <div class="mb-1.5 text-xs font-semibold uppercase tracking-[0.16em] opacity-80">
+    {title ?? labels}
+  </div>
+  <div class="text-base leading-relaxed text-deck-text/90 md:text-lg">
+    <slot />
+  </div>
+</div>

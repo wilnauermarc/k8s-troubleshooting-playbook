@@ -1,0 +1,38 @@
+---
+import Slide from '../ui/Slide.astro';
+import SignalGrid from '../ui/SignalGrid.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Lifecycle from '../ui/Lifecycle.astro';
+import Callout from '../ui/Callout.astro';
+---
+
+<Slide
+  id="s37b-probe-failures"
+  chapter="Failure Patterns"
+  title="Probe Failures — Symptoms & Commands"
+  notes="Walk describe: Liveness probe failed, Readiness probe failed, Unhealthy events. HTTP probe wrong port/path is common — exec probe shell missing in distroless. initialDelaySeconds and failureThreshold × periodSeconds = time to kill. Fix pattern: startup probe OR raise initialDelaySeconds. Test probe from inside pod with curl. Endpoints reflect readiness only. Myth: more aggressive liveness = more resilient — flapping restarts amplify outages."
+>
+  <div class="stagger flex flex-col gap-8">
+    <SignalGrid
+      items={[
+        { label: 'Liveness too eager', value: 'Slow start → restart loop → looks like CrashLoop' },
+        { label: 'First signal', value: 'Unhealthy + probe type in describe Events' },
+        { label: 'Fix pattern', value: 'Startup probe OR raise initialDelaySeconds' },
+        { label: 'Timing math', value: 'failureThreshold × periodSeconds = time before action' },
+      ]}
+    />
+
+    <Lifecycle steps={['describe Unhealthy', 'check probe config', 'curl probe locally', 'fix path/timing', 'rollout restart']} active={1} />
+
+    <CodeBlock
+      caption="Probe forensics"
+      code={`kubectl describe pod POD -n NAMESPACE | grep -A5 -E 'Liveness|Readiness|Startup'
+kubectl exec POD -n NAMESPACE -- curl -sf localhost:8080/healthz
+kubectl get endpoints SVC -n NAMESPACE -o wide`}
+    />
+
+    <Callout type="rule" title="Golden Rule">
+      Never swap readiness and liveness jobs — readiness drains traffic; liveness restarts.
+    </Callout>
+  </div>
+</Slide>
