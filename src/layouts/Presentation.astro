@@ -73,16 +73,24 @@ const { title = 'The Kubernetes Troubleshooting Playbook' } = Astro.props;
         <button type="button" data-prev class="rounded-lg border border-deck-border px-3 py-1.5 text-sm text-deck-muted transition hover:border-deck-cyan/40 hover:text-deck-text">
           ← Prev
         </button>
-        <div class="hidden text-center text-[11px] text-deck-muted sm:block">
-          <span class="kbd">←</span>
-          <span class="kbd">→</span>
-          navigate ·
-          <span class="kbd">N</span>
-          notes ·
-          <span class="kbd">O</span>
-          overview ·
-          <span class="kbd">F</span>
-          fullscreen
+        <div class="hidden min-w-0 flex-1 px-2 text-center sm:block">
+          <p class="truncate text-[10px] leading-snug text-deck-muted/80">
+            <a href="https://k8sts.netlify.app/" class="hover:text-deck-cyan">Marc Wilnauer — Kubernetes Troubleshooting Playbook</a>
+            ·
+            <a href="https://creativecommons.org/licenses/by/4.0/" class="hover:text-deck-cyan" rel="license">CC BY 4.0</a>
+            · Not affiliated with CNCF or Kubernetes®
+          </p>
+          <p class="mt-0.5 text-[11px] text-deck-muted">
+            <span class="kbd">←</span>
+            <span class="kbd">→</span>
+            navigate ·
+            <span class="kbd">N</span>
+            notes ·
+            <span class="kbd">O</span>
+            overview ·
+            <span class="kbd">F</span>
+            fullscreen
+          </p>
         </div>
         <button type="button" data-next class="rounded-lg border border-deck-cyan/40 bg-deck-cyan/10 px-3 py-1.5 text-sm text-deck-cyan transition hover:bg-deck-cyan/20">
           Next →

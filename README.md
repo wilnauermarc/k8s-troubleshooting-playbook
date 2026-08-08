@@ -99,3 +99,24 @@ src/
 
 > Don't memorize kubectl commands.  
 > Memorize the engineering thought process.
+
+## License
+
+### Source code
+
+The source code of this project is licensed under the MIT License. See [LICENSE](LICENSE).
+
+### Playbook content
+
+The Kubernetes Troubleshooting Playbook content, including original slides, explanations, diagrams, troubleshooting methodologies, and educational material, is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0). See [LICENSE-CONTENT](LICENSE-CONTENT).
+
+You are free to share and adapt the content, including for commercial purposes, provided appropriate attribution is given.
+
+Attribution:
+
+> Marc Wilnauer — Kubernetes Troubleshooting Playbook  
+> https://k8sts.netlify.app/
+
+### Trademarks
+
+Kubernetes® and the Kubernetes logo are trademarks of The Linux Foundation®. This project is not affiliated with, endorsed by, or sponsored by The Linux Foundation, the Cloud Native Computing Foundation (CNCF), or the Kubernetes project. The helm-wheel glyph used in the UI is a Unicode character for branding convenience and is not an official Kubernetes logo.
