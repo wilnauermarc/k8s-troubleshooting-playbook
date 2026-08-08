@@ -9,13 +9,14 @@ import Callout from '../ui/Callout.astro';
   id="s39b-net-service-commands"
   chapter="Failure Patterns"
   title="Service — Diagnose Fast"
-  notes="The 10-second check: get svc, get endpoints, get pods --show-labels. Selector mismatch: compare svc jsonpath selector to pod labels. From client pod: curl http://svc.ns.svc:port. Works by IP not DNS → DNS issue. ExternalName returns CNAME — curl external directly. EndpointSlice mirroring for external backends — mention briefly."
+  track="core"
+  notes="10-second check: get svc, get endpointslices, get pods --show-labels. Prefer EndpointSlice (Endpoints is legacy). Selector mismatch: compare svc selector to pod labels."
 >
   <div class="stagger flex flex-col gap-8">
     <Matrix
       headers={['Symptom', 'Check', 'Common fix']}
       rows={[
-        ['Endpoints &lt;none&gt;', 'svc selector vs pod labels', 'Align labels'],
+        ['No Ready addresses', 'svc selector vs pod labels', 'Align labels'],
         ['Refused on correct IP', 'targetPort ≠ containerPort', 'Fix Service targetPort'],
         ['Works by IP not DNS', 'Resolution path', 'nslookup svc.ns.svc'],
         ['Stale IPs briefly', 'Terminated pods in slice', 'Wait or check readiness flapping'],
@@ -23,9 +24,10 @@ import Callout from '../ui/Callout.astro';
     />
 
     <CodeBlock
-      caption="Service → Pod path"
+      caption="Service → Pod path (prefer EndpointSlice)"
       code={`kubectl get svc SVC -n NAMESPACE -o wide
-kubectl get endpoints SVC -n NAMESPACE -o wide
+kubectl get endpointslices -n NAMESPACE -l kubernetes.io/service-name=SVC -o wide
+# Endpoints is legacy — still works, prefer slices
 kubectl get pods -n NAMESPACE --show-labels
 
 kubectl exec CLIENT -n NAMESPACE -- \\
@@ -33,7 +35,7 @@ kubectl exec CLIENT -n NAMESPACE -- \\
     />
 
     <Callout type="myth" title="Myth">
-      "Service is broken because kubectl get svc shows CLUSTER-IP." — Svc is virtual; endpoints are real.
+      "Service is broken because kubectl get svc shows CLUSTER-IP." — Svc is virtual; Ready addresses in EndpointSlice are real.
     </Callout>
   </div>
 </Slide>

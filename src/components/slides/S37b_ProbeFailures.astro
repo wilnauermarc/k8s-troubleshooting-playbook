@@ -10,7 +10,8 @@ import Callout from '../ui/Callout.astro';
   id="s37b-probe-failures"
   chapter="Failure Patterns"
   title="Probe Failures — Symptoms & Commands"
-  notes="Walk describe: Liveness probe failed, Readiness probe failed, Unhealthy events. HTTP probe wrong port/path is common — exec probe shell missing in distroless. initialDelaySeconds and failureThreshold × periodSeconds = time to kill. Fix pattern: startup probe OR raise initialDelaySeconds. Test probe from inside pod with curl. Endpoints reflect readiness only. Myth: more aggressive liveness = more resilient — flapping restarts amplify outages."
+  track="core"
+  notes="Approximate failure window ≈ initialDelay + failureThreshold × periodSeconds; timeoutSeconds and kubelet scheduling also affect timing. Prefer EndpointSlice when checking traffic membership."
 >
   <div class="stagger flex flex-col gap-8">
     <SignalGrid
@@ -18,7 +19,7 @@ import Callout from '../ui/Callout.astro';
         { label: 'Liveness too eager', value: 'Slow start → restart loop → looks like CrashLoop' },
         { label: 'First signal', value: 'Unhealthy + probe type in describe Events' },
         { label: 'Fix pattern', value: 'Startup probe OR raise initialDelaySeconds' },
-        { label: 'Timing math', value: 'failureThreshold × periodSeconds = time before action' },
+        { label: 'Timing math', value: '≈ initialDelay + failureThreshold × periodSeconds (+ timeout)' },
       ]}
     />
 
@@ -28,7 +29,7 @@ import Callout from '../ui/Callout.astro';
       caption="Probe forensics"
       code={`kubectl describe pod POD -n NAMESPACE | grep -A5 -E 'Liveness|Readiness|Startup'
 kubectl exec POD -n NAMESPACE -- curl -sf localhost:8080/healthz
-kubectl get endpoints SVC -n NAMESPACE -o wide`}
+kubectl get endpointslices -n NAMESPACE -l kubernetes.io/service-name=SVC -o wide`}
     />
 
     <Callout type="rule" title="Golden Rule">

@@ -9,20 +9,19 @@ import CodeBlock from '../ui/CodeBlock.astro';
   chapter="Production Incidents"
   title="Incident: Running Pods, HTTP 503"
   track="practice"
-  notes="Study format: symptom, wrong assumption, discriminating check, cause. Fix slide next."
+  notes="Study format: symptom, wrong assumption, discriminating check, cause. Prefer EndpointSlice."
 >
   <div class="stagger flex flex-col gap-5">
     <Callout type="signal" title="Symptom">Checkout returns HTTP 503. Dashboards show pods Running.</Callout>
     <Callout type="myth" title="First wrong assumption">“Restart the Deployment — pods look fine.”</Callout>
     <Callout type="tip" title="Fastest discriminating check">
-      <code class="text-deck-cyan">kubectl get endpoints / endpointslices</code> — empty subsets?
+      <code class="text-deck-cyan">kubectl get endpointslices -l kubernetes.io/service-name=checkout</code> — empty / not ready?
     </Callout>
     <Callout type="framework" title="Root cause">
       Readiness always 200 while app cannot reach Postgres → Ready=False → no backends.
     </Callout>
     <CodeBlock
-      code={`kubectl get endpoints checkout -o yaml
-kubectl get endpointslices -l kubernetes.io/service-name=checkout
+      code={`kubectl get endpointslices -l kubernetes.io/service-name=checkout -o wide
 kubectl describe pod -l app=checkout | grep -A5 Conditions`}
     />
   </div>

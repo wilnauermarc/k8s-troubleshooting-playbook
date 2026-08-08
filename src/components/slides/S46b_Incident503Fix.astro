@@ -8,17 +8,17 @@ import Callout from '../ui/Callout.astro';
   chapter="Production Incidents"
   title="503 — Fix, Validate, Prevent"
   track="practice"
-  notes="Complete the study card: fix probe, validate endpoints populate, prevent with endpoints==0 alert."
+  notes="Complete the study card: fix probe, validate EndpointSlice Ready addresses, prevent with ready backends == 0 alert."
 >
   <div class="stagger grid gap-5 md:grid-cols-3">
     <Callout type="rule" title="Fix">
       Readiness hits <code class="text-deck-cyan">/ready</code> with real dependency checks — not a always-200 /healthz.
     </Callout>
     <Callout type="tip" title="Validate">
-      Endpoints / EndpointSlices populate; LB 503 clears; checkout succeeds.
+      EndpointSlice shows Ready addresses; LB 503 clears; checkout succeeds.
     </Callout>
     <Callout type="framework" title="Prevent">
-      Alert on <code class="text-deck-cyan">endpoints == 0</code>, not only on Running replica count.
+      Alert on Ready backends == 0, not only on Running replica count.
     </Callout>
   </div>
 </Slide>

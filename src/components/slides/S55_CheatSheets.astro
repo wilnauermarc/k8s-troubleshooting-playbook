@@ -8,19 +8,20 @@ import Callout from '../ui/Callout.astro';
   id="s55-cheatsheets"
   chapter="Reference"
   title="Cheat Sheet — First 60 Seconds"
-  notes="This is the slide attendees photograph. First 60 seconds: wide get, then narrow describe. These are starting points — the lifecycle drives what you run next. Next slides: status meanings and networking quick path."
+  track="reference"
+  notes="Photograph slide. Wide get → describe → logs --previous → EndpointSlice if traffic issue."
 >
   <div class="stagger flex flex-col gap-8">
     <CodeBlock
       caption="First 60 seconds — any broken workload"
       code={`kubectl get pods,events -n <ns> --sort-by='.lastTimestamp'
-kubectl describe pod <pod> | less          # Events first
-kubectl logs <pod> --previous               # if restarted
-kubectl get endpoints,svc -n <ns>`}
+kubectl describe pod <pod> | less          # Events + Conditions
+kubectl logs <pod> --previous               # if restarted / CrashLoop
+kubectl get endpointslices,svc -n <ns>`}
     />
 
     <Callout type="rule">
-      Wide get → narrow describe → logs --previous if restarted → endpoints if traffic issue.
+      Wide get → narrow describe → logs --previous if restarted → EndpointSlice if traffic issue.
     </Callout>
   </div>
 </Slide>

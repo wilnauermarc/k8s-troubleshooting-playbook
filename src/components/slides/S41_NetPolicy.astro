@@ -1,7 +1,6 @@
 ---
 import Slide from '../ui/Slide.astro';
 import Flow from '../ui/Flow.astro';
-import SignalGrid from '../ui/SignalGrid.astro';
 import Callout from '../ui/Callout.astro';
 import Pill from '../ui/Pill.astro';
 ---
@@ -10,35 +9,31 @@ import Pill from '../ui/Pill.astro';
   id="s41-net-policy"
   chapter="Failure Patterns"
   title="NetworkPolicy: Default-Deny Mental Model"
-  notes="NetworkPolicy defaults to allow-all — until someone applies deny. Then only explicitly allowed traffic passes; everything else silently dropped (timeout, not ICMP unreachable). NP is ingress and/or egress: podSelector + namespaceSelector + port. Prerequisite: CNI must enforce NP (Calico, Cilium) — on kind/flannel NPs are no-ops. default-deny namespace pattern: apply deny-all then add granular allows. kube-system needs egress to DNS (UDP/TCP 53). Next slide: debug commands."
+  track="core"
+  notes="Allow-all until a deny policy applies. Ingress deny ≠ egress deny — check policyTypes. Default-deny egress without DNS allow breaks name resolution for selected workloads — not automatically a whole-cluster outage."
 >
   <div class="stagger flex flex-col gap-8">
     <div class="flex flex-wrap items-center gap-2">
-      <Pill tone="rose">NetworkPolicy</Pill>
-      <Pill tone="amber">Silent timeout</Pill>
-      <Pill tone="violet">CNI required</Pill>
+      <Pill tone="rose">Silent drop</Pill>
+      <Pill tone="amber">policyTypes matter</Pill>
     </div>
 
     <Flow
       nodes={[
-        { label: 'No NetworkPolicy in namespace', kind: 'ok', hint: 'allow-all (default)' },
-        { label: 'default-deny applied', kind: 'decision', hint: 'only explicit allows pass' },
-        { label: 'Traffic allowed by rule', kind: 'ok' },
-        { label: 'Everything else', kind: 'bad', hint: 'silent drop — looks like host down' },
+        { label: 'CNI enforces NetworkPolicy?', kind: 'start', hint: 'Calico/Cilium yes; some CNIs no-op' },
+        { label: 'default-deny ingress and/or egress?', kind: 'decision', hint: 'separate dimensions' },
+        { label: 'Only explicit allow rules pass', kind: 'action' },
+        { label: 'Symptom: timeout (not ICMP unreachable)', kind: 'bad' },
       ]}
     />
 
-    <SignalGrid
-      class="lg:grid-cols-2"
-      items={[
-        { label: 'Symptom', value: 'Connection timeout — worked yesterday, NP deployed today' },
-        { label: 'Silent drop', value: 'No rejection packet — remote host appears down' },
-        { label: 'Prerequisite', value: 'Verify CNI enforces NP before blaming policy' },
-      ]}
-    />
-
-    <Callout type="danger" title="Anti-pattern">
-      Default-deny without allowing DNS (UDP/TCP 53) to kube-system — cluster-wide outage.
-    </Callout>
+    <div class="grid gap-4 md:grid-cols-2">
+      <Callout type="rule" title="Ingress vs egress">
+        Default-deny <em>ingress</em> blocks inbound; default-deny <em>egress</em> blocks outbound. Each needs its own allow rules.
+      </Callout>
+      <Callout type="danger" title="DNS under egress deny">
+        Default-deny egress without UDP/TCP 53 to CoreDNS breaks name resolution for <em>selected</em> workloads — not automatically cluster-wide.
+      </Callout>
+    </div>
   </div>
 </Slide>

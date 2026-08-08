@@ -7,11 +7,12 @@ import Callout from '../ui/Callout.astro';
   id="s10-golden-rules"
   chapter="Rules & Models"
   title="Golden Rules (1/2)"
-  notes="Contrast directly with the myths slide. These four rules are non-negotiable for platform engineers. Events before logs saves time on every incident. Hypothesize before the next command keeps you honest. Eliminate layers and outside-in prevent rabbit holes. Three more rules on the next slide."
+  track="core"
+  notes="Prefer cheapest high-signal evidence first — often Events and Conditions; CrashLoop may make logs --previous the fastest win. Events explain Kubernetes actions; logs explain application failures. Hypothesize before the next command."
 >
   <div class="stagger flex flex-col gap-5">
-    <Callout type="rule" title="Events before Logs">
-      Check <code class="text-deck-cyan">kubectl describe</code> and events first — they're fast and cluster-scoped.
+    <Callout type="rule" title="Cheapest high-signal evidence first">
+      Start with Events, Conditions, and <code class="text-deck-cyan">logs --previous</code> when relevant — Events explain Kubernetes actions; logs explain application failures.
     </Callout>
 
     <Callout type="rule" title="Hypothesize">

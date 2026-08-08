@@ -8,15 +8,16 @@ import Callout from '../ui/Callout.astro';
   id="s49b-incident-oom-fix"
   chapter="Production Incidents"
   title="OOMKilled — Fix & Prevent"
-  notes="Root cause: Memory leak in HTTP client connection pool — RSS climbs until cgroup limit, kernel sends SIGKILL (137). Fix: patch connection pool leak; temporary limit bump. Prevent: memory SLO alert + OOMKilled event monitor."
+  track="practice"
+  notes="Root cause: Memory leak — RSS hits cgroup limit; SIGKILL (137) with Reason OOMKilled. Fix leak; temporary limit bump. Prevent: memory SLO + OOMKilled event monitor."
 >
   <div class="stagger flex flex-col gap-8">
     <Callout type="tip" title="Root cause">
-      Memory leak in HTTP client connection pool — RSS climbs until cgroup limit, kernel sends SIGKILL (137).
+      Memory leak — RSS hits the cgroup limit; kernel SIGKILL (exit 137) with <code class="text-deck-cyan">Reason: OOMKilled</code>.
     </Callout>
 
     <CodeBlock
-      caption="137 = OOMKilled"
+      caption="Confirm via Reason — exit 137 alone is not enough"
       code={`kubectl describe pod cache-9xk2p | grep -E "Reason|Exit|Limits"
 kubectl top pod cache-9xk2p --containers
 kubectl logs cache-9xk2p --previous | tail -20`}
@@ -25,11 +26,11 @@ kubectl logs cache-9xk2p --previous | tail -20`}
     <div class="grid gap-5 md:grid-cols-2">
       <div class="rounded-xl border border-deck-cyan/40 bg-deck-cyan/5 p-6">
         <div class="font-display text-xl font-bold text-deck-cyan">Fix</div>
-        <p class="mt-2 text-lg text-deck-text/90">Patch connection pool leak; temporary limit bump to buy time.</p>
+        <p class="mt-2 text-lg text-deck-text/90">Patch the leak; temporary limit bump only buys time.</p>
       </div>
       <div class="rounded-xl border border-deck-amber/40 bg-deck-amber/5 p-6">
         <div class="font-display text-xl font-bold text-deck-amber">Prevent</div>
-        <p class="mt-2 text-lg text-deck-text/90">Memory SLO alert at 80% limit; track OOMKilled events.</p>
+        <p class="mt-2 text-lg text-deck-text/90">Memory SLO at ~80% of limit; track OOMKilled events.</p>
       </div>
     </div>
   </div>

@@ -9,7 +9,8 @@ import Pill from '../ui/Pill.astro';
   id="s24b-layer-networking-commands"
   chapter="Layers"
   title="Networking — Commands"
-  notes="Path verification: svc/endpoints, netshoot debug pod for nslookup and curl, netpol, ingress/gateway. Myth: Service exists so traffic flows — without ready endpoints it's an empty shell."
+  track="core"
+  notes="Prefer EndpointSlice for Service backends. Without Ready addresses the Service is an empty shell."
 >
   <div class="stagger flex flex-col gap-6">
     <section>
@@ -17,7 +18,7 @@ import Pill from '../ui/Pill.astro';
       <CodeBlock
         lang="bash"
         caption="Path verification"
-        code={`kubectl get svc,endpoints -n <ns>
+        code={`kubectl get svc,endpointslices -n <ns>
 kubectl run dbg --rm -it --image=nicolaka/netshoot -- bash
 # inside: nslookup my-svc.my-ns.svc.cluster.local
 # inside: curl -v http://my-svc:8080/health
@@ -27,12 +28,12 @@ kubectl get ingress,gateway -A`}
     </section>
 
     <Callout type="myth">
-      A Service exists so traffic flows. Without ready endpoints and matching selectors, the Service is an empty shell.
+      A Service exists so traffic flows. Without Ready addresses in EndpointSlice and matching selectors, the Service is an empty shell.
     </Callout>
 
     <div class="flex flex-wrap items-center gap-2 border-t border-deck-border/60 pt-4">
       <Pill tone="amber">Decision hint</Pill>
-      <span class="text-lg text-deck-muted">Walk the onion outside-in: DNS → endpoints → policy → route.</span>
+      <span class="text-lg text-deck-muted">Walk outside-in: DNS → EndpointSlice → policy → route.</span>
     </div>
   </div>
 </Slide>

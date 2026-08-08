@@ -8,17 +8,18 @@ import Callout from '../ui/Callout.astro';
   id="s29-tree-503"
   chapter="Decision Trees"
   title="HTTP 503 — First Branch"
-  notes="503 with Running pods is usually Endpoints empty or no Ready backends — not 'Kubernetes is down'."
+  track="core"
+  notes="503 with Running pods is usually no Ready addresses in EndpointSlice — not 'Kubernetes is down'."
 >
   <div class="stagger space-y-8">
     <BranchTree
       title="Users get HTTP 503"
       branches={[
         {
-          question: 'Service has Endpoints?',
+          question: 'Service has Ready addresses?',
           yes: 'Check Ingress / Gateway / LB next',
           no: 'Selector mismatch or no Ready pods',
-          noHint: 'kubectl get endpoints NAME',
+          noHint: 'kubectl get endpointslices -l kubernetes.io/service-name=NAME',
         },
         {
           question: 'Pods Ready?',
@@ -28,7 +29,7 @@ import Callout from '../ui/Callout.astro';
       ]}
     />
     <Callout type="rule">
-      Running ≠ in Endpoints. Only <strong>Ready</strong> pods receive Service traffic.
+      Running ≠ in EndpointSlice. Only <strong>Ready</strong> pods receive Service traffic.
     </Callout>
   </div>
 </Slide>

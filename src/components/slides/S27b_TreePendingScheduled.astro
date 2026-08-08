@@ -1,31 +1,37 @@
 ---
 import Slide from '../ui/Slide.astro';
 import BranchTree from '../ui/BranchTree.astro';
+import Callout from '../ui/Callout.astro';
 ---
 
 <Slide
   id="s27b-tree-pending-scheduled"
   chapter="Decision Trees"
   title="Pending but Scheduled"
-  notes="Once scheduled, Pending usually means init containers, volume mounts, or image pull."
+  track="core"
+  notes="Once PodScheduled=True, look at init, image pull, mounts, runtime/config. Quota, PriorityClass, and admission webhooks usually fail at create time — not as the explanation for an already-scheduled Pending pod."
 >
-  <div class="stagger">
+  <div class="stagger space-y-6">
     <BranchTree
       title="PodScheduled = true, still Pending"
       branches={[
         {
           question: 'Init containers finished?',
-          yes: 'Look at main container state',
+          yes: 'Inspect main container state',
           no: 'kubectl logs pod -c INIT',
           noHint: 'Init often hides the real error',
         },
         {
           question: 'ContainerCreating?',
-          yes: 'Mount / image / pull secrets',
-          yesHint: 'describe Events: FailedMount, ErrImagePull',
-          no: 'Quota, PriorityClass, webhooks',
+          yes: 'Image pull / mount / runtime config',
+          yesHint: 'Events: FailedMount, ErrImagePull, CreateContainer…',
+          no: 'Re-check Events — unexpected waiting reason',
+          noHint: 'Quota/webhooks usually block create, not post-schedule',
         },
       ]}
     />
+    <Callout type="tip">
+      Admission, ResourceQuota, and LimitRange typically reject at API create — before PodScheduled=True.
+    </Callout>
   </div>
 </Slide>

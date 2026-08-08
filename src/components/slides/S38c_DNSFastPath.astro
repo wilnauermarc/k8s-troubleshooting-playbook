@@ -16,7 +16,7 @@ import CodeBlock from '../ui/CodeBlock.astro';
       nodes={[
         { label: '1. cat /etc/resolv.conf in the Pod', kind: 'start', hint: 'nameserver + search + ndots' },
         { label: '2. nslookup from a debug pod', kind: 'action', hint: 'short name vs FQDN' },
-        { label: '3. CoreDNS pods Running + Endpoints', kind: 'action', hint: 'kube-system' },
+        { label: '3. CoreDNS pods Running + slices', kind: 'action', hint: 'kube-system' },
         { label: '4. CoreDNS logs', kind: 'ok', hint: 'forward / NXDOMAIN / timeout' },
       ]}
     />
@@ -24,7 +24,8 @@ import CodeBlock from '../ui/CodeBlock.astro';
       code={`kubectl exec POD -n NS -- cat /etc/resolv.conf
 kubectl run -it --rm dnsdebug --image=busybox:1.36 --restart=Never -- \\
   nslookup kubernetes.default.svc.cluster.local
-kubectl get pods,endpoints -n kube-system -l k8s-app=kube-dns
+kubectl get pods -n kube-system -l k8s-app=kube-dns
+kubectl get endpointslices -n kube-system -l kubernetes.io/service-name=kube-dns
 kubectl logs -n kube-system -l k8s-app=kube-dns --tail=50`}
     />
   </div>

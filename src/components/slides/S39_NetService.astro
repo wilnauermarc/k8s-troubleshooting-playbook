@@ -7,13 +7,14 @@ import Callout from '../ui/Callout.astro';
 <Slide
   id="s39-net-service"
   chapter="Failure Patterns"
-  title="Service: Selectors & Endpoints"
-  notes="Walk the path left to right. Endpoints are the Ready gate — Not Ready pods never receive traffic even if Running."
+  title="Service: Selectors & EndpointSlices"
+  track="core"
+  notes="Walk left to right. Not Ready pods are excluded from Service traffic via EndpointSlice conditions — even if STATUS=Running."
 >
   <div class="stagger flex flex-col items-center gap-6">
     <ServicePath />
     <Callout type="rule" class="max-w-3xl">
-      No endpoints = no traffic path. Fix labels and readiness before touching kube-proxy.
+      No Ready addresses in EndpointSlice = no traffic path. Fix labels and readiness before blaming CNI.
     </Callout>
   </div>
 </Slide>

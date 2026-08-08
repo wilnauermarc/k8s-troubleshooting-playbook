@@ -8,20 +8,21 @@ import Callout from '../ui/Callout.astro';
   id="s53-interview"
   chapter="Interview Prep"
   title="Interview Bank — Questions 1–8"
-  notes="Rapid-fire practice — systematic thinking, not trivia. Q1: Running vs Ready — probe semantics. Q2: Events first — free, structured, timestamped. Q3: Pending — always describe pod for scheduler message. Q4: OOM 137 — cgroup kill, not app exit code. Q5: Endpoints — bridge between Service and Ready pods. Q6: DNS ndots — classic FQDN vs short name bug. Q7: NetworkPolicy default-deny blocks until explicit allow. Q8: rollout undo — fastest revert, not delete pods. Pause after each — ask audience before revealing. Continues on next slide."
+  track="practice"
+  notes="Q1 Ready vs Running. Q2 cheapest high-signal evidence. Q3 Pending Events. Q4 137=SIGKILL verify OOMKilled Reason. Q5 EndpointSlice. Q6 ndots. Q7 default-deny is directional. Q8 rollout undo."
 >
   <div class="stagger flex flex-col gap-6">
     <Matrix
       headers={['#', 'Question', 'Ideal Answer (1 line)']}
       rows={[
-        ['1', 'Pod Running but not serving traffic — why?', 'Not Ready → excluded from Endpoints; check readiness probe & conditions'],
-        ['2', 'First command for any broken pod?', 'kubectl describe pod — Events section before logs'],
-        ['3', 'Pod Pending forever — where to look?', 'describe pod Events: FailedScheduling message (resources, affinity, taints)'],
-        ['4', 'Exit code 137 meaning?', 'OOMKilled — cgroup memory limit exceeded; check limits & memory metrics'],
-        ['5', 'Service exists but no traffic reaches pods?', 'kubectl get endpoints — empty subsets = no Ready backends'],
-        ['6', 'Intermittent DNS failures in Java apps?', 'Check ndots / search domains — FQDN vs short name resolution'],
-        ['7', 'Default-deny NetworkPolicy — what breaks first?', 'All egress/ingress blocked until explicit allow rules added'],
-        ['8', 'Fastest rollback after bad deploy?', 'kubectl rollout undo deployment/X — don\'t delete pods manually'],
+        ['1', 'Pod Running but not serving traffic — why?', 'Not Ready → not Ready in EndpointSlice; check readiness'],
+        ['2', 'First evidence for a broken pod?', 'describe → Events/Conditions; logs --previous if CrashLoop'],
+        ['3', 'Pod Pending forever — where to look?', 'describe Events: FailedScheduling (resources, affinity, taints)'],
+        ['4', 'Exit code 137 meaning?', 'SIGKILL (128+9); often OOM — verify Last State.Reason OOMKilled'],
+        ['5', 'Service exists but no traffic reaches pods?', 'get endpointslices — empty/not ready = selector or readiness'],
+        ['6', 'Intermittent DNS failures in Java apps?', 'Check ndots / search domains — FQDN vs short name'],
+        ['7', 'Default-deny NetworkPolicy — what breaks?', 'Ingress deny ≠ egress deny; blocked direction needs allows'],
+        ['8', 'Fastest rollback after bad deploy?', 'kubectl rollout undo deployment/X — don’t delete pods manually'],
       ]}
     />
 

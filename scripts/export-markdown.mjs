@@ -154,7 +154,7 @@ lines.push('1. **Investigation lifecycle:** Observe → Locate → Narrow → Ve
 lines.push('2. **Troubleshooting pyramid:** Infrastructure → Cluster → Workload → Application → Business');
 lines.push('3. **Kubernetes onion:** peel layers outside-in');
 lines.push('4. **Signal triangle:** Events = WHAT · Logs = WHY · Metrics = WHEN · Traces = WHERE');
-lines.push('5. **Mantras:** Running ≠ Healthy · Ready ≠ Alive · Scheduled ≠ Working · Events before Logs');
+lines.push('5. **Mantras:** Running ≠ Healthy · Ready ≠ Alive · Scheduled ≠ Working · Events explain WHAT · Logs explain WHY');
 lines.push('');
 lines.push('---');
 lines.push('');

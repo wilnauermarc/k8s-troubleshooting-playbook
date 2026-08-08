@@ -7,15 +7,16 @@ import Matrix from '../ui/Matrix.astro';
   id="s55b-cheat-status"
   chapter="Reference"
   title="Cheat Sheet — Status Meanings"
-  notes="Status meanings: Pending=scheduling, CrashLoop=restart loop, OOMKilled=137, Evicted=node pressure. Probe cheat: liveness=restart, readiness=traffic, startup=boot grace. Walk each row quickly — attendees use this as lookup during incidents."
+  track="reference"
+  notes="OOM: Reason OOMKilled is proof; 137 is SIGKILL. Readiness: not Ready in EndpointSlice. Liveness restarts."
 >
   <div class="stagger flex flex-col gap-8">
     <Matrix
       headers={['Status / Reason', 'Meaning', 'Next step']}
       rows={[
-        ['Pending', 'Not scheduled yet', 'describe pod → FailedScheduling'],
+        ['Pending', 'Not scheduled yet / waiting', 'describe → FailedScheduling or Events'],
         ['CrashLoopBackOff', 'Container exit loop', 'describe + logs --previous'],
-        ['OOMKilled (137)', 'Memory limit hit', 'top pod · check limits'],
+        ['OOMKilled', 'Memory limit hit (often exit 137)', 'confirm Reason · top pod · limits'],
         ['Evicted', 'Node resource pressure', 'describe node · pressure conditions'],
         ['CreateContainerConfigError', 'Missing secret/config', 'describe → secret/configmap ref'],
         ['ImagePullBackOff', 'Registry/auth/tag issue', 'describe → pull events'],
@@ -26,7 +27,7 @@ import Matrix from '../ui/Matrix.astro';
       headers={['Probe', 'Fails when', 'Effect']}
       rows={[
         ['Startup', 'App still booting', 'Blocks liveness until pass'],
-        ['Readiness', 'Can\'t serve traffic', 'Removed from Endpoints — no kill'],
+        ['Readiness', 'Can\'t serve traffic', 'Not Ready in EndpointSlice — no kill'],
         ['Liveness', 'Process deadlocked', 'Container restart — use carefully'],
       ]}
     />

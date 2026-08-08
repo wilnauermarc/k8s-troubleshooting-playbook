@@ -10,35 +10,36 @@ import Pill from '../ui/Pill.astro';
   id="s34-oom-killed"
   chapter="Failure Patterns"
   title="OOMKilled — Container Memory Limit"
-  notes="OOMKilled is per-container, not node-level. Container exceeded its memory limit — cgroup OOM killer, exit 137. Teach: describe pod Last State: OOMKilled, compare Limits vs Requests. CPU throttling is NOT OOM — pod stays Running, latency increases. Fix paths: raise limits carefully, fix leak, add requests/limits. No limits? BestEffort pods evicted first under node pressure — but that's Evicted, not OOMKilled. Next slide covers Evicted and node pressure."
+  track="core"
+  notes="OOMKilled is per-container. Proof is Last State.Reason: OOMKilled — Exit 137 alone only means SIGKILL. Compare Limits vs Requests. CPU throttle ≠ OOM. Evicted is node pressure, not container OOM."
 >
   <div class="stagger flex flex-col gap-8">
     <div class="flex flex-wrap items-center gap-2">
-      <Pill tone="rose">OOMKilled</Pill>
-      <Pill tone="muted">Exit 137</Pill>
+      <Pill tone="rose">Reason: OOMKilled</Pill>
+      <Pill tone="muted">Exit 137 = SIGKILL</Pill>
     </div>
 
     <SignalGrid
       items={[
         { label: 'What happened', value: 'Container hit memory limit — cgroup killed the process' },
-        { label: 'First signal', value: 'describe pod → Last State: OOMKilled, Reason: OOMKilled' },
-        { label: 'Not OOM', value: 'CPU throttle — pod stays Running, check throttled_seconds' },
+        { label: 'Proof', value: 'Last State.Reason: OOMKilled (not exit 137 alone)' },
+        { label: 'Not OOM', value: 'CPU throttle — pod stays Running; or SIGKILL from elsewhere' },
         { label: 'Fix path', value: 'Raise limit · fix leak · right-size requests/limits' },
       ]}
     />
 
     <Flow
       nodes={[
-        { label: 'Pod shows OOMKilled or exit 137', kind: 'start' },
-        { label: 'Limits set too low for workload?', kind: 'decision', hint: 'compare Limits vs actual usage' },
-        { label: 'Raise limits or fix memory leak', kind: 'action' },
-        { label: 'No limits on pod?', kind: 'decision', hint: 'BestEffort — different failure mode' },
-        { label: 'Check node Evicted / MemoryPressure', kind: 'bad', hint: 'see next slide' },
+        { label: 'Exit 137 or Terminated', kind: 'start', hint: 'check Last State.Reason' },
+        { label: 'Reason = OOMKilled?', kind: 'decision', hint: 'only then treat as memory limit' },
+        { label: 'Limits too low or leak?', kind: 'decision', hint: 'compare Limits vs usage' },
+        { label: 'Raise limits or fix leak', kind: 'action' },
+        { label: 'No OOMKilled Reason?', kind: 'bad', hint: 'other SIGKILL / node Evicted path' },
       ]}
     />
 
     <Callout type="rule">
-      OOMKilled = <em>your</em> container limit. Different from Evicted (node housekeeping).
+      Exit 137 often indicates OOM — verify <code class="text-deck-cyan">Reason: OOMKilled</code>. Different from Evicted (node housekeeping).
     </Callout>
   </div>
 </Slide>

@@ -9,20 +9,20 @@ import Callout from '../ui/Callout.astro';
   chapter="Rules & Models"
   title="Read Evidence in Order"
   track="core"
-  notes="Memorize this order. Exec/debug last — they destroy evidence and waste time when describe already answers."
+  notes="Default order — skip only with a reason. CrashLoop often makes logs --previous the fastest win after describe. Exec/debug last."
 >
   <div class="stagger flex flex-col gap-8">
     <Flow
       nodes={[
-        { label: '1. kubectl describe', kind: 'start', hint: 'Events + conditions + reasons' },
-        { label: '2. Events', kind: 'action', hint: 'WHAT the control plane tried' },
+        { label: '1. kubectl describe', kind: 'start', hint: 'Events + Conditions + Reasons' },
+        { label: '2. Events / Conditions', kind: 'action', hint: 'WHAT Kubernetes tried' },
         { label: '3. logs / logs --previous', kind: 'action', hint: 'WHY the process failed' },
         { label: '4. Object YAML / spec', kind: 'action', hint: 'Desired state mismatches' },
-        { label: '5. exec / debug (only if needed)', kind: 'bad', hint: 'Last resort — invasive' },
+        { label: '5. exec / debug (only if needed)', kind: 'bad', hint: 'Invasive — last resort' },
       ]}
     />
     <Callout type="rule">
-      Wide get → narrow describe → logs → YAML → then debug. Skip steps only when you already know the layer.
+      Default path: describe → Events/Conditions → logs → YAML → then debug. Reorder when the symptom already points at logs (CrashLoop).
     </Callout>
   </div>
 </Slide>

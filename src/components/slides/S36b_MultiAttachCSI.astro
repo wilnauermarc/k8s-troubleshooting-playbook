@@ -10,18 +10,20 @@ import Pill from '../ui/Pill.astro';
   id="s36b-multiattach-csi"
   chapter="Failure Patterns"
   title="MultiAttach, CSI & Volume Triage"
-  notes="MultiAttach for RWO: second pod on another node tries same ReadWriteOnce PVC — classic with Deployments using RWO instead of RWX or StatefulSet. RWO = one node at a time. FailedAttachVolume: cloud or CSI controller — check VolumeAttachment, CSINode, CSIDriver, driver pods in kube-system. Stuck Terminating pod may hold attachment. Fix MultiAttach: scale to 1, use StatefulSet, or RWX storage class."
+  track="core"
+  notes="RWO = read-write from a single node (multiple pods on that node may share it). MultiAttach happens when the volume is still attached to node A while a pod on node B needs it — common after reschedule, stuck Terminating, or multi-replica Deployments spanning nodes. Prefer ReadWriteOncePod when only one pod may attach."
 >
   <div class="stagger flex flex-col gap-8">
     <div class="flex flex-wrap items-center gap-2">
       <Pill tone="amber">MultiAttach</Pill>
       <Pill tone="violet">CSI driver</Pill>
+      <Pill tone="cyan">RWO ≠ one pod</Pill>
     </div>
 
     <Matrix
       headers={['Event', 'Typical cause', 'Fix']}
       rows={[
-        ['MultiAttach error for Volume', 'RWO + pods on multiple nodes', 'StatefulSet or RWX class'],
+        ['MultiAttach error for Volume', 'RWO still attached on another node', 'Wait detach · fix stuck pod · StatefulSet/RWX/RWOPod'],
         ['CSI driver not found', 'Driver not on node', 'Check CSINode + daemonset'],
         ['FailedAttachVolume', 'AZ mismatch, stale attachment', 'VolumeAttachment + cloud console'],
       ]}
@@ -36,7 +38,7 @@ kubectl get csidriver,csinode`}
     />
 
     <Callout type="rule">
-      ReadWriteOnce = one node. Deployments with RWO PVC → MultiAttach waiting to happen.
+      RWO = one <em>node</em>, not necessarily one pod. MultiAttach: volume still on the old node while a new node needs it.
     </Callout>
   </div>
 </Slide>

@@ -15,7 +15,7 @@ import CodeBlock from '../ui/CodeBlock.astro';
       headers={['Result', 'Likely cause', 'Next step']}
       rows={[
         ['NXDOMAIN for *.svc', 'Wrong name / namespace', 'get svc + test FQDN'],
-        ['Timeout on :53', 'NetworkPolicy / CoreDNS down', 'get endpoints kube-dns'],
+        ['Timeout on :53', 'NetworkPolicy / CoreDNS down', 'get endpointslices (kube-dns)'],
         ['External names fail', 'forward / upstream broken', 'CoreDNS logs'],
         ['Works only with FQDN', 'ndots / search path', 'cat /etc/resolv.conf'],
       ]}
@@ -26,7 +26,8 @@ import CodeBlock from '../ui/CodeBlock.astro';
       code={`kubectl run -it --rm dnsdebug --image=busybox:1.36 --restart=Never -- \\
   nslookup my-svc.my-ns.svc.cluster.local
 
-kubectl get svc,endpoints -n kube-system -l k8s-app=kube-dns
+kubectl get svc -n kube-system -l k8s-app=kube-dns
+kubectl get endpointslices -n kube-system -l kubernetes.io/service-name=kube-dns
 kubectl logs -n kube-system -l k8s-app=kube-dns --tail=50`}
     />
   </div>

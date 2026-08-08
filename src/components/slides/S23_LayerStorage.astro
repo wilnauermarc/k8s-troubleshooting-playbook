@@ -22,7 +22,7 @@ import Matrix from '../ui/Matrix.astro';
       <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
         <li>• PVC stuck Pending</li>
         <li>• FailedMount at pod start</li>
-        <li>• MultiAttachError on RWO volume</li>
+        <li>• MultiAttachError (RWO still on another node)</li>
         <li>• fsGroup or permission mismatch</li>
       </ul>
     </section>
@@ -41,7 +41,7 @@ import Matrix from '../ui/Matrix.astro';
       rows={[
         ['PVC Pending', 'No matching PV / StorageClass / quota'],
         ['FailedMount', 'ContainerCreating forever, mount path wrong'],
-        ['MultiAttachError', 'RWO volume on second node (StatefulSet?)'],
+        ['MultiAttachError', 'RWO still attached on another node after reschedule'],
       ]}
     />
   </div>

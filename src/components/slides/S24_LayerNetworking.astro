@@ -6,7 +6,8 @@ import Slide from '../ui/Slide.astro';
   id="s24-layer-networking"
   chapter="Layers"
   title="Networking"
-  notes="Trace the path: DNS name → Service → Endpoints → kube-proxy/CNI → Pod IP → NetworkPolicy. Connection refused vs timeout vs NXDOMAIN each point to different layers. Ingress/Gateway adds another hop. Commands on next slide."
+  track="core"
+  notes="Trace the path: DNS name → Service → EndpointSlice → kube-proxy/CNI → Pod IP → NetworkPolicy. Connection refused vs timeout vs NXDOMAIN each point to different layers."
 >
   <div class="stagger flex flex-col gap-6">
     <section>
@@ -19,7 +20,7 @@ import Slide from '../ui/Slide.astro';
     <section>
       <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-rose">Typical failures</h3>
       <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
-        <li>• No endpoints — selector mismatch or pods not Ready</li>
+        <li>• No Ready addresses — selector mismatch or pods not Ready</li>
         <li>• NXDOMAIN — wrong Service name or namespace</li>
         <li>• Timeout — NetworkPolicy drop or routing black hole</li>
         <li>• 502 at ingress — backend port or name mismatch</li>
@@ -30,7 +31,7 @@ import Slide from '../ui/Slide.astro';
       <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
       <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
         <li>• Connection refused vs timeout vs NXDOMAIN</li>
-        <li>• Empty Endpoints subsets on a Service</li>
+        <li>• Empty / not-ready EndpointSlice for a Service</li>
         <li>• Works in-cluster but fails via Ingress</li>
       </ul>
     </section>

@@ -17,7 +17,7 @@ import Callout from '../ui/Callout.astro';
       rows={[
         ['Pending', 'Scheduling / PVC / image / init', 'describe → FailedScheduling Events'],
         ['Running + Ready=False', 'Probes / startup / app health', 'describe Conditions + probe lines'],
-        ['Service up, no traffic', 'Selectors / Ready / EndpointSlice', 'get endpoints / endpointslices'],
+        ['Service up, no traffic', 'Selectors / Ready / EndpointSlice', 'get endpointslices'],
         ['NXDOMAIN / lookup fail', 'DNS / CoreDNS / NetPol :53', 'nslookup from debug pod'],
         ['OOMKilled', 'Limits / leak / burst', 'describe Last State + top / metrics'],
         ['CrashLoopBackOff', 'Container / config / probe', 'logs --previous + exit code'],

@@ -17,7 +17,7 @@ import Callout from '../ui/Callout.astro';
       rows={[
         ['App → DB', 'egress + port 5432', 'Forgot namespaceSelector on DB ns'],
         ['Ingress → App', 'ingress podSelector', 'Health check from kube-system blocked'],
-        ['App → DNS', 'egress UDP/TCP 53', 'Default-deny egress breaks DNS'],
+        ['App → DNS', 'egress UDP/TCP 53', 'Egress deny without DNS allow breaks resolution'],
         ['App → external API', 'egress :443', 'Egress allow missing under deny-all'],
       ]}
     />
