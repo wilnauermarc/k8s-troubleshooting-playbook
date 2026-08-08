@@ -11,7 +11,7 @@ import Pill from '../ui/Pill.astro';
   chapter="Failure Patterns"
   title="MultiAttach, CSI & Volume Triage"
   track="core"
-  notes="RWO = read-write from a single node (multiple pods on that node may share it). MultiAttach happens when the volume is still attached to node A while a pod on node B needs it — common after reschedule, stuck Terminating, or multi-replica Deployments spanning nodes. Prefer ReadWriteOncePod when only one pod may attach."
+  notes="ReadWriteOnce = read-write from a single node; multiple pods on that node may share it. MultiAttach when volume is still attached to another node. Prefer ReadWriteOncePod when only one pod may attach. StatefulSet is not a MultiAttach fix by itself."
 >
   <div class="stagger flex flex-col gap-8">
     <div class="flex flex-wrap items-center gap-2">
@@ -23,7 +23,7 @@ import Pill from '../ui/Pill.astro';
     <Matrix
       headers={['Event', 'Typical cause', 'Fix']}
       rows={[
-        ['MultiAttach error for Volume', 'RWO still attached on another node', 'Wait detach · fix stuck pod · StatefulSet/RWX/RWOPod'],
+        ['MultiAttach error for Volume', 'Still attached on another node', 'Wait detach · fix stuck pod · RWX or ReadWriteOncePod'],
         ['CSI driver not found', 'Driver not on node', 'Check CSINode + daemonset'],
         ['FailedAttachVolume', 'AZ mismatch, stale attachment', 'VolumeAttachment + cloud console'],
       ]}
@@ -38,7 +38,8 @@ kubectl get csidriver,csinode`}
     />
 
     <Callout type="rule">
-      RWO = one <em>node</em>, not necessarily one pod. MultiAttach: volume still on the old node while a new node needs it.
+      ReadWriteOnce = read-write from a single node. Multiple pods on that node may still access the volume.
+      MultiAttach can occur when a volume is still attached to another node.
     </Callout>
   </div>
 </Slide>

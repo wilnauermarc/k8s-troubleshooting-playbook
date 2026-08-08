@@ -9,7 +9,7 @@ import Callout from '../ui/Callout.astro';
   chapter="Failure Patterns"
   title="EndpointSlices — Backend Conditions"
   track="core"
-  notes="Prefer EndpointSlice over legacy Endpoints. Slices partition backends and expose ready/serving/terminating conditions — not just a flat ready list. kube-proxy uses slices for Service routing."
+  notes="EndpointSlices are scalable, partitioned Service endpoints with ready, serving, and terminating conditions — not merely a list of ready backends."
 >
   <div class="stagger flex flex-col gap-6">
     <div class="grid gap-4 md:grid-cols-2">
@@ -19,7 +19,9 @@ import Callout from '../ui/Callout.astro';
       </div>
       <div class="rounded-xl border border-deck-border bg-deck-panel p-5">
         <div class="font-display text-lg font-bold text-deck-amber">EndpointSlice</div>
-        <p class="mt-2 text-lg text-deck-muted">Scalable, partitioned backends with ready / serving / terminating conditions.</p>
+        <p class="mt-2 text-lg text-deck-muted">
+          Scalable, partitioned Service endpoints with ready / serving / terminating conditions.
+        </p>
       </div>
     </div>
 
@@ -31,7 +33,7 @@ import Callout from '../ui/Callout.astro';
     />
 
     <Callout type="rule">
-      Prefer <code class="text-deck-cyan">EndpointSlice</code>. Empty or not-ready addresses → fix labels/probes before blaming CNI.
+      Prefer <code class="text-deck-cyan">EndpointSlice</code>. Check ready, serving, and terminating — not only “has an IP”.
     </Callout>
   </div>
 </Slide>

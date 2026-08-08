@@ -76,7 +76,7 @@
   - [48. Decision Trees](#slide-48)
   - [49. Pod Pending — First Branch](#slide-49)
   - [50. Pending but Scheduled](#slide-50)
-  - [51. CrashLoopBackOff — First Moves](#slide-51)
+  - [51. CrashLoopBackOff — First Branch](#slide-51)
   - [52. CrashLoop — Exit Code Path](#slide-52)
   - [53. HTTP 503 — First Branch](#slide-53)
   - [54. 503 — Outside-In Path](#slide-54)
@@ -398,7 +398,7 @@ These myths are deeply ingrained — many teams learn them from Stack Overflow. 
       Logs explain why inside a container. Events tell you why K8s acted.
 
 > **MYTH:** "Status Running means the app is healthy."
-      Running only means the main process hasn't exited. Probes and SLOs matter.
+      Running describes Pod lifecycle state — not application health.
 
 ### Content
 
@@ -415,7 +415,7 @@ These myths are deeply ingrained — many teams learn them from Stack Overflow. 
 
     
       "Status Running means the app is healthy."
-      Running only means the main process hasn't exited. Probes and SLOs matter.
+      Running describes Pod lifecycle state — not application health.
 
 ---
 
@@ -1303,7 +1303,7 @@ Each container has its own exit code, OOM state, and probe results. CrashLoopBac
 
 | Signal | Likely cause |
 | --- | --- |
-| Exit 137 + Reason OOMKilled | Memory limit too low or leak |
+| Exit 137 (SIGKILL) | Check Last State.Reason — OOMKilled? |
 | Exit 1 / Error | App crash, bad config, missing dependency |
 | Liveness restart loop | Probe too aggressive or slow startup |
 
@@ -1623,7 +1623,7 @@ kubectl port-forward svc/<app> 8080:80 -n <ns>
 curl -s localhost:8080/api/orders | jq .   # inspect body, not just status
 ```
 
-> **MYTH:** The platform is fine because the pod is Running. Running only means the process started — not that business logic or integrations work.
+> **MYTH:** The platform is fine because the pod is Running. Running describes Pod lifecycle state — not application health.
 
 ### Content
 
@@ -1633,7 +1633,7 @@ curl -s localhost:8080/api/orders | jq .   # inspect body, not just status
     
 
     
-      The platform is fine because the pod is Running. Running only means the process started — not that business logic or integrations work.
+      The platform is fine because the pod is Running. Running describes Pod lifecycle state — not application health.
     
 
     
@@ -1660,9 +1660,15 @@ Muscle memory for the first question. Drill Pending, CrashLoop, 503 until the br
 
 ### Speaker notes
 
-Start with PodScheduled. If false, read FailedScheduling events. If true, look at init / mounts / image.
+Ask PodScheduled=false first. True means a node was chosen — do not look for FailedScheduling resource-fit there. False → FailedScheduling (resources, taints, affinity, topology). True → init / image / mount / ContainerCreating.
 
-> **TIP:** First move: kubectl describe pod — Events pick your branch.
+> **TIP:** PodScheduled=True means a node was assigned. Resource-fit belongs on the{' '}
+      false path — read FailedScheduling Events there.
+
+### Content
+
+- PodScheduled=True means a node was assigned. Resource-fit belongs on the 
+      false path — read FailedScheduling Events there.
 
 ---
 
@@ -1678,15 +1684,15 @@ Once PodScheduled=True, look at init, image pull, mounts, runtime/config. Quota,
 
 ---
 
-## Slide 51: CrashLoopBackOff — First Moves {#slide-51}
+## Slide 51: CrashLoopBackOff — First Branch {#slide-51}
 
 *File: `S28_TreeCrashLoop.astro` · id: `s28-tree-crashloop`*
 
 ### Speaker notes
 
-CrashLoop is backoff, not diagnosis. Always inspect Restart Count + Last State before logs.
+Exit 137 = SIGKILL. Verify Last State.Reason: OOMKilled before concluding OOM. Otherwise use exit code + logs --previous.
 
-> **TIP:** Exit 137 means SIGKILL — often OOM, but verify Reason: OOMKilled. Otherwise check exit code and logs --previous.
+> **TIP:** Exit 137 = SIGKILL. Verify Reason: OOMKilled before concluding OOM. Otherwise check exit code and logs --previous.
 
 ---
 
@@ -1797,7 +1803,7 @@ Network rows often look like app bugs. First command isolates the layer.
 
 ### Speaker notes
 
-CrashLoopBackOff is the most common pod status and the most misdiagnosed. BackOff is kubelet throttling restarts — the container IS starting and dying. Root cause is almost never Kubernetes itself. Walk lifecycle: get → describe → logs --previous → fix → rollout status. Exit 137 = SIGKILL (often OOM — confirm Last State.Reason OOMKilled). Exit 1 = app error; 126/127 = cmd missing. Myth: restarting pod rarely fixes CrashLoop.
+CrashLoopBackOff is the most common pod status and the most misdiagnosed. BackOff is kubelet throttling restarts — the container IS starting and dying. Root cause is almost never Kubernetes itself. Walk lifecycle: get → describe → logs --previous → fix → rollout status. Exit 137 = SIGKILL — verify Last State.Reason OOMKilled before concluding OOM. Exit 1 = app error; 126/127 = cmd missing. Myth: restarting pod rarely fixes CrashLoop.
 
 > **RULE:** Always check --previous first. Current container may have no logs yet.
 
@@ -1911,9 +1917,9 @@ kubectl get secret SEC -o jsonpath='{.data}' | jq 'keys'
 
 ### Speaker notes
 
-OOMKilled is per-container. Proof is Last State.Reason: OOMKilled — Exit 137 alone only means SIGKILL. Compare Limits vs Requests. CPU throttle ≠ OOM. Evicted is node pressure, not container OOM.
+Proof is Last State.Reason: OOMKilled. Exit 137 = SIGKILL only — verify Reason before concluding OOM. CPU throttle ≠ OOM. Evicted is node pressure.
 
-> **RULE:** Exit 137 often indicates OOM — verify Reason: OOMKilled. Different from Evicted (node housekeeping).
+> **RULE:** Exit 137 = SIGKILL. Verify Reason: OOMKilled before concluding OOM. Different from Evicted (node housekeeping).
 
 ### Content
 
@@ -2029,13 +2035,13 @@ FailedMount: kubelet mount step failed — wrong fsType, missing secret for encr
 
 ### Speaker notes
 
-RWO = read-write from a single node (multiple pods on that node may share it). MultiAttach happens when the volume is still attached to node A while a pod on node B needs it — common after reschedule, stuck Terminating, or multi-replica Deployments spanning nodes. Prefer ReadWriteOncePod when only one pod may attach.
+ReadWriteOnce = read-write from a single node; multiple pods on that node may share it. MultiAttach when volume is still attached to another node. Prefer ReadWriteOncePod when only one pod may attach. StatefulSet is not a MultiAttach fix by itself.
 
 ### Table
 
 | Event | Typical cause | Fix |
 | --- | --- | --- |
-| MultiAttach error for Volume | RWO still attached on another node | Wait detach · fix stuck pod · StatefulSet/RWX/RWOPod |
+| MultiAttach error for Volume | Still attached on another node | Wait detach · fix stuck pod · RWX or ReadWriteOncePod |
 | CSI driver not found | Driver not on node | Check CSINode + daemonset |
 | FailedAttachVolume | AZ mismatch, stale attachment | VolumeAttachment + cloud console |
 
@@ -2048,7 +2054,8 @@ kubectl get volumeattachment | grep VOLUME
 kubectl get csidriver,csinode
 ```
 
-> **RULE:** RWO = one node, not necessarily one pod. MultiAttach: volume still on the old node while a new node needs it.
+> **RULE:** ReadWriteOnce = read-write from a single node. Multiple pods on that node may still access the volume.
+      MultiAttach can occur when a volume is still attached to another node.
 
 ### Content
 
@@ -2086,12 +2093,18 @@ kubectl exec POD -n NAMESPACE -- curl -sf localhost:8080/healthz
 kubectl get endpointslices -n NAMESPACE -l kubernetes.io/service-name=SVC -o wide
 ```
 
+> **TIMING IS APPROXIMATE:** initialDelaySeconds and timeoutSeconds also affect timing; kubelet scheduling can shift the real window.
+
 > **GOLDEN RULE:** Never swap readiness and liveness jobs — readiness drains traffic; liveness restarts.
 
 ### Content
 
 - 
 
+    
+
+    
+      initialDelaySeconds and timeoutSeconds also affect timing; kubelet scheduling can shift the real window.
     
 
     
@@ -2220,7 +2233,7 @@ kubectl exec CLIENT -n NAMESPACE -- \\
 
 ### Speaker notes
 
-Prefer EndpointSlice over legacy Endpoints. Slices partition backends and expose ready/serving/terminating conditions — not just a flat ready list. kube-proxy uses slices for Service routing.
+EndpointSlices are scalable, partitioned Service endpoints with ready, serving, and terminating conditions — not merely a list of ready backends.
 
 ### Commands
 
@@ -2230,14 +2243,14 @@ kubectl get endpointslices -n NS -l kubernetes.io/service-name=SERVICE -o wide
 # Empty / not ready → selector mismatch or readiness probe
 ```
 
-> **RULE:** Prefer EndpointSlice. Empty or not-ready addresses → fix labels/probes before blaming CNI.
+> **RULE:** Prefer EndpointSlice. Check ready, serving, and terminating — not only “has an IP”.
 
 ### Content
 
 - Endpoints (legacy)
 - Older aggregate API — still works, prefer slices.
 - EndpointSlice
-- Scalable, partitioned backends with ready / serving / terminating conditions.
+- Scalable, partitioned Service endpoints with ready / serving / terminating conditions.
 
 ---
 
@@ -2302,11 +2315,11 @@ openssl s_client -connect HOST:443 -servername HOST </dev/null 2>/dev/null | \\
 
 ### Speaker notes
 
-Allow-all until a deny policy applies. Ingress deny ≠ egress deny — check policyTypes. Default-deny egress without DNS allow breaks name resolution for selected workloads — not automatically a whole-cluster outage.
+Ingress deny ≠ egress deny. Policies select pods — not automatically cluster-wide. Default-deny egress without DNS allow can break name resolution for selected workloads.
 
 > **INGRESS VS EGRESS:** Default-deny ingress blocks inbound; default-deny egress blocks outbound. Each needs its own allow rules.
 
-> **DNS UNDER EGRESS DENY:** Default-deny egress without UDP/TCP 53 to CoreDNS breaks name resolution for selected workloads — not automatically cluster-wide.
+> **DNS UNDER EGRESS DENY:** Default-deny egress without a DNS allow rule can break DNS resolution for selected workloads.
 
 ### Content
 
@@ -2315,7 +2328,7 @@ Allow-all until a deny policy applies. Ingress deny ≠ egress deny — check po
 - Default-deny ingress blocks inbound; default-deny egress blocks outbound. Each needs its own allow rules.
       
       
-        Default-deny egress without UDP/TCP 53 to CoreDNS breaks name resolution for selected workloads — not automatically cluster-wide.
+        Default-deny egress without a DNS allow rule can break DNS resolution for selected workloads.
 
 ---
 
@@ -2625,13 +2638,13 @@ kubectl describe pod -l app=checkout | grep -A5 Conditions
 
 ### Speaker notes
 
-Complete the study card: fix probe, validate EndpointSlice Ready addresses, prevent with ready backends == 0 alert.
+Complete the study card: fix probe, validate EndpointSlice Ready addresses, prevent with Ready address count == 0 alert.
 
 > **FIX:** Readiness hits /ready with real dependency checks — not a always-200 /healthz.
 
 > **VALIDATE:** EndpointSlice shows Ready addresses; LB 503 clears; checkout succeeds.
 
-> **PREVENT:** Alert on Ready backends == 0, not only on Running replica count.
+> **PREVENT:** Alert on Ready addresses == 0, not only on Running replica count.
 
 ### Content
 
@@ -2641,7 +2654,7 @@ Complete the study card: fix probe, validate EndpointSlice Ready addresses, prev
       EndpointSlice shows Ready addresses; LB 503 clears; checkout succeeds.
     
     
-      Alert on Ready backends == 0, not only on Running replica count.
+      Alert on Ready addresses == 0, not only on Running replica count.
 
 ---
 
@@ -2773,7 +2786,7 @@ Symptom: service degrades over hours then pods restart in a loop. Observe: descr
 
 > **SYMPTOM:** Slow responses over 6 hours → sudden pod restarts → CrashLoopBackOff. No deploy, no traffic spike.
 
-> **RULE:** Exit 137 = SIGKILL. Confirm Last State.Reason: OOMKilled — logs may be empty because the process was killed.
+> **RULE:** Exit 137 = SIGKILL. Verify Last State.Reason: OOMKilled before concluding OOM — logs may be empty because the process was killed.
 
 ### Content
 
@@ -2990,7 +3003,7 @@ kubectl rollout restart statefulset/app
 
 ### Speaker notes
 
-Q1 Ready vs Running. Q2 cheapest high-signal evidence. Q3 Pending Events. Q4 137=SIGKILL verify OOMKilled Reason. Q5 EndpointSlice. Q6 ndots. Q7 default-deny is directional. Q8 rollout undo.
+Q1 Ready vs Running. Q2 cheapest high-signal evidence. Q3 Pending Events. Q4 Exit 137 = SIGKILL; verify Reason OOMKilled before concluding OOM. Q5 EndpointSlice. Q6 ndots. Q7 default-deny is directional. Q8 rollout undo.
 
 ### Table
 
@@ -2999,7 +3012,7 @@ Q1 Ready vs Running. Q2 cheapest high-signal evidence. Q3 Pending Events. Q4 137
 | 1 | Pod Running but not serving traffic — why? | Not Ready → not Ready in EndpointSlice; check readiness |
 | 2 | First evidence for a broken pod? | describe → Events/Conditions; logs --previous if CrashLoop |
 | 3 | Pod Pending forever — where to look? | describe Events: FailedScheduling (resources, affinity, taints) |
-| 4 | Exit code 137 meaning? | SIGKILL (128+9); often OOM — verify Last State.Reason OOMKilled |
+| 4 | Exit code 137 meaning? | SIGKILL (128+9). Verify Reason: OOMKilled before concluding OOM |
 | 5 | Service exists but no traffic reaches pods? | get endpointslices — empty/not ready = selector or readiness |
 | 6 | Intermittent DNS failures in Java apps? | Check ndots / search domains — FQDN vs short name |
 | 7 | Default-deny NetworkPolicy — what breaks? | Ingress deny ≠ egress deny; blocked direction needs allows |
@@ -3015,7 +3028,7 @@ Q1 Ready vs Running. Q2 cheapest high-signal evidence. Q3 Pending Events. Q4 137
 
 ### Speaker notes
 
-Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslookup from debug pod in same namespace isolates DNS. Q11: ConfigMap mount may be stale (subPath) or app can't parse — logs --previous. Q12: AvailableReplicas < Desired — not enough Ready pods. Q13: PVC Pending — no matching PV, wrong storageClass, quota. Q14: MultiAttach — RWO still attached on another node. Q15: Node NotReady — existing pods run; new scheduling blocked. Q16: Evicted — node pressure (memory/disk/PID). Structure answers: symptom → signal → command → root cause → prevention.
+Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslookup from debug pod in same namespace isolates DNS. Q11: ConfigMap mount may be stale (subPath) or app can't parse — logs --previous. Q12: AvailableReplicas < Desired — not enough Ready pods. Q13: PVC Pending — no matching PV, wrong storageClass, quota. Q14: MultiAttach — RWO still attached on another node. Q15: Node NotReady — pods may continue temporarily; scheduling/lifecycle impaired. Q16: Evicted — node pressure (memory/disk/PID). Structure answers: symptom → signal → command → root cause → prevention.
 
 ### Table
 
@@ -3027,7 +3040,7 @@ Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslook
 | 12 | What does AvailableReplicas < Desired mean? | Not enough Ready pods — check conditions, probes, resource limits |
 | 13 | PVC stuck Pending? | No matching PV / wrong storageClass / quota — describe pvc Events |
 | 14 | MultiAttach error on RWO volume? | Volume still attached to pod on another node — wait detach or delete stuck pod |
-| 15 | Node NotReady — pod impact? | Existing pods keep running; new scheduling blocked; check kubelet & node conditions |
+| 15 | Node NotReady — pod impact? | Pods may keep running temporarily; scheduling/lifecycle impaired — check kubelet & conditions |
 | 16 | Pod Evicted — root causes? | Node pressure (memory/disk/PID) — describe node, check eviction thresholds |
 
 ---
@@ -3117,7 +3130,7 @@ OOM: Reason OOMKilled is proof; 137 is SIGKILL. Readiness: not Ready in Endpoint
 | --- | --- | --- |
 | Pending | Not scheduled yet / waiting | describe → FailedScheduling or Events |
 | CrashLoopBackOff | Container exit loop | describe + logs --previous |
-| OOMKilled | Memory limit hit (often exit 137) | confirm Reason · top pod · limits |
+| OOMKilled | Memory limit (Reason proof) | confirm Reason · top pod · limits |
 | Evicted | Node resource pressure | describe node · pressure conditions |
 | CreateContainerConfigError | Missing secret/config | describe → secret/configmap ref |
 | ImagePullBackOff | Registry/auth/tag issue | describe → pull events |

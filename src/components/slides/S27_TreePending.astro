@@ -8,28 +8,25 @@ import Callout from '../ui/Callout.astro';
   id="s27-tree-pending"
   chapter="Decision Trees"
   title="Pod Pending — First Branch"
-  notes="Start with PodScheduled. If false, read FailedScheduling events. If true, look at init / mounts / image."
+  track="core"
+  notes="Ask PodScheduled=false first. True means a node was chosen — do not look for FailedScheduling resource-fit there. False → FailedScheduling (resources, taints, affinity, topology). True → init / image / mount / ContainerCreating."
 >
   <div class="stagger space-y-8">
     <BranchTree
       title="Pod is Pending"
       branches={[
         {
-          question: 'PodScheduled = true?',
-          yes: 'Check Init / mounts / image',
-          yesHint: 'ContainerCreating or Init:…',
-          no: 'Read FailedScheduling Events',
-          noHint: 'describe pod → Events',
-        },
-        {
-          question: 'Message mentions resources?',
-          yes: 'Free capacity or lower requests',
-          no: 'Check taints, affinity, topology',
+          question: 'PodScheduled = false?',
+          yes: 'FailedScheduling',
+          yesHint: 'resources · taints · affinity · topology',
+          no: 'Pod is scheduled',
+          noHint: 'init · image pull · mount · ContainerCreating',
         },
       ]}
     />
     <Callout type="tip">
-      First move: <code class="text-deck-cyan">kubectl describe pod</code> — Events pick your branch.
+      <code class="text-deck-cyan">PodScheduled=True</code> means a node was assigned. Resource-fit belongs on the{' '}
+      <em>false</em> path — read FailedScheduling Events there.
     </Callout>
   </div>
 </Slide>

@@ -11,7 +11,7 @@ import Pill from '../ui/Pill.astro';
   chapter="Failure Patterns"
   title="OOMKilled — Container Memory Limit"
   track="core"
-  notes="OOMKilled is per-container. Proof is Last State.Reason: OOMKilled — Exit 137 alone only means SIGKILL. Compare Limits vs Requests. CPU throttle ≠ OOM. Evicted is node pressure, not container OOM."
+  notes="Proof is Last State.Reason: OOMKilled. Exit 137 = SIGKILL only — verify Reason before concluding OOM. CPU throttle ≠ OOM. Evicted is node pressure."
 >
   <div class="stagger flex flex-col gap-8">
     <div class="flex flex-wrap items-center gap-2">
@@ -22,7 +22,7 @@ import Pill from '../ui/Pill.astro';
     <SignalGrid
       items={[
         { label: 'What happened', value: 'Container hit memory limit — cgroup killed the process' },
-        { label: 'Proof', value: 'Last State.Reason: OOMKilled (not exit 137 alone)' },
+        { label: 'Proof', value: 'Last State.Reason: OOMKilled (exit 137 alone is not enough)' },
         { label: 'Not OOM', value: 'CPU throttle — pod stays Running; or SIGKILL from elsewhere' },
         { label: 'Fix path', value: 'Raise limit · fix leak · right-size requests/limits' },
       ]}
@@ -39,7 +39,7 @@ import Pill from '../ui/Pill.astro';
     />
 
     <Callout type="rule">
-      Exit 137 often indicates OOM — verify <code class="text-deck-cyan">Reason: OOMKilled</code>. Different from Evicted (node housekeeping).
+      Exit 137 = SIGKILL. Verify <code class="text-deck-cyan">Reason: OOMKilled</code> before concluding OOM. Different from Evicted (node housekeeping).
     </Callout>
   </div>
 </Slide>

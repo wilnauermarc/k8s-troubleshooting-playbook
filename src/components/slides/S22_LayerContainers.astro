@@ -39,7 +39,7 @@ import Matrix from '../ui/Matrix.astro';
     <Matrix
       headers={['Signal', 'Likely cause']}
       rows={[
-        ['Exit 137 + Reason OOMKilled', 'Memory limit too low or leak'],
+        ['Exit 137 (SIGKILL)', 'Check Last State.Reason — OOMKilled?'],
         ['Exit 1 / Error', 'App crash, bad config, missing dependency'],
         ['Liveness restart loop', 'Probe too aggressive or slow startup'],
       ]}

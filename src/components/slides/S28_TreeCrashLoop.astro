@@ -7,20 +7,21 @@ import Callout from '../ui/Callout.astro';
 <Slide
   id="s28-tree-crashloop"
   chapter="Decision Trees"
-  title="CrashLoopBackOff — First Moves"
-  notes="CrashLoop is backoff, not diagnosis. Always inspect Restart Count + Last State before logs."
+  title="CrashLoopBackOff — First Branch"
+  track="core"
+  notes="Exit 137 = SIGKILL. Verify Last State.Reason: OOMKilled before concluding OOM. Otherwise use exit code + logs --previous."
 >
-  <div class="stagger space-y-8">
+  <div class="stagger space-y-6">
     <Flow
       nodes={[
-        { label: 'CrashLoopBackOff', kind: 'bad' },
-        { label: 'describe pod → Restart Count + Last State', kind: 'start' },
-        { label: 'Last State.Reason = OOMKilled?', kind: 'decision', hint: 'Exit 137 = SIGKILL; confirm Reason' },
-        { label: 'Yes → raise limit or fix leak', kind: 'action' },
+        { label: 'CrashLoopBackOff', kind: 'start' },
+        { label: 'Last State.Reason = OOMKilled?', kind: 'decision', hint: 'Exit 137 = SIGKILL — not proof of OOM alone' },
+        { label: 'Memory limit / leak path', kind: 'action' },
+        { label: 'logs --previous + exit code', kind: 'ok', hint: '1 = app · 126/127 = cmd' },
       ]}
     />
     <Callout type="tip">
-      Exit 137 means SIGKILL — often OOM, but verify <code class="text-deck-cyan">Reason: OOMKilled</code>. Otherwise check exit code and <code class="text-deck-cyan">logs --previous</code>.
+      Exit 137 = SIGKILL. Verify <code class="text-deck-cyan">Reason: OOMKilled</code> before concluding OOM. Otherwise check exit code and <code class="text-deck-cyan">logs --previous</code>.
     </Callout>
   </div>
 </Slide>

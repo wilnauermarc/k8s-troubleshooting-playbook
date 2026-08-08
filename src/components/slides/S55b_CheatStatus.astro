@@ -16,7 +16,7 @@ import Matrix from '../ui/Matrix.astro';
       rows={[
         ['Pending', 'Not scheduled yet / waiting', 'describe → FailedScheduling or Events'],
         ['CrashLoopBackOff', 'Container exit loop', 'describe + logs --previous'],
-        ['OOMKilled', 'Memory limit hit (often exit 137)', 'confirm Reason · top pod · limits'],
+        ['OOMKilled', 'Memory limit (Reason proof)', 'confirm Reason · top pod · limits'],
         ['Evicted', 'Node resource pressure', 'describe node · pressure conditions'],
         ['CreateContainerConfigError', 'Missing secret/config', 'describe → secret/configmap ref'],
         ['ImagePullBackOff', 'Registry/auth/tag issue', 'describe → pull events'],
