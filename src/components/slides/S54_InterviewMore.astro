@@ -7,13 +7,13 @@ import Matrix from '../ui/Matrix.astro';
   id="s54-interview-more"
   chapter="Interview Prep"
   title="Interview Bank — Questions 17–24"
-  notes="Q17-20: networking and TLS edge cases. Q21-24: observability and operations. Q17: Ingress 502 — backend not in Endpoints or wrong port. Q18: TLS — secret, SNI, expiry. Q19: CoreDNS — upstream, cache, limits. Q20: Headless Service — stable per-pod DNS for StatefulSets. Q21: logs --previous after crash. Q22: metrics for SLOs, logs for diagnosis. Q23: validate under load with canary + error rate. Q24: startup probe for slow-starting apps."
+  notes="Q17-20: networking and TLS edge cases. Q21-24: observability and operations. Q17: Ingress 502 — no Ready addresses in EndpointSlice or wrong port. Q18: TLS — secret, SNI, expiry. Q19: CoreDNS — upstream, cache, limits. Q20: Headless Service — stable per-pod DNS for StatefulSets. Q21: logs --previous after crash. Q22: metrics for SLOs, logs for diagnosis. Q23: validate under load with canary + error rate. Q24: startup probe for slow-starting apps."
 >
   <div class="stagger flex flex-col gap-6">
     <Matrix
       headers={['#', 'Question', 'Ideal Answer (1 line)']}
       rows={[
-        ['17', 'Ingress 502 but pods healthy?', 'Backend not in Endpoints or wrong Service port in Ingress spec'],
+        ['17', 'Ingress 502 but pods healthy?', 'No Ready addresses in EndpointSlice or wrong Service port in Ingress'],
         ['18', 'TLS handshake failure on Ingress?', 'Secret missing/wrong cert, SNI mismatch, or expired certificate'],
         ['19', 'CoreDNS high latency?', 'Check upstream forwarder, cache plugin, pod resource limits & replica count'],
         ['20', 'Headless Service use case?', 'Stable per-pod DNS for StatefulSets — direct pod-to-pod discovery'],

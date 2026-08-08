@@ -304,7 +304,7 @@ Validate the audience's frustration — K8s debugging is genuinely harder than m
 - Desired state propagates asynchronously. Symptoms appear, disappear, and shift during reconciliation.
 - 03
         Indirection
-- Deployments → ReplicaSets → Pods → Containers. Services → Endpoints → Pods. Labels everywhere.
+- Deployments → ReplicaSets → Pods → Containers. Services → EndpointSlices → Pods. Labels everywhere.
 - 04
         Shared Fate
 - Noisy neighbors, node pressure, and control-plane issues affect unrelated workloads on the same cluster.
@@ -1718,7 +1718,7 @@ Exit 0 with restarts often means liveness killing a healthy process. Exit 1 → 
 
 ### Speaker notes
 
-If Endpoints look good, walk outside-in: client → LB → Ingress/Gateway → Service → Pod.
+If EndpointSlice Ready addresses look good, walk outside-in: client → LB → Ingress/Gateway → Service → Pod.
 
 ---
 
@@ -2452,7 +2452,7 @@ CNCF stack: Prometheus scrapes metrics, Grafana correlates dashboards, Loki inde
 | --- | --- | --- |
 | Pod keeps restarting | Events → Logs | describe pod · Loki {namespace="prod"} |
 | Latency spike at 14:32 | Metrics → Traces | Grafana · Tempo service.name=checkout |
-| 503 but pods Running | Events → Metrics | Endpoints count · error rate |
+| 503 but pods Running | Events → Metrics | Ready addresses · error rate |
 | Memory climbing over days | Metrics → Profiling | working_set · pprof / Pyroscope |
 
 ### Content
@@ -2575,7 +2575,7 @@ Practice section. Predict root cause before opening the Fix slide. Each incident
     
     - 
     
-      503 / Endpoints
+      503 / EndpointSlice
       Secret
       Affinity
       OOM
@@ -2913,7 +2913,7 @@ kubectl get pods -n kube-system -l k8s-app=kube-dns
 
 - Branch A — DNS
 - CoreDNS unhealthy or upstream broken → NXDOMAIN / lookup fails.
-- Fix: CoreDNS limits, forward plugin, kube-dns Endpoints.
+- Fix: CoreDNS limits, forward plugin, kube-dns EndpointSlice.
 - Branch B — NetPol
 - DNS works; TCP SYN dropped by default-deny egress.
 - Fix: allow egress to postgres namespace:5432.
@@ -3038,13 +3038,13 @@ Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslook
 
 ### Speaker notes
 
-Q17-20: networking and TLS edge cases. Q21-24: observability and operations. Q17: Ingress 502 — backend not in Endpoints or wrong port. Q18: TLS — secret, SNI, expiry. Q19: CoreDNS — upstream, cache, limits. Q20: Headless Service — stable per-pod DNS for StatefulSets. Q21: logs --previous after crash. Q22: metrics for SLOs, logs for diagnosis. Q23: validate under load with canary + error rate. Q24: startup probe for slow-starting apps.
+Q17-20: networking and TLS edge cases. Q21-24: observability and operations. Q17: Ingress 502 — no Ready addresses in EndpointSlice or wrong port. Q18: TLS — secret, SNI, expiry. Q19: CoreDNS — upstream, cache, limits. Q20: Headless Service — stable per-pod DNS for StatefulSets. Q21: logs --previous after crash. Q22: metrics for SLOs, logs for diagnosis. Q23: validate under load with canary + error rate. Q24: startup probe for slow-starting apps.
 
 ### Table
 
 | # | Question | Ideal Answer (1 line) |
 | --- | --- | --- |
-| 17 | Ingress 502 but pods healthy? | Backend not in Endpoints or wrong Service port in Ingress spec |
+| 17 | Ingress 502 but pods healthy? | No Ready addresses in EndpointSlice or wrong Service port in Ingress |
 | 18 | TLS handshake failure on Ingress? | Secret missing/wrong cert, SNI mismatch, or expired certificate |
 | 19 | CoreDNS high latency? | Check upstream forwarder, cache plugin, pod resource limits & replica count |
 | 20 | Headless Service use case? | Stable per-pod DNS for StatefulSets — direct pod-to-pod discovery |

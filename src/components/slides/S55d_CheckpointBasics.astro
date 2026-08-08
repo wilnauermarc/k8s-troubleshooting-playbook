@@ -13,7 +13,7 @@ import Checkpoint from '../ui/Checkpoint.astro';
   <div class="stagger grid gap-5 md:grid-cols-2">
     <Checkpoint
       prompt="Ready=False but STATUS=Running — traffic?"
-      answer="No — removed from Endpoints/EndpointSlices. Pod can still be 'alive'."
+      answer="No — not Ready in EndpointSlice / Service traffic. Pod can still be 'alive'."
     />
     <Checkpoint
       prompt="requests vs limits — which causes Pending?"
