@@ -161,7 +161,7 @@
 
 ### Speaker notes
 
-Study framing: this is a self-study playbook. Work linearly the first time; later jump via overview (O) or Markdown export. Goal is judgment under pressure, not memorizing kubectl alphabetically.
+Study framing: this is a self-study playbook. Work linearly the first time; later jump via overview (O). Goal is judgment under pressure, not memorizing kubectl alphabetically.
 
 ### Content
 
