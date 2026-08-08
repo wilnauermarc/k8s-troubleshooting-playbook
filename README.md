@@ -2,7 +2,7 @@
 
 Conference-quality presentation: **Think Like a Platform Engineer**.
 
-Built with **Astro.js** + **Tailwind CSS**. Dark theme, CSS decision flows, speaker notes, and keyboard-driven navigation.
+Built with **Astro.js** + **Tailwind CSS**. Dark theme, CSS decision flows, and keyboard-driven navigation.
 
 ## Quick start
 
@@ -16,21 +16,6 @@ npm run dev
 
 Open [http://localhost:4321](http://localhost:4321).
 
-### Markdown download
-
-All slide content is available as Markdown:
-
-1. Click **MD** in the deck header (opens `/download` and saves the file)
-2. Or open [http://localhost:4321/download](http://localhost:4321/download)
-3. Or use the raw file: `public/kubernetes-troubleshooting-playbook.md`
-
-```bash
-npm run export:md   # regenerate Markdown from slides
-npm run dev         # then open the deck / click MD
-```
-
-The export also runs automatically before `npm run build`.
-
 ```bash
 npm run build    # static site → dist/
 npm run preview  # preview production build
@@ -42,10 +27,8 @@ npm run preview  # preview production build
 |-----|--------|
 | `→` / `Space` | Next slide |
 | `←` / `Backspace` | Previous |
-| `N` | Speaker notes |
 | `O` | Overview grid |
 | `F` | Fullscreen |
-| `?` | Help |
 | `Home` / `End` | First / last |
 
 Deep-link any slide: `?slide=12` (0-based index).

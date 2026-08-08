@@ -200,7 +200,7 @@ Three tracks: Core = mental models and must-know; Practice = incidents + intervi
         Incidents, checkpoints, interview bank
 - Reference
         Cheat sheets, command matrices, catalogs
-- Tip: press O for overview · N for notes · MD to export Markdown.
+- Tip: press O for overview · F for fullscreen.
 
 ---
 

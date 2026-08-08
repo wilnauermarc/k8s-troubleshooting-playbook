@@ -8,10 +8,8 @@ export function initPresentation() {
   const titleEl = document.querySelector<HTMLElement>('[data-title-label]');
   const trackEl = document.querySelector<HTMLElement>('[data-track-label]');
   const trackSep = document.querySelector<HTMLElement>('[data-track-sep]');
-  const notesEl = document.querySelector<HTMLElement>('[data-notes-panel]');
   const overview = document.querySelector<HTMLElement>('[data-overview]');
   const overviewGrid = document.querySelector<HTMLElement>('[data-overview-grid]');
-  const help = document.querySelector<HTMLElement>('[data-help]');
 
   const trackNames: Record<string, string> = {
     core: 'Core',
@@ -20,7 +18,6 @@ export function initPresentation() {
   };
 
   let index = 0;
-  let notesOpen = false;
   let overviewOpen = false;
 
   const params = new URLSearchParams(window.location.search);
@@ -70,9 +67,6 @@ export function initPresentation() {
       trackEl.textContent = t;
       if (trackSep) trackSep.classList.toggle('hidden', !t);
     }
-    if (notesEl) {
-      notesEl.textContent = active.dataset.notes || 'No speaker notes for this slide.';
-    }
 
     const url = new URL(window.location.href);
     url.searchParams.set('slide', String(index));
@@ -88,21 +82,10 @@ export function initPresentation() {
     show(index - 1);
   }
 
-  function toggleNotes() {
-    notesOpen = !notesOpen;
-    document.body.classList.toggle('notes-open', notesOpen);
-    const panel = document.querySelector('[data-notes-shell]');
-    panel?.classList.toggle('hidden', !notesOpen);
-  }
-
   function toggleOverview() {
     overviewOpen = !overviewOpen;
     overview?.classList.toggle('hidden', !overviewOpen);
     if (overviewOpen) renderOverview();
-  }
-
-  function toggleHelp() {
-    help?.classList.toggle('hidden');
   }
 
   function toggleFullscreen() {
@@ -138,16 +121,9 @@ export function initPresentation() {
         e.preventDefault();
         show(slides.length - 1);
         break;
-      case 'n':
-      case 'N':
-        toggleNotes();
-        break;
       case 'o':
       case 'O':
         toggleOverview();
-        break;
-      case '?':
-        toggleHelp();
         break;
       case 'f':
       case 'F':
@@ -155,7 +131,6 @@ export function initPresentation() {
         break;
       case 'Escape':
         if (overviewOpen) toggleOverview();
-        help?.classList.add('hidden');
         break;
     }
   });
@@ -165,9 +140,7 @@ export function initPresentation() {
   };
   onAll('[data-next]', next);
   onAll('[data-prev]', prev);
-  onAll('[data-toggle-notes]', toggleNotes);
   onAll('[data-toggle-overview]', toggleOverview);
-  onAll('[data-toggle-help]', toggleHelp);
   onAll('[data-toggle-fs]', toggleFullscreen);
 
   overviewGrid?.addEventListener('click', (e) => {
