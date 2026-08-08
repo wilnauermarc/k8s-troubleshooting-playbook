@@ -22,17 +22,17 @@ import Pill from '../ui/Pill.astro';
       nodes={[
         { label: 'CNI enforces NetworkPolicy?', kind: 'start', hint: 'Calico/Cilium yes; some CNIs no-op' },
         { label: 'default-deny ingress and/or egress?', kind: 'decision', hint: 'separate dimensions' },
-        { label: 'For that direction: only explicit allows', kind: 'action', hint: 'selected pods only' },
+        { label: 'For that direction: explicit allows required', kind: 'action', hint: 'selected pods only' },
         { label: 'Symptom: timeout (not ICMP unreachable)', kind: 'bad' },
       ]}
     />
 
     <div class="grid gap-4 md:grid-cols-2">
       <Callout type="rule" title="Ingress vs egress">
-        Default-deny ingress blocks inbound; default-deny egress blocks outbound. Each needs its own allow rules.
+        Default-deny ingress blocks inbound traffic; default-deny egress blocks outbound traffic. Explicit allow rules are required for the traffic direction being isolated.
       </Callout>
       <Callout type="danger" title="DNS under egress deny">
-        Default-deny egress without a DNS allow rule can break DNS resolution for <em>selected</em> workloads.
+        Default-deny egress without a DNS allow rule can break DNS resolution for selected workloads.
       </Callout>
     </div>
   </div>

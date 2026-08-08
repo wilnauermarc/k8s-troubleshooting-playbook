@@ -21,7 +21,7 @@ import Pill from '../ui/Pill.astro';
     <Matrix
       headers={['Technique', 'Proves', 'Prod-safe?']}
       rows={[
-        ['kubectl debug (ephemeral)', 'Network/DNS/TLS from pod netns', 'Conditionally — RBAC, audit, incident procedure'],
+        ['kubectl debug (ephemeral)', 'Network/DNS/TLS from pod netns', 'Conditionally safe — RBAC, audit, incident procedure'],
         ['kubectl debug node / host', 'Node CNI / host networking', 'High risk — privileged host access'],
         ['strace -p PID', 'Syscall blocking (I/O, locks)', 'Rarely — high overhead'],
         ['tcpdump -i any port 443', 'Packet reachability, RST, TLS', 'Careful — CPU & capture size'],

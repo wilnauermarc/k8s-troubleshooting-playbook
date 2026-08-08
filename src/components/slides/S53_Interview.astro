@@ -9,7 +9,7 @@ import Callout from '../ui/Callout.astro';
   chapter="Interview Prep"
   title="Interview Bank — Questions 1–8"
   track="practice"
-  notes="Q1 Ready vs Running. Q2 cheapest high-signal evidence. Q3 Pending Events. Q4 Exit 137 = SIGKILL; verify Reason OOMKilled before concluding OOM. Q5 EndpointSlice. Q6 ndots. Q7 default-deny is directional. Q8 rollout undo."
+  notes="Q1 Ready vs Running. Q2 highest-signal evidence. Q3 Pending Events. Q4 Exit 137 = SIGKILL; verify Last State.Reason OOMKilled for OOM. Q5 EndpointSlice. Q6 ndots. Q7 default-deny is directional. Q8 rollout undo."
 >
   <div class="stagger flex flex-col gap-6">
     <Matrix
@@ -18,7 +18,7 @@ import Callout from '../ui/Callout.astro';
         ['1', 'Pod Running but not serving traffic — why?', 'Not Ready → not Ready in EndpointSlice; check readiness'],
         ['2', 'First evidence for a broken pod?', 'describe → Events/Conditions; logs --previous if CrashLoop'],
         ['3', 'Pod Pending forever — where to look?', 'describe Events: FailedScheduling (resources, affinity, taints)'],
-        ['4', 'Exit code 137 meaning?', 'SIGKILL (128+9). Verify Reason: OOMKilled before concluding OOM'],
+        ['4', 'Exit code 137 meaning?', 'SIGKILL; verify Last State.Reason: OOMKilled for an OOM diagnosis'],
         ['5', 'Service exists but no traffic reaches pods?', 'get endpointslices — empty/not ready = selector or readiness'],
         ['6', 'Intermittent DNS failures in Java apps?', 'Check ndots / search domains — FQDN vs short name'],
         ['7', 'Default-deny NetworkPolicy — what breaks?', 'Ingress deny ≠ egress deny; blocked direction needs allows'],

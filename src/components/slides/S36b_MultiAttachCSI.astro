@@ -23,7 +23,7 @@ import Pill from '../ui/Pill.astro';
     <Matrix
       headers={['Event', 'Typical cause', 'Fix']}
       rows={[
-        ['MultiAttach error for Volume', 'Still attached on another node', 'Wait detach · fix stuck pod · RWX or ReadWriteOncePod'],
+        ['MultiAttach error for Volume', 'Still attached on another node', 'Wait detach · fix stuck pod · RWX class or redesign'],
         ['CSI driver not found', 'Driver not on node', 'Check CSINode + daemonset'],
         ['FailedAttachVolume', 'AZ mismatch, stale attachment', 'VolumeAttachment + cloud console'],
       ]}
@@ -38,8 +38,7 @@ kubectl get csidriver,csinode`}
     />
 
     <Callout type="rule">
-      ReadWriteOnce = read-write from a single node. Multiple pods on that node may still access the volume.
-      MultiAttach can occur when a volume is still attached to another node.
+      RWO allows read-write access from a single node. Multiple Pods on that node may still use the volume. MultiAttach can occur when a volume is still attached to another node. For one-Pod-only access use ReadWriteOncePod (RWOP).
     </Callout>
   </div>
 </Slide>

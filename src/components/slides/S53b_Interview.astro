@@ -7,7 +7,8 @@ import Matrix from '../ui/Matrix.astro';
   id="s53b-interview"
   chapter="Interview Prep"
   title="Interview Bank — Questions 9–16"
-  notes="Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslookup from debug pod in same namespace isolates DNS. Q11: ConfigMap mount may be stale (subPath) or app can't parse — logs --previous. Q12: AvailableReplicas < Desired — not enough Ready pods. Q13: PVC Pending — no matching PV, wrong storageClass, quota. Q14: MultiAttach — RWO still attached on another node. Q15: Node NotReady — pods may continue temporarily; scheduling/lifecycle impaired. Q16: Evicted — node pressure (memory/disk/PID). Structure answers: symptom → signal → command → root cause → prevention."
+  track="practice"
+  notes="Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslookup from debug pod in same namespace isolates DNS. Q11: ConfigMap mount may be stale (subPath) or app can't parse — logs --previous. Q12: AvailableReplicas < Desired — not enough Available replicas; check Ready, minReadySeconds, rollout, probes. Q13: PVC Pending — no matching PV, wrong storageClass, quota. Q14: MultiAttach — RWO still attached on another node. Q15: Node NotReady — pods may continue temporarily; scheduling/lifecycle impaired. Q16: Evicted — node pressure (memory/disk/PID)."
 >
   <div class="stagger flex flex-col gap-6">
     <Matrix
@@ -16,10 +17,10 @@ import Matrix from '../ui/Matrix.astro';
         ['9', 'Liveness vs readiness — production impact?', 'Bad liveness kills pod; bad readiness removes from Service only'],
         ['10', 'How prove it\'s DNS not app bug?', 'nslookup from debug pod in same namespace — isolate resolution layer'],
         ['11', 'CrashLoop after ConfigMap change?', 'Mount may be stale (subPath) or app can\'t parse new config — logs --previous'],
-        ['12', 'What does AvailableReplicas < Desired mean?', 'Not enough Ready pods — check conditions, probes, resource limits'],
+        ['12', 'What does AvailableReplicas < Desired mean?', 'Not enough Available replicas — check Ready, minReadySeconds, rollout, probes'],
         ['13', 'PVC stuck Pending?', 'No matching PV / wrong storageClass / quota — describe pvc Events'],
         ['14', 'MultiAttach error on RWO volume?', 'Volume still attached to pod on another node — wait detach or delete stuck pod'],
-        ['15', 'Node NotReady — pod impact?', 'Pods may keep running temporarily; scheduling/lifecycle impaired — check kubelet & conditions'],
+        ['15', 'Node NotReady — pod impact?', 'Pods may continue temporarily; scheduling/lifecycle impaired — check kubelet, conditions, connectivity'],
         ['16', 'Pod Evicted — root causes?', 'Node pressure (memory/disk/PID) — describe node, check eviction thresholds'],
       ]}
     />

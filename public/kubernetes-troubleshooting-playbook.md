@@ -454,7 +454,7 @@ Two more myths to round out the set. Delete-pod myth: you lose node placement, e
 
 Prefer cheapest high-signal evidence first — often Events and Conditions; CrashLoop may make logs --previous the fastest win. Events explain Kubernetes actions; logs explain application failures. Hypothesize before the next command.
 
-> **CHEAPEST HIGH-SIGNAL EVIDENCE FIRST:** Start with Events, Conditions, and logs --previous when relevant — Events explain Kubernetes actions; logs explain application failures.
+> **CHEAPEST HIGH-SIGNAL EVIDENCE FIRST:** Start with the highest-signal evidence: Events, Conditions, and previous logs. Events explain Kubernetes actions; logs explain process/application failures.
 
 > **HYPOTHESIZE:** Write down what you think is wrong before running the next command.
 
@@ -464,7 +464,7 @@ Prefer cheapest high-signal evidence first — often Events and Conditions; Cras
 
 ### Content
 
-- Start with Events, Conditions, and logs --previous when relevant — Events explain Kubernetes actions; logs explain application failures.
+- Start with the highest-signal evidence: Events, Conditions, and previous logs. Events explain Kubernetes actions; logs explain process/application failures.
     
 
     
@@ -2041,7 +2041,7 @@ ReadWriteOnce = read-write from a single node; multiple pods on that node may sh
 
 | Event | Typical cause | Fix |
 | --- | --- | --- |
-| MultiAttach error for Volume | Still attached on another node | Wait detach · fix stuck pod · RWX or ReadWriteOncePod |
+| MultiAttach error for Volume | Still attached on another node | Wait detach · fix stuck pod · RWX class or redesign |
 | CSI driver not found | Driver not on node | Check CSINode + daemonset |
 | FailedAttachVolume | AZ mismatch, stale attachment | VolumeAttachment + cloud console |
 
@@ -2054,8 +2054,7 @@ kubectl get volumeattachment | grep VOLUME
 kubectl get csidriver,csinode
 ```
 
-> **RULE:** ReadWriteOnce = read-write from a single node. Multiple pods on that node may still access the volume.
-      MultiAttach can occur when a volume is still attached to another node.
+> **RULE:** RWO allows read-write access from a single node. Multiple Pods on that node may still use the volume. MultiAttach can occur when a volume is still attached to another node. For one-Pod-only access use ReadWriteOncePod (RWOP).
 
 ### Content
 
@@ -2083,7 +2082,7 @@ Three boxes, three different kubelet actions. Readiness drains traffic; liveness
 
 ### Speaker notes
 
-Approximate failure window ≈ initialDelay + failureThreshold × periodSeconds; timeoutSeconds and kubelet scheduling also affect timing. Prefer EndpointSlice when checking traffic membership.
+Approximate failure window ≈ initialDelaySeconds + failureThreshold × periodSeconds. timeoutSeconds and probe scheduling can affect the actual timing. Prefer EndpointSlice when checking traffic membership.
 
 ### Commands
 
@@ -2093,7 +2092,7 @@ kubectl exec POD -n NAMESPACE -- curl -sf localhost:8080/healthz
 kubectl get endpointslices -n NAMESPACE -l kubernetes.io/service-name=SVC -o wide
 ```
 
-> **TIMING IS APPROXIMATE:** initialDelaySeconds and timeoutSeconds also affect timing; kubelet scheduling can shift the real window.
+> **TIMING IS APPROXIMATE:** timeoutSeconds and probe scheduling can affect the actual timing.
 
 > **GOLDEN RULE:** Never swap readiness and liveness jobs — readiness drains traffic; liveness restarts.
 
@@ -2104,7 +2103,7 @@ kubectl get endpointslices -n NAMESPACE -l kubernetes.io/service-name=SVC -o wid
     
 
     
-      initialDelaySeconds and timeoutSeconds also affect timing; kubelet scheduling can shift the real window.
+      timeoutSeconds and probe scheduling can affect the actual timing.
     
 
     
@@ -2223,7 +2222,17 @@ kubectl exec CLIENT -n NAMESPACE -- \\
   curl -sv http://SVC.NAMESPACE.svc.cluster.local:PORT/health
 ```
 
+> **TIP:** Endpoints is the legacy API; prefer EndpointSlice on current Kubernetes clusters.
+
 > **MYTH:** "Service is broken because kubectl get svc shows CLUSTER-IP." — Svc is virtual; Ready addresses in EndpointSlice are real.
+
+### Content
+
+- Endpoints is the legacy API; prefer EndpointSlice on current Kubernetes clusters.
+    
+
+    
+      "Service is broken because kubectl get svc shows CLUSTER-IP." — Svc is virtual; Ready addresses in EndpointSlice are real.
 
 ---
 
@@ -2250,7 +2259,7 @@ kubectl get endpointslices -n NS -l kubernetes.io/service-name=SERVICE -o wide
 - Endpoints (legacy)
 - Older aggregate API — still works, prefer slices.
 - EndpointSlice
-- Scalable, partitioned Service endpoints with ready / serving / terminating conditions.
+- Scalable, partitioned Service endpoints with ready/serving/terminating conditions.
 
 ---
 
@@ -2317,7 +2326,7 @@ openssl s_client -connect HOST:443 -servername HOST </dev/null 2>/dev/null | \\
 
 Ingress deny ≠ egress deny. Policies select pods — not automatically cluster-wide. Default-deny egress without DNS allow can break name resolution for selected workloads.
 
-> **INGRESS VS EGRESS:** Default-deny ingress blocks inbound; default-deny egress blocks outbound. Each needs its own allow rules.
+> **INGRESS VS EGRESS:** Default-deny ingress blocks inbound traffic; default-deny egress blocks outbound traffic. Explicit allow rules are required for the traffic direction being isolated.
 
 > **DNS UNDER EGRESS DENY:** Default-deny egress without a DNS allow rule can break DNS resolution for selected workloads.
 
@@ -2325,7 +2334,7 @@ Ingress deny ≠ egress deny. Policies select pods — not automatically cluster
 
 - Silent drop
       policyTypes matter
-- Default-deny ingress blocks inbound; default-deny egress blocks outbound. Each needs its own allow rules.
+- Default-deny ingress blocks inbound traffic; default-deny egress blocks outbound traffic. Explicit allow rules are required for the traffic direction being isolated.
       
       
         Default-deny egress without a DNS allow rule can break DNS resolution for selected workloads.
@@ -2530,7 +2539,7 @@ Invasive tools need change control, blast-radius limits, exit plan. kubectl debu
 
 | Technique | Proves | Prod-safe? |
 | --- | --- | --- |
-| kubectl debug (ephemeral) | Network/DNS/TLS from pod netns | Conditionally — RBAC, audit, incident procedure |
+| kubectl debug (ephemeral) | Network/DNS/TLS from pod netns | Conditionally safe — RBAC, audit, incident procedure |
 | kubectl debug node / host | Node CNI / host networking | High risk — privileged host access |
 | strace -p PID | Syscall blocking (I/O, locks) | Rarely — high overhead |
 | tcpdump -i any port 443 | Packet reachability, RST, TLS | Careful — CPU & capture size |
@@ -3003,7 +3012,7 @@ kubectl rollout restart statefulset/app
 
 ### Speaker notes
 
-Q1 Ready vs Running. Q2 cheapest high-signal evidence. Q3 Pending Events. Q4 Exit 137 = SIGKILL; verify Reason OOMKilled before concluding OOM. Q5 EndpointSlice. Q6 ndots. Q7 default-deny is directional. Q8 rollout undo.
+Q1 Ready vs Running. Q2 highest-signal evidence. Q3 Pending Events. Q4 Exit 137 = SIGKILL; verify Last State.Reason OOMKilled for OOM. Q5 EndpointSlice. Q6 ndots. Q7 default-deny is directional. Q8 rollout undo.
 
 ### Table
 
@@ -3012,7 +3021,7 @@ Q1 Ready vs Running. Q2 cheapest high-signal evidence. Q3 Pending Events. Q4 Exi
 | 1 | Pod Running but not serving traffic — why? | Not Ready → not Ready in EndpointSlice; check readiness |
 | 2 | First evidence for a broken pod? | describe → Events/Conditions; logs --previous if CrashLoop |
 | 3 | Pod Pending forever — where to look? | describe Events: FailedScheduling (resources, affinity, taints) |
-| 4 | Exit code 137 meaning? | SIGKILL (128+9). Verify Reason: OOMKilled before concluding OOM |
+| 4 | Exit code 137 meaning? | SIGKILL; verify Last State.Reason: OOMKilled for an OOM diagnosis |
 | 5 | Service exists but no traffic reaches pods? | get endpointslices — empty/not ready = selector or readiness |
 | 6 | Intermittent DNS failures in Java apps? | Check ndots / search domains — FQDN vs short name |
 | 7 | Default-deny NetworkPolicy — what breaks? | Ingress deny ≠ egress deny; blocked direction needs allows |
@@ -3028,7 +3037,7 @@ Q1 Ready vs Running. Q2 cheapest high-signal evidence. Q3 Pending Events. Q4 Exi
 
 ### Speaker notes
 
-Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslookup from debug pod in same namespace isolates DNS. Q11: ConfigMap mount may be stale (subPath) or app can't parse — logs --previous. Q12: AvailableReplicas < Desired — not enough Ready pods. Q13: PVC Pending — no matching PV, wrong storageClass, quota. Q14: MultiAttach — RWO still attached on another node. Q15: Node NotReady — pods may continue temporarily; scheduling/lifecycle impaired. Q16: Evicted — node pressure (memory/disk/PID). Structure answers: symptom → signal → command → root cause → prevention.
+Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslookup from debug pod in same namespace isolates DNS. Q11: ConfigMap mount may be stale (subPath) or app can't parse — logs --previous. Q12: AvailableReplicas < Desired — not enough Available replicas; check Ready, minReadySeconds, rollout, probes. Q13: PVC Pending — no matching PV, wrong storageClass, quota. Q14: MultiAttach — RWO still attached on another node. Q15: Node NotReady — pods may continue temporarily; scheduling/lifecycle impaired. Q16: Evicted — node pressure (memory/disk/PID).
 
 ### Table
 
@@ -3037,10 +3046,10 @@ Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslook
 | 9 | Liveness vs readiness — production impact? | Bad liveness kills pod; bad readiness removes from Service only |
 | 10 | How prove it's DNS not app bug? | nslookup from debug pod in same namespace — isolate resolution layer |
 | 11 | CrashLoop after ConfigMap change? | Mount may be stale (subPath) or app can't parse new config — logs --previous |
-| 12 | What does AvailableReplicas < Desired mean? | Not enough Ready pods — check conditions, probes, resource limits |
+| 12 | What does AvailableReplicas < Desired mean? | Not enough Available replicas — check Ready, minReadySeconds, rollout, probes |
 | 13 | PVC stuck Pending? | No matching PV / wrong storageClass / quota — describe pvc Events |
 | 14 | MultiAttach error on RWO volume? | Volume still attached to pod on another node — wait detach or delete stuck pod |
-| 15 | Node NotReady — pod impact? | Pods may keep running temporarily; scheduling/lifecycle impaired — check kubelet & conditions |
+| 15 | Node NotReady — pod impact? | Pods may continue temporarily; scheduling/lifecycle impaired — check kubelet, conditions, connectivity |
 | 16 | Pod Evicted — root causes? | Node pressure (memory/disk/PID) — describe node, check eviction thresholds |
 
 ---

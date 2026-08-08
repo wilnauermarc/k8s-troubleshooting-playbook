@@ -34,6 +34,10 @@ kubectl exec CLIENT -n NAMESPACE -- \\
   curl -sv http://SVC.NAMESPACE.svc.cluster.local:PORT/health`}
     />
 
+    <Callout type="tip">
+      <code class="text-deck-cyan">Endpoints</code> is the legacy API; prefer <code class="text-deck-cyan">EndpointSlice</code> on current Kubernetes clusters.
+    </Callout>
+
     <Callout type="myth" title="Myth">
       "Service is broken because kubectl get svc shows CLUSTER-IP." — Svc is virtual; Ready addresses in EndpointSlice are real.
     </Callout>
