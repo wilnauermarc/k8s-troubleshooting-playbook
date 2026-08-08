@@ -161,7 +161,7 @@
 
 ### Speaker notes
 
-Study framing: this is a self-study playbook. Work linearly the first time; later jump via overview (O) or Markdown export. Goal is judgment under pressure, not memorizing kubectl alphabetically.
+Study framing: this is a self-study playbook. Work linearly the first time; later jump via overview (O). Goal is judgment under pressure, not memorizing kubectl alphabetically.
 
 ### Content
 
@@ -200,7 +200,7 @@ Three tracks: Core = mental models and must-know; Practice = incidents + intervi
         Incidents, checkpoints, interview bank
 - Reference
         Cheat sheets, command matrices, catalogs
-- Tip: press O for overview · N for notes · MD to export Markdown.
+- Tip: press O for overview · F for fullscreen.
 
 ---
 

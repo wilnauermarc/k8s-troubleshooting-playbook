@@ -89,11 +89,6 @@ body {
   transition: width 0.25s ease;
 }
 
-.speaker-notes {
-  scrollbar-width: thin;
-  scrollbar-color: #1a2744 transparent;
-}
-
 /* CSS flow diagrams — projector-readable */
 .flow-node {
   @apply rounded-xl border-2 px-5 py-3 text-center font-display text-base font-semibold leading-snug md:text-lg;

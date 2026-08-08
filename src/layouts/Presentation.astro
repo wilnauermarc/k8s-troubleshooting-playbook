@@ -40,18 +40,8 @@ const { title = 'The Kubernetes Troubleshooting Playbook' } = Astro.props;
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <a
-            href="/download/?auto"
-            class="kbd hover:text-deck-cyan"
-            title="Download Markdown playbook"
-            data-download-md
-          >
-            MD
-          </a>
           <button type="button" data-toggle-overview class="kbd hover:text-deck-text" title="Overview (O)">O</button>
-          <button type="button" data-toggle-notes class="kbd hover:text-deck-text" title="Notes (N)">N</button>
           <button type="button" data-toggle-fs class="kbd hover:text-deck-text" title="Fullscreen (F)">F</button>
-          <button type="button" data-toggle-help class="kbd hover:text-deck-text" title="Help (?)">?</button>
           <span data-counter class="ml-2 font-mono text-xs text-deck-muted">1 / 1</span>
         </div>
       </header>
@@ -73,33 +63,28 @@ const { title = 'The Kubernetes Troubleshooting Playbook' } = Astro.props;
         <button type="button" data-prev class="rounded-lg border border-deck-border px-3 py-1.5 text-sm text-deck-muted transition hover:border-deck-cyan/40 hover:text-deck-text">
           ← Prev
         </button>
-        <div class="hidden text-center text-[11px] text-deck-muted sm:block">
-          <span class="kbd">←</span>
-          <span class="kbd">→</span>
-          navigate ·
-          <span class="kbd">N</span>
-          notes ·
-          <span class="kbd">O</span>
-          overview ·
-          <span class="kbd">F</span>
-          fullscreen
+        <div class="hidden min-w-0 flex-1 px-2 text-center sm:block">
+          <p class="truncate text-[10px] leading-snug text-deck-muted/80">
+            <a href="https://k8sts.netlify.app/" class="hover:text-deck-cyan">Marc Wilnauer — Kubernetes Troubleshooting Playbook</a>
+            ·
+            <a href="https://creativecommons.org/licenses/by/4.0/" class="hover:text-deck-cyan" rel="license">CC BY 4.0</a>
+            · Not affiliated with CNCF or Kubernetes®
+          </p>
+          <p class="mt-0.5 text-[11px] text-deck-muted">
+            <span class="kbd">←</span>
+            <span class="kbd">→</span>
+            navigate ·
+            <span class="kbd">O</span>
+            overview ·
+            <span class="kbd">F</span>
+            fullscreen
+          </p>
         </div>
         <button type="button" data-next class="rounded-lg border border-deck-cyan/40 bg-deck-cyan/10 px-3 py-1.5 text-sm text-deck-cyan transition hover:bg-deck-cyan/20">
           Next →
         </button>
       </footer>
     </div>
-
-    <!-- Speaker notes -->
-    <aside
-      data-notes-shell
-      class="speaker-notes fixed bottom-16 right-4 z-40 hidden max-h-[40vh] w-[min(420px,92vw)] overflow-y-auto rounded-xl border border-deck-amber/30 bg-deck-panel/95 p-4 shadow-glow backdrop-blur"
-    >
-      <div class="mb-2 font-display text-[11px] font-semibold uppercase tracking-[0.16em] text-deck-amber">
-        Speaker Notes
-      </div>
-      <p data-notes-panel class="text-sm leading-relaxed text-deck-text/85"></p>
-    </aside>
 
     <!-- Overview -->
     <div data-overview class="fixed inset-0 z-50 hidden overflow-y-auto bg-deck-bg/95 p-6 backdrop-blur">
@@ -109,26 +94,6 @@ const { title = 'The Kubernetes Troubleshooting Playbook' } = Astro.props;
           <button type="button" data-toggle-overview class="kbd">Esc</button>
         </div>
         <div data-overview-grid class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"></div>
-      </div>
-    </div>
-
-    <!-- Help -->
-    <div data-help class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 p-6 backdrop-blur-sm">
-      <div class="w-full max-w-md rounded-2xl border border-deck-border bg-deck-panel p-6">
-        <h2 class="mb-4 font-display text-lg font-bold">Keyboard Shortcuts</h2>
-        <ul class="space-y-2 text-sm text-deck-muted">
-          <li><span class="kbd">MD</span> Download Markdown (opens download page)</li>
-          <li><span class="kbd">→</span> / <span class="kbd">Space</span> Next slide</li>
-          <li><span class="kbd">←</span> / <span class="kbd">Backspace</span> Previous slide</li>
-          <li><span class="kbd">Home</span> / <span class="kbd">End</span> First / last</li>
-          <li><span class="kbd">N</span> Toggle speaker notes</li>
-          <li><span class="kbd">O</span> Slide overview</li>
-          <li><span class="kbd">F</span> Fullscreen</li>
-          <li><span class="kbd">?</span> This help</li>
-        </ul>
-        <button type="button" data-toggle-help class="mt-5 w-full rounded-lg border border-deck-cyan/40 py-2 text-sm text-deck-cyan">
-          Close
-        </button>
       </div>
     </div>
 
