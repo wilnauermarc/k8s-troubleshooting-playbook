@@ -10,7 +10,9 @@ export function initPresentation() {
   const trackSep = document.querySelector<HTMLElement>('[data-track-sep]');
   const overview = document.querySelector<HTMLElement>('[data-overview]');
   const overviewGrid = document.querySelector<HTMLElement>('[data-overview-grid]');
+  const navHint = document.querySelector<HTMLElement>('[data-nav-hint]');
 
+  const NAV_HINT_KEY = 'k8sts-nav-hint-seen';
   const trackNames: Record<string, string> = {
     core: 'Core',
     practice: 'Practice',
@@ -19,11 +21,38 @@ export function initPresentation() {
 
   let index = 0;
   let overviewOpen = false;
+  let navHintVisible = false;
 
   const params = new URLSearchParams(window.location.search);
   const start = Number(params.get('slide') ?? '0');
   if (!Number.isNaN(start) && start >= 0 && start < slides.length) {
     index = start;
+  }
+
+  function dismissNavHint() {
+    if (!navHintVisible) return;
+    navHintVisible = false;
+    navHint?.classList.add('hidden');
+    document.body.classList.remove('nav-hint-active');
+    try {
+      localStorage.setItem(NAV_HINT_KEY, '1');
+    } catch {
+      // ignore private-mode / blocked storage
+    }
+  }
+
+  function maybeShowNavHint() {
+    if (!navHint || index !== 0) return;
+    let seen = false;
+    try {
+      seen = localStorage.getItem(NAV_HINT_KEY) === '1';
+    } catch {
+      seen = false;
+    }
+    if (seen) return;
+    navHintVisible = true;
+    navHint.classList.remove('hidden');
+    document.body.classList.add('nav-hint-active');
   }
 
   function renderOverview() {
@@ -73,12 +102,15 @@ export function initPresentation() {
     history.replaceState({}, '', url);
 
     if (overviewOpen) renderOverview();
+    if (index > 0) dismissNavHint();
   }
 
   function next() {
+    dismissNavHint();
     show(index + 1);
   }
   function prev() {
+    dismissNavHint();
     show(index - 1);
   }
 
@@ -170,6 +202,7 @@ export function initPresentation() {
   );
 
   show(index);
+  maybeShowNavHint();
 }
 
 if (typeof window !== 'undefined') {
