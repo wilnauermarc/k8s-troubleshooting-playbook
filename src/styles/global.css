@@ -89,6 +89,34 @@ body {
   transition: width 0.25s ease;
 }
 
+@keyframes nav-hint-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes nav-next-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(45, 212, 191, 0);
+  }
+}
+
+[data-nav-hint]:not(.hidden) {
+  animation: nav-hint-bounce 1.6s ease-in-out infinite;
+}
+
+body.nav-hint-active [data-next] {
+  animation: nav-next-pulse 1.6s ease-in-out infinite;
+}
+
 /* CSS flow diagrams — projector-readable */
 .flow-node {
   @apply rounded-xl border-2 px-5 py-3 text-center font-display text-base font-semibold leading-snug md:text-lg;
