@@ -13,7 +13,7 @@ import Callout from '../ui/Callout.astro';
   track="core"
   notes="Approximate failure window ≈ initialDelaySeconds + (failureThreshold − 1) × periodSeconds, plus timeoutSeconds per attempt. Prefer EndpointSlice when checking traffic membership."
 >
-  <div class="stagger flex flex-col gap-8">
+  <div class="stagger flex flex-col gap-6">
     <SignalGrid
       items={[
         { label: 'Liveness too eager', value: 'Slow start → restart loop → looks like CrashLoop' },
@@ -32,12 +32,8 @@ kubectl exec POD -n NAMESPACE -- curl -sf localhost:8080/healthz
 kubectl get endpointslices -n NAMESPACE -l kubernetes.io/service-name=SVC -o wide`}
     />
 
-    <Callout type="tip" title="Timing is approximate">
-      timeoutSeconds and probe scheduling can affect the actual timing.
-    </Callout>
-
     <Callout type="rule" title="Golden Rule">
-      Never swap readiness and liveness jobs — readiness drains traffic; liveness restarts.
+      Never swap readiness and liveness jobs — readiness drains traffic; liveness restarts. Timing math is approximate (probe scheduling, timeouts).
     </Callout>
   </div>
 </Slide>

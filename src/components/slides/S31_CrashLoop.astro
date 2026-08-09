@@ -10,7 +10,7 @@ import Pill from '../ui/Pill.astro';
   id="s31-crashloop"
   chapter="Failure Patterns"
   title="CrashLoopBackOff"
-  notes="CrashLoopBackOff is the most common pod status and the most misdiagnosed. BackOff is kubelet throttling restarts — the container IS starting and dying. Root cause is almost never Kubernetes itself. Walk lifecycle: get → describe → logs --previous → fix → rollout status. Exit 137 = SIGKILL — verify Last State.Reason OOMKilled before concluding OOM. Exit 1 = app error; 126/127 = cmd missing. Myth: restarting pod rarely fixes CrashLoop."
+  notes="CrashLoopBackOff is the most common pod status and the most misdiagnosed. BackOff is kubelet throttling restarts — the container IS starting and dying. Root cause is almost never Kubernetes itself. Walk lifecycle: get → describe → logs --previous → fix → rollout status. Exit 137 = SIGKILL — verify Last State.Reason OOMKilled before concluding OOM. Exit 1 = app error; 143 = SIGTERM (graceful kill); 126/127 = cmd missing. Myth: restarting pod rarely fixes CrashLoop."
 >
   <div class="stagger flex flex-col gap-8">
     <div class="flex flex-wrap items-center gap-2">
@@ -23,7 +23,7 @@ import Pill from '../ui/Pill.astro';
       items={[
         { label: 'Status', value: 'Kubelet exponential backoff between restarts' },
         { label: 'First signal', value: 'RESTARTS climbing; Last State: Terminated in describe' },
-        { label: 'Exit codes', value: '1 = app · 137 = SIGKILL (verify OOMKilled Reason) · 126/127 = cmd' },
+        { label: 'Exit codes', value: '1 = app · 137 = SIGKILL (verify OOMKilled) · 143 = SIGTERM · 126/127 = cmd' },
         { label: 'Not the cause', value: 'The BackOff itself — symptom of crash, not the bug' },
       ]}
     />

@@ -9,7 +9,7 @@ import Callout from '../ui/Callout.astro';
   chapter="Decision Trees"
   title="CrashLoop — Exit Code Path"
   track="core"
-  notes="Exit 0 with Always restart often means a one-shot/wrong command exiting cleanly. Liveness kills usually show Unhealthy Events and often exit 137 without Reason=OOMKilled. Exit 1 → app/config. Empty logs → --previous."
+  notes="Exit 0 with Always restart often means a one-shot/wrong command exiting cleanly. Liveness failure: kubelet terminates the container (SIGTERM then SIGKILL after grace) — Unhealthy Events; exit may be 143 or 137, never Reason=OOMKilled. Exit 1 → app/config. Empty logs → --previous."
 >
   <div class="stagger space-y-6">
     <BranchTree
@@ -32,7 +32,7 @@ import Callout from '../ui/Callout.astro';
       ]}
     />
     <Callout type="tip">
-      Exit 137 without <code class="text-deck-cyan">Reason: OOMKilled</code> can still be kubelet SIGKILL from liveness — check Events, not only the exit code.
+      Liveness kills go SIGTERM → SIGKILL after the grace period — exit 143 <em>or</em> 137, never <code class="text-deck-cyan">Reason: OOMKilled</code>. Check Events, not only the exit code.
     </Callout>
   </div>
 </Slide>

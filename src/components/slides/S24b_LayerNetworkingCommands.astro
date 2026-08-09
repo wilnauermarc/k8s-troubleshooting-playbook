@@ -19,7 +19,7 @@ import Pill from '../ui/Pill.astro';
         lang="bash"
         caption="Path verification"
         code={`kubectl get svc,endpointslices -n <ns>
-kubectl run dbg --rm -it --image=nicolaka/netshoot -- bash
+kubectl run dbg --rm -it --restart=Never --image=nicolaka/netshoot -- bash
 # inside: nslookup my-svc.my-ns.svc.cluster.local
 # inside: curl -v http://my-svc:8080/health
 kubectl describe netpol -n <ns>

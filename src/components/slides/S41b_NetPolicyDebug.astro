@@ -11,7 +11,7 @@ import Callout from '../ui/Callout.astro';
   title="NetworkPolicy — Debug Commands"
   notes="Debug: get networkpolicy, describe policy, compare pod labels to podSelector. Test with debug pod WITH and WITHOUT same labels. Cross-namespace: namespaceSelector matchLabels on namespace, not pod. Egress to 0.0.0.0/0:443 needs explicit rule under default-deny. Cilium Hubble / Calico flow logs show denied flows."
 >
-  <div class="stagger flex flex-col gap-8">
+  <div class="stagger flex flex-col gap-6">
     <Matrix
       headers={['Traffic path', 'Policy field', 'Missed rule']}
       rows={[

@@ -27,15 +27,6 @@ import Matrix from '../ui/Matrix.astro';
       </ul>
     </section>
 
-    <section>
-      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
-      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
-        <li>• Phase Pending or Init:0/1 in status</li>
-        <li>• Running with Ready=False — no traffic</li>
-        <li>• Terminating for longer than grace period</li>
-      </ul>
-    </section>
-
     <Matrix
       headers={['Phase / condition', 'Observable symptom']}
       rows={[

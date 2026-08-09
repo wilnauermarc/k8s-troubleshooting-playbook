@@ -92,7 +92,7 @@
   - [63. Config Errors — Matrix & Commands](#slide-63)
   - [64. OOMKilled — Container Memory Limit](#slide-64)
   - [65. Evicted & Node Resource Pressure](#slide-65)
-  - [66. Pending — Nothing Scheduled Yet](#slide-66)
+  - [66. Pending — FailedScheduling](#slide-66)
   - [67. FailedScheduling — Reasons & Commands](#slide-67)
   - [68. FailedMount — Kubelet Can't Mount Volume](#slide-68)
   - [69. MultiAttach, CSI & Volume Triage](#slide-69)
@@ -520,7 +520,9 @@ Three rules under incident pressure. Don't change while observing is the hardest
 
 Default order — skip only with a reason. CrashLoop often makes logs --previous the fastest win after describe. Exec/debug last.
 
-> **RULE:** Default path: describe → Events/Conditions → logs → YAML → then debug. Reorder when the symptom already points at logs (CrashLoop).
+### Content
+
+- Reorder only with a reason — CrashLoop already points at logs --previous.
 
 ---
 
@@ -603,7 +605,7 @@ Orientation table. First classify, then open the matching decision tree or layer
 
 | Symptom | Likely layer | First check |
 | --- | --- | --- |
-| Pending | Scheduling / PVC / image / init | describe → FailedScheduling Events |
+| Pending | Scheduling / PVC / image / init | describe → PodScheduled? then Events |
 | Running + Ready=False | Probes / startup / app health | describe Conditions + probe lines |
 | Service up, no traffic | Selectors / Ready / EndpointSlice | get endpointslices |
 | NXDOMAIN / lookup fail | DNS / CoreDNS / NetPol :53 | nslookup from debug pod |
@@ -740,7 +742,7 @@ Wrong context is the silent killer. Confirm cluster name, cloud account, and env
 
 ### Table
 
-| Failure | Symptom |
+| Failure | Observable symptom |
 | --- | --- |
 | Wrong kubeconfig context | Changes land in prod; staging looks broken |
 | Expired cluster certs | Unable to connect, TLS handshake errors |
@@ -768,19 +770,6 @@ Wrong context is the silent killer. Confirm cluster name, cloud account, and env
 
         - • Critical addon crash loop
 
-      
-    
-
-    
-      Observable symptoms
-
-      
-        - • Changes land in prod; staging looks broken
-
-        - • TLS handshake errors on kubectl
-
-        - • DNS, ingress, or metrics missing cluster-wide
-
 ---
 
 ## Slide 27: Cluster Layer — Commands {#slide-27}
@@ -796,7 +785,7 @@ Which cluster am I in? Always confirm context before debugging. Myth: every clus
 ```bash
 kubectl config current-context
 kubectl cluster-info
-kubectl version --short
+kubectl version
 kubectl get ns
 kubectl get pods -n kube-system
 ```
@@ -877,7 +866,7 @@ Health endpoints on API server. Self-managed: check static pods on control plane
 
 ```bash
 kubectl get --raw='/readyz?verbose'
-kubectl get --raw='/healthz'
+kubectl get --raw='/livez?verbose'
 
 # Self-managed: static pods on control plane nodes
 kubectl get pods -n kube-system \\
@@ -913,11 +902,11 @@ kubelet + container runtime on each worker. NodeNotReady and pressure conditions
 
 ### Table
 
-| Condition | What you see |
+| Condition | Observable symptom |
 | --- | --- |
 | NodeNotReady | Schedule/attach impaired; pods may keep running or go Unknown |
 | DiskPressure | Evictions, emptyDir fills, image pull fails |
-| MemoryPressure | OOM evictions, best-effort pods killed first |
+| MemoryPressure | Pods Evicted — BestEffort pods first |
 
 ### Content
 
@@ -940,19 +929,6 @@ kubelet + container runtime on each worker. NodeNotReady and pressure conditions
         - • MemoryPressure on node
 
         - • PIDPressure on node
-
-      
-    
-
-    
-      Observable symptoms
-
-      
-        - • New scheduling impaired; pods may keep running or go Unknown
-
-        - • Evictions, emptyDir fills, image pull fails
-
-        - • Cannot start new containers on that node
 
 ---
 
@@ -1015,7 +991,7 @@ Pending with FailedScheduling is the scheduler speaking. Read the message litera
 - Purpose
 
       
-        Match pods to nodes — resource requests/limits, taints & tolerations, affinity/anti-affinity, topology, priority, and quotas.
+        Match pods to nodes — resource requests (limits are runtime-only), taints & tolerations, affinity/anti-affinity, topology, priority, and quotas.
       
 
     
@@ -1036,14 +1012,7 @@ Pending with FailedScheduling is the scheduler speaking. Read the message litera
     
 
     
-      Observable symptoms
-
-      
-        - • Pod phase Pending indefinitely
-
-        - • FailedScheduling events with explicit reason
-
-        - • Scheduler message names the blocking constraint
+      Symptom: Pod stays Pending — the FailedScheduling Event names the blocking constraint.
 
 ---
 
@@ -1110,7 +1079,7 @@ Scheduling vs runtime. Requests place the pod; limits kill/throttle it; quotas/L
 
 ### Speaker notes
 
-Deployment owns ReplicaSets; each rollout creates a new RS. READY vs AVAILABLE differ during surge. Stuck rollouts: maxUnavailable, progressDeadline, failing readiness on new pods, or selector label typos. Commands on next slide.
+Deployment owns ReplicaSets; each rollout creates a new RS. AVAILABLE lags READY when minReadySeconds is set. Stuck rollouts: mis-tuned maxSurge/maxUnavailable, progressDeadline, failing readiness on new pods, or selector label typos. Commands on next slide.
 
 ### Content
 
@@ -1126,7 +1095,7 @@ Deployment owns ReplicaSets; each rollout creates a new RS. READY vs AVAILABLE d
       Typical failures
 
       
-        - • maxSurge / maxUnavailable block progress
+        - • Mis-tuned maxSurge / maxUnavailable stall the rollout
 
         - • New pods fail readiness → rollout stalls
 
@@ -1143,7 +1112,7 @@ Deployment owns ReplicaSets; each rollout creates a new RS. READY vs AVAILABLE d
       
         - • Rollout status stuck or progress deadline exceeded
 
-        - • AVAILABLE replicas lag behind READY during surge
+        - • AVAILABLE lags READY when minReadySeconds > 0
 
         - • Multiple ReplicaSet generations with active pods
 
@@ -1155,7 +1124,7 @@ Deployment owns ReplicaSets; each rollout creates a new RS. READY vs AVAILABLE d
 
 ### Speaker notes
 
-Rollout forensics: status, describe deploy, list RS by creation time, inspect status JSON. Myth: 3/3 means success — old pods may still serve traffic; AVAILABLE can lag READY.
+Rollout forensics: status, describe deploy, list RS by creation time, inspect status JSON. Myth: 3/3 means success — old pods may still serve traffic; AVAILABLE can lag READY when minReadySeconds is set.
 
 ### Commands
 
@@ -1166,7 +1135,7 @@ kubectl get rs -n <ns> -l app=<label> --sort-by=.metadata.creationTimestamp
 kubectl get deploy/<name> -o jsonpath='{.status}' | jq
 ```
 
-> **MYTH:** Deployment shows 3/3 so the rollout succeeded. Old pods may still serve traffic; AVAILABLE can lag READY during surge.
+> **MYTH:** Deployment shows 3/3 so the rollout succeeded. Old pods may still serve traffic; AVAILABLE lags READY when minReadySeconds is set.
 
 ### Content
 
@@ -1176,7 +1145,7 @@ kubectl get deploy/<name> -o jsonpath='{.status}' | jq
     
 
     
-      Deployment shows 3/3 so the rollout succeeded. Old pods may still serve traffic; AVAILABLE can lag READY during surge.
+      Deployment shows 3/3 so the rollout succeeded. Old pods may still serve traffic; AVAILABLE lags READY when minReadySeconds is set.
     
 
     
@@ -1222,19 +1191,6 @@ Phase is coarse; conditions (PodScheduled, Initialized, Ready, ContainersReady) 
         - • Probes failing while phase is Running
 
         - • Finalizers or volume detach delaying termination
-
-      
-    
-
-    
-      Observable symptoms
-
-      
-        - • Phase Pending or Init:0/1 in status
-
-        - • Running with Ready=False — no traffic
-
-        - • Terminating for longer than grace period
 
 ---
 
@@ -1338,14 +1294,7 @@ Each container has its own exit code, OOM state, and probe results. CrashLoopBac
     
 
     
-      Observable symptoms
-
-      
-        - • Restart count climbing; CrashLoopBackOff
-
-        - • Empty current logs after crash
-
-        - • Ready=False; traffic withheld
+      Symptom: restart count climbing, empty current logs after crash — read Last State in describe.
 
 ---
 
@@ -1398,7 +1347,7 @@ PVC Bound only means a PV is claimed — mount happens at pod start. FailedMount
 | Failure | Symptom |
 | --- | --- |
 | PVC Pending | No matching PV / StorageClass / quota |
-| FailedMount | ContainerCreating forever, mount path wrong |
+| FailedMount | ContainerCreating forever — attach, fsType, permissions, CSI |
 | MultiAttachError | RWO still attached on another node after reschedule |
 
 ### Content
@@ -1423,19 +1372,6 @@ PVC Bound only means a PV is claimed — mount happens at pod start. FailedMount
 
         - • fsGroup or permission mismatch
 
-      
-    
-
-    
-      Observable symptoms
-
-      
-        - • ContainerCreating forever
-
-        - • App starts but cannot write to volume
-
-        - • Pod events name attach or mount failure
-
 ---
 
 ## Slide 43: Storage — Commands {#slide-43}
@@ -1453,7 +1389,7 @@ kubectl get pvc,pv -n <ns>
 kubectl describe pvc <claim> -n <ns>
 kubectl describe pod <pod> -n <ns>   # Mount events
 kubectl get storageclass
-kubectl get volumeattachments   # if CRD exists
+kubectl get volumeattachments   # CSI attach state
 ```
 
 > **MYTH:** PVC Bound means the volume works. Binding ≠ mounted. Mount failures and permission errors appear only in pod events.
@@ -1532,7 +1468,7 @@ Prefer EndpointSlice for Service backends. Without Ready addresses the Service i
 
 ```bash
 kubectl get svc,endpointslices -n <ns>
-kubectl run dbg --rm -it --image=nicolaka/netshoot -- bash
+kubectl run dbg --rm -it --restart=Never --image=nicolaka/netshoot -- bash
 # inside: nslookup my-svc.my-ns.svc.cluster.local
 # inside: curl -v http://my-svc:8080/health
 kubectl describe netpol -n <ns>
@@ -1595,19 +1531,6 @@ Top of the stack. Platform can be perfect while the app returns 200 with errors 
         - • Config drift between environments
 
         - • Upstream dependency timeout (DB, queue, SaaS)
-
-      
-    
-
-    
-      Observable symptoms
-
-      
-        - • Users see wrong business outcome despite green pods
-
-        - • Works in staging, fails in prod with same image
-
-        - • In-cluster curl fails while pod phase is Running
 
 ---
 
@@ -1707,9 +1630,9 @@ Exit 137 = SIGKILL. Verify Last State.Reason: OOMKilled before concluding OOM. O
 
 ### Speaker notes
 
-Exit 0 with Always restart often means a one-shot/wrong command exiting cleanly. Liveness kills usually show Unhealthy Events and often exit 137 without Reason=OOMKilled. Exit 1 → app/config. Empty logs → --previous.
+Exit 0 with Always restart often means a one-shot/wrong command exiting cleanly. Liveness failure: kubelet terminates the container (SIGTERM then SIGKILL after grace) — Unhealthy Events; exit may be 143 or 137, never Reason=OOMKilled. Exit 1 → app/config. Empty logs → --previous.
 
-> **TIP:** Exit 137 without Reason: OOMKilled can still be kubelet SIGKILL from liveness — check Events, not only the exit code.
+> **TIP:** Liveness kills go SIGTERM → SIGKILL after the grace period — exit 143 or 137, never Reason: OOMKilled. Check Events, not only the exit code.
 
 ---
 
@@ -1811,7 +1734,7 @@ Network rows often look like app bugs. First command isolates the layer.
 
 ### Speaker notes
 
-CrashLoopBackOff is the most common pod status and the most misdiagnosed. BackOff is kubelet throttling restarts — the container IS starting and dying. Root cause is almost never Kubernetes itself. Walk lifecycle: get → describe → logs --previous → fix → rollout status. Exit 137 = SIGKILL — verify Last State.Reason OOMKilled before concluding OOM. Exit 1 = app error; 126/127 = cmd missing. Myth: restarting pod rarely fixes CrashLoop.
+CrashLoopBackOff is the most common pod status and the most misdiagnosed. BackOff is kubelet throttling restarts — the container IS starting and dying. Root cause is almost never Kubernetes itself. Walk lifecycle: get → describe → logs --previous → fix → rollout status. Exit 137 = SIGKILL — verify Last State.Reason OOMKilled before concluding OOM. Exit 1 = app error; 143 = SIGTERM (graceful kill); 126/127 = cmd missing. Myth: restarting pod rarely fixes CrashLoop.
 
 > **RULE:** Always check --previous first. Current container may have no logs yet.
 
@@ -1829,9 +1752,7 @@ CrashLoopBackOff is the most common pod status and the most misdiagnosed. BackOf
 
 ### Speaker notes
 
-Image pull failures block pod creation — no container starts, logs empty. ErrImagePull immediate; ImagePullBackOff is retry with backoff. Decision tree: typo vs auth vs registry down vs rate limit. Events in describe are explicit. imagePullSecrets on SA OR pod — common miss across namespaces. Next slide: event matrix and commands.
-
-> **MYTH:** Deleting the pod repeatedly without fixing the image — you'll stay in BackOff forever.
+Image pull failures block container start — the Pod object exists, but no process runs and logs stay empty. ErrImagePull immediate; ImagePullBackOff is retry with backoff. Decision tree: typo vs auth vs registry down vs rate limit. Events in describe are explicit. imagePullSecrets on SA OR pod — common miss across namespaces. Next slide: event matrix and commands.
 
 ### Content
 
@@ -1854,7 +1775,7 @@ Walk matrix: manifest unknown=wrong tag, pull access denied=secret, authorizatio
 | Event message | Likely cause | Fix |
 | --- | --- | --- |
 | manifest unknown | Wrong tag or deleted image | Verify tag in registry |
-| pull access denied | Missing imagePullSecret | Check SA secrets + RBAC |
+| pull access denied | Missing imagePullSecret | Check imagePullSecrets on Pod/SA |
 | authorization failed | Expired registry token | Refresh creds, IRSA/WI |
 | rate limit exceeded | Registry throttle | Mirror, cache, authenticate |
 | i/o timeout | Network to registry | Egress, proxy, DNS |
@@ -1942,7 +1863,7 @@ Proof is Last State.Reason: OOMKilled. Exit 137 = SIGKILL only — verify Reason
 
 ### Speaker notes
 
-Evicted: kubelet removed pod due to node pressure — memory, disk, inodes, or PID limits. Pod is gone — check events on the node and sibling pods. Walk describe node Conditions: MemoryPressure, DiskPressure, PIDPressure. Disk pressure: emptyDir + logs, image layers, container logs filling node. PID pressure: fork bombs or too many threads. Fix: expand node disk, tune eviction thresholds, reduce pod count, add requests/limits. LimitRange and ResourceQuota can block scheduling fixes. VPA as prevention hint.
+Evicted: kubelet removed pod due to node pressure — memory, disk, inodes, or PID limits. The pod usually remains listed as Failed/Evicted until GC — describe it plus the node Conditions. Walk describe node Conditions: MemoryPressure, DiskPressure, PIDPressure. Disk pressure: emptyDir + logs, image layers, container logs filling node. PID pressure: fork bombs or too many threads. Fix: expand node disk, tune eviction thresholds, reduce pod count, add requests/limits. LimitRange and ResourceQuota can block scheduling fixes. VPA as prevention hint.
 
 ### Table
 
@@ -1960,7 +1881,7 @@ kubectl get pods -A --field-selector spec.nodeName=NODE -o wide
 kubectl top pod -A --sort-by=memory | head
 ```
 
-> **TIP:** BestEffort pods (no requests/limits) are evicted first under MemoryPressure.
+> **FIRST SIGNAL:** Evicted pods usually stay listed as Failed (Reason: Evicted) — describe the pod and the node Conditions. BestEffort pods (no requests/limits) go first under MemoryPressure.
 
 ### Content
 
@@ -1971,13 +1892,13 @@ kubectl top pod -A --sort-by=memory | head
 
 ---
 
-## Slide 66: Pending — Nothing Scheduled Yet {#slide-66}
+## Slide 66: Pending — FailedScheduling {#slide-66}
 
 *File: `S35_PendingFailSched.astro` · id: `s35-pending-failsched`*
 
 ### Speaker notes
 
-Pending means no node accepted the pod — scheduler or admission blocking. FailedScheduling Events list exact reasons. 0/N nodes breakdown — each reason is a filter pass. PVC Pending blocks pod with WaitForFirstConsumer. Don't confuse with ContainerCreating — that's post-schedule. Next slide: reason matrix and commands.
+This slide covers the unscheduled case: PodScheduled=False, FailedScheduling Events list exact reasons. 0/N nodes breakdown — each reason is a filter pass. Unbound PVC with Immediate binding blocks scheduling; WaitForFirstConsumer instead delays PV binding until the pod is scheduled. Pending can also mean scheduled-but-not-started (init/image/mount) — check PodScheduled first (see S27b). Next slide: reason matrix and commands.
 
 > **DECISION:** Resource in Events? Compare pod requests to node Allocatable.
       Affinity/taints? Compare pod spec to describe node.
@@ -2100,9 +2021,7 @@ kubectl exec POD -n NAMESPACE -- curl -sf localhost:8080/healthz
 kubectl get endpointslices -n NAMESPACE -l kubernetes.io/service-name=SVC -o wide
 ```
 
-> **TIMING IS APPROXIMATE:** timeoutSeconds and probe scheduling can affect the actual timing.
-
-> **GOLDEN RULE:** Never swap readiness and liveness jobs — readiness drains traffic; liveness restarts.
+> **GOLDEN RULE:** Never swap readiness and liveness jobs — readiness drains traffic; liveness restarts. Timing math is approximate (probe scheduling, timeouts).
 
 ### Content
 
@@ -2111,11 +2030,7 @@ kubectl get endpointslices -n NAMESPACE -l kubernetes.io/service-name=SVC -o wid
     
 
     
-      timeoutSeconds and probe scheduling can affect the actual timing.
-    
-
-    
-      Never swap readiness and liveness jobs — readiness drains traffic; liveness restarts.
+      Never swap readiness and liveness jobs — readiness drains traffic; liveness restarts. Timing math is approximate (probe scheduling, timeouts).
 
 ---
 
@@ -2180,11 +2095,17 @@ Concrete sequence for beginners. Stop when a step fails — that step is your la
 
 ```bash
 kubectl exec POD -n NS -- cat /etc/resolv.conf
-kubectl run -it --rm dnsdebug --image=busybox:1.36 --restart=Never -- \\
+
+kubectl run -it --rm dnsdebug --image=busybox:1.36 \\
+  --restart=Never -- \\
   nslookup kubernetes.default.svc.cluster.local
+
 kubectl get pods -n kube-system -l k8s-app=kube-dns
-kubectl get endpointslices -n kube-system -l kubernetes.io/service-name=kube-dns
-kubectl logs -n kube-system -l k8s-app=kube-dns --tail=50
+kubectl get endpointslices -n kube-system \\
+  -l kubernetes.io/service-name=kube-dns
+
+kubectl logs -n kube-system -l k8s-app=kube-dns \\
+  --tail=50
 ```
 
 ---
@@ -2225,22 +2146,9 @@ kubectl get svc SVC -n NAMESPACE -o wide
 kubectl get endpointslices -n NAMESPACE -l kubernetes.io/service-name=SVC -o wide
 # Endpoints is legacy — still works, prefer slices
 kubectl get pods -n NAMESPACE --show-labels
-
-kubectl exec CLIENT -n NAMESPACE -- \\
-  curl -sv http://SVC.NAMESPACE.svc.cluster.local:PORT/health
 ```
 
-> **TIP:** Endpoints is the legacy API; prefer EndpointSlice on current Kubernetes clusters.
-
 > **MYTH:** "Service is broken because kubectl get svc shows CLUSTER-IP." — Svc is virtual; Ready addresses in EndpointSlice are real.
-
-### Content
-
-- Endpoints is the legacy API; prefer EndpointSlice on current Kubernetes clusters.
-    
-
-    
-      "Service is broken because kubectl get svc shows CLUSTER-IP." — Svc is virtual; Ready addresses in EndpointSlice are real.
 
 ---
 
@@ -2319,11 +2227,6 @@ openssl s_client -connect HOST:443 -servername HOST </dev/null 2>/dev/null | \\
 
 > **TIP:** Gateway API: check Accepted=True on parent Gateway before debugging HTTPRoute.
 
-### Content
-
-- TLS
-      cert-manager
-
 ---
 
 ## Slide 80: NetworkPolicy: Default-Deny Mental Model {#slide-80}
@@ -2340,8 +2243,6 @@ Ingress deny ≠ egress deny. Policies select pods — not automatically cluster
 
 ### Content
 
-- Silent drop
-      policyTypes matter
 - Default-deny ingress blocks inbound traffic; default-deny egress blocks outbound traffic. Explicit allow rules are required for the traffic direction being isolated.
       
       
@@ -2491,8 +2392,8 @@ logs vs --previous. Prefer debug over exec in prod. port-forward is not a prod p
 
 | Intent | Command | When NOT |
 | --- | --- | --- |
-| App output now? | kubectl logs POD -f --tail=100 | Never started — use --previous |
-| Last crash output? | kubectl logs POD --previous | No previous instance |
+| App output now? | kubectl logs POD -f --tail=100 | Never started — describe Events instead |
+| Last crash output? | kubectl logs POD --previous | No previous instance (never started) |
 | Quick check inside? | kubectl exec … -- CMD | Prod deep debug — use debug |
 | Isolated shell? | kubectl debug POD -it --image=… | First move — describe first |
 | Rollout done? | kubectl rollout status deploy/X | Need history / undo |
@@ -2680,12 +2581,11 @@ Practice section. Predict root cause before opening the Fix slide. Each incident
 
 ### Speaker notes
 
-Study format: symptom, wrong assumption, discriminating check, cause. Prefer EndpointSlice.
+Study format: symptom, wrong assumption, discriminating check, cause. Readiness probe includes a Postgres dependency check; DB outage flips all pods Ready=False, EndpointSlice has no Ready addresses, LB returns 503 while pods stay Running. Prefer EndpointSlice. Next slide: fix the DB path first, then decide deliberately whether readiness should include dependencies.
 
 ### Commands
 
 ```bash
-kubectl get endpointslices -l kubernetes.io/service-name=checkout -o wide
 kubectl describe pod -l app=checkout | grep -A5 Conditions
 ```
 
@@ -2695,7 +2595,7 @@ kubectl describe pod -l app=checkout | grep -A5 Conditions
 
 > **FASTEST DISCRIMINATING CHECK:** kubectl get endpointslices -l kubernetes.io/service-name=checkout — empty / not ready?
 
-> **ROOT CAUSE:** Readiness always 200 while app cannot reach Postgres → Ready=False → no backends.
+> **ROOT CAUSE:** Readiness probe checks Postgres — DB unreachable → Ready=False on every pod → zero Ready addresses → LB answers 503.
 
 ### Content
 
@@ -2705,7 +2605,7 @@ kubectl describe pod -l app=checkout | grep -A5 Conditions
       kubectl get endpointslices -l kubernetes.io/service-name=checkout — empty / not ready?
     
     
-      Readiness always 200 while app cannot reach Postgres → Ready=False → no backends.
+      Readiness probe checks Postgres — DB unreachable → Ready=False on every pod → zero Ready addresses → LB answers 503.
 
 ---
 
@@ -2715,9 +2615,9 @@ kubectl describe pod -l app=checkout | grep -A5 Conditions
 
 ### Speaker notes
 
-Complete the study card: fix probe, validate EndpointSlice Ready addresses, prevent with Ready address count == 0 alert.
+Complete the study card: restore the DB path, then decide deliberately what readiness includes — hard dependency in readiness means DB outage removes ALL pods from the Service. Validate EndpointSlice Ready addresses; prevent with Ready address count == 0 alert.
 
-> **FIX:** Readiness hits /ready with real dependency checks — not a always-200 /healthz.
+> **FIX:** Restore the DB path first. Then decide deliberately: a hard dependency in readiness means a DB outage drains every pod from the Service.
 
 > **VALIDATE:** EndpointSlice shows Ready addresses; LB 503 clears; checkout succeeds.
 
@@ -2725,7 +2625,7 @@ Complete the study card: fix probe, validate EndpointSlice Ready addresses, prev
 
 ### Content
 
-- Readiness hits /ready with real dependency checks — not a always-200 /healthz.
+- Restore the DB path first. Then decide deliberately: a hard dependency in readiness means a DB outage drains every pod from the Service.
     
     
       EndpointSlice shows Ready addresses; LB 503 clears; checkout succeeds.
@@ -3174,13 +3074,13 @@ Q1 Ready vs Running. Q2 highest-signal evidence. Q3 Pending Events. Q4 Exit 137 
 
 ### Speaker notes
 
-Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslookup from debug pod in same namespace isolates DNS. Q11: ConfigMap mount may be stale (subPath) or app can't parse — logs --previous. Q12: AvailableReplicas < Desired — not enough Available replicas; check Ready, minReadySeconds, rollout, probes. Q13: PVC Pending — no matching PV, wrong storageClass, quota. Q14: MultiAttach — RWO still attached on another node. Q15: Node NotReady — pods may continue temporarily; scheduling/lifecycle impaired. Q16: Evicted — node pressure (memory/disk/PID).
+Q9: Bad liveness restarts the container; bad readiness removes from Service only. Q10: nslookup from debug pod in same namespace isolates DNS. Q11: ConfigMap mount may be stale (subPath) or app can't parse — logs --previous. Q12: AvailableReplicas < Desired — not enough Available replicas; check Ready, minReadySeconds, rollout, probes. Q13: PVC Pending — no matching PV, wrong storageClass, quota. Q14: MultiAttach — RWO still attached on another node. Q15: Node NotReady — pods may continue temporarily; scheduling/lifecycle impaired. Q16: Evicted — node pressure (memory/disk/PID).
 
 ### Table
 
 | # | Question | Ideal Answer (1 line) |
 | --- | --- | --- |
-| 9 | Liveness vs readiness — production impact? | Bad liveness kills pod; bad readiness removes from Service only |
+| 9 | Liveness vs readiness — production impact? | Bad liveness restarts the container; bad readiness removes from Service only |
 | 10 | How prove it's DNS not app bug? | nslookup from debug pod in same namespace — isolate resolution layer |
 | 11 | CrashLoop after ConfigMap change? | Mount may be stale (subPath) or app can't parse new config — logs --previous |
 | 12 | What does AvailableReplicas < Desired mean? | Fewer pods Ready for ≥ minReadySeconds than desired (rollout lag, probes, or not Ready) |
@@ -3197,7 +3097,7 @@ Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslook
 
 ### Speaker notes
 
-Q17-20: networking and TLS edge cases. Q21-24: observability and operations. Q17: Ingress 502 — no Ready addresses in EndpointSlice or wrong port. Q18: TLS — secret, SNI, expiry. Q19: CoreDNS — upstream, cache, limits. Q20: Headless Service — stable per-pod DNS for StatefulSets. Q21: logs --previous after crash. Q22: metrics for SLOs, logs for diagnosis. Q23: validate under load with canary + error rate. Q24: startup probe for slow-starting apps.
+Q17-20: networking and TLS edge cases. Q21-24: observability and operations. Q17: Ingress 502 — no Ready addresses in EndpointSlice or wrong port. Q18: TLS — secret, SNI, expiry. Q19: CoreDNS — upstream, cache, limits. Q20: Headless Service — stable per-pod DNS for StatefulSets. Q21: logs --previous after crash. Q22: metrics for SLOs, logs for diagnosis. Q23: validate under load with canary + error rate. Q24: startup probe for slow-starting apps — gates liveness AND readiness until first success.
 
 ### Table
 
@@ -3210,7 +3110,7 @@ Q17-20: networking and TLS edge cases. Q21-24: observability and operations. Q17
 | 21 | When use kubectl logs --previous? | Container crashed — capture last run output before restart |
 | 22 | Metric vs log for alerting? | Metrics for thresholds & SLOs; logs for diagnostic detail after alert fires |
 | 23 | How validate fix under load? | Rollout canary + watch error rate, latency, saturation — not just pod status |
-| 24 | What is a startup probe for? | Slow-starting apps — blocks liveness until initial boot completes |
+| 24 | What is a startup probe for? | Slow-starting apps — gates liveness & readiness until first success |
 
 ---
 
@@ -3252,7 +3152,8 @@ Photograph slide. Wide get → describe → logs --previous → EndpointSlice if
 ### Commands
 
 ```bash
-kubectl get pods,events -n <ns> --sort-by='.lastTimestamp'
+kubectl get pods -n <ns> -o wide
+kubectl get events -n <ns> --sort-by='.lastTimestamp'
 kubectl describe pod <pod> | less          # Events + Conditions
 kubectl logs <pod> --previous               # if restarted / CrashLoop
 kubectl get endpointslices,svc -n <ns>
@@ -3285,7 +3186,7 @@ OOM: Reason OOMKilled is proof; 137 is SIGKILL. Readiness: not Ready in Endpoint
 
 | Probe | Fails when | Effect |
 | --- | --- | --- |
-| Startup | App still booting | Blocks liveness until pass |
+| Startup | App still booting | Blocks liveness + readiness until pass |
 | Readiness | Can't serve traffic | Not Ready in EndpointSlice — no kill |
 | Liveness | Process deadlocked | Container restart — use carefully |
 

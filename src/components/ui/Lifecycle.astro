@@ -19,12 +19,20 @@ const {
         <div
           role="listitem"
           class:list={[
-            'rounded-lg border px-4 py-2 font-display text-sm font-semibold tracking-wide md:text-base',
+            'flex items-center gap-2 rounded-lg border px-4 py-2 font-display text-sm font-semibold tracking-wide md:text-base',
             active === i
               ? 'border-deck-cyan bg-deck-cyan/15 text-deck-cyan shadow-glow'
               : 'border-deck-border bg-deck-panel text-deck-muted',
           ]}
         >
+          <span
+            class:list={[
+              'inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.7rem]',
+              active === i ? 'bg-deck-cyan/25 text-deck-cyan' : 'bg-deck-border/60 text-deck-muted',
+            ]}
+          >
+            {i + 1}
+          </span>
           {step}
         </div>
         {i < steps.length - 1 && (

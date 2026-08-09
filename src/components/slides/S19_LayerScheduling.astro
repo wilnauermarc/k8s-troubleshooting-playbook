@@ -13,7 +13,7 @@ import Matrix from '../ui/Matrix.astro';
     <section>
       <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-cyan">Purpose</h3>
       <p class="text-lg leading-relaxed text-deck-text/90 md:text-xl">
-        Match pods to nodes — resource requests/limits, taints & tolerations, affinity/anti-affinity, topology, priority, and quotas.
+        Match pods to nodes — resource <em>requests</em> (limits are runtime-only), taints & tolerations, affinity/anti-affinity, topology, priority, and quotas.
       </p>
     </section>
 
@@ -27,14 +27,9 @@ import Matrix from '../ui/Matrix.astro';
       </ul>
     </section>
 
-    <section>
-      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
-      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
-        <li>• Pod phase Pending indefinitely</li>
-        <li>• FailedScheduling events with explicit reason</li>
-        <li>• Scheduler message names the blocking constraint</li>
-      </ul>
-    </section>
+    <p class="text-lg text-deck-muted">
+      Symptom: Pod stays <span class="text-deck-amber">Pending</span> — the FailedScheduling Event names the blocking constraint.
+    </p>
 
     <Matrix
       headers={['Failure', 'Scheduler message']}

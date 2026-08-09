@@ -15,7 +15,7 @@ import CodeBlock from '../ui/CodeBlock.astro';
       headers={['Event message', 'Likely cause', 'Fix']}
       rows={[
         ['manifest unknown', 'Wrong tag or deleted image', 'Verify tag in registry'],
-        ['pull access denied', 'Missing imagePullSecret', 'Check SA secrets + RBAC'],
+        ['pull access denied', 'Missing imagePullSecret', 'Check imagePullSecrets on Pod/SA'],
         ['authorization failed', 'Expired registry token', 'Refresh creds, IRSA/WI'],
         ['rate limit exceeded', 'Registry throttle', 'Mirror, cache, authenticate'],
         ['i/o timeout', 'Network to registry', 'Egress, proxy, DNS'],

@@ -8,11 +8,11 @@ import Callout from '../ui/Callout.astro';
   chapter="Production Incidents"
   title="503 — Fix, Validate, Prevent"
   track="practice"
-  notes="Complete the study card: fix probe, validate EndpointSlice Ready addresses, prevent with Ready address count == 0 alert."
+  notes="Complete the study card: restore the DB path, then decide deliberately what readiness includes — hard dependency in readiness means DB outage removes ALL pods from the Service. Validate EndpointSlice Ready addresses; prevent with Ready address count == 0 alert."
 >
   <div class="stagger grid gap-5 md:grid-cols-3">
     <Callout type="rule" title="Fix">
-      Readiness hits <code class="text-deck-cyan">/ready</code> with real dependency checks — not a always-200 /healthz.
+      Restore the DB path first. Then decide deliberately: a hard dependency in readiness means a DB outage drains <em>every</em> pod from the Service.
     </Callout>
     <Callout type="tip" title="Validate">
       EndpointSlice shows Ready addresses; LB 503 clears; checkout succeeds.

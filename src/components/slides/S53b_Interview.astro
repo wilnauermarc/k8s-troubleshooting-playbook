@@ -8,13 +8,13 @@ import Matrix from '../ui/Matrix.astro';
   chapter="Interview Prep"
   title="Interview Bank — Questions 9–16"
   track="practice"
-  notes="Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslookup from debug pod in same namespace isolates DNS. Q11: ConfigMap mount may be stale (subPath) or app can't parse — logs --previous. Q12: AvailableReplicas < Desired — not enough Available replicas; check Ready, minReadySeconds, rollout, probes. Q13: PVC Pending — no matching PV, wrong storageClass, quota. Q14: MultiAttach — RWO still attached on another node. Q15: Node NotReady — pods may continue temporarily; scheduling/lifecycle impaired. Q16: Evicted — node pressure (memory/disk/PID)."
+  notes="Q9: Bad liveness restarts the container; bad readiness removes from Service only. Q10: nslookup from debug pod in same namespace isolates DNS. Q11: ConfigMap mount may be stale (subPath) or app can't parse — logs --previous. Q12: AvailableReplicas < Desired — not enough Available replicas; check Ready, minReadySeconds, rollout, probes. Q13: PVC Pending — no matching PV, wrong storageClass, quota. Q14: MultiAttach — RWO still attached on another node. Q15: Node NotReady — pods may continue temporarily; scheduling/lifecycle impaired. Q16: Evicted — node pressure (memory/disk/PID)."
 >
   <div class="stagger flex flex-col gap-6">
     <Matrix
       headers={['#', 'Question', 'Ideal Answer (1 line)']}
       rows={[
-        ['9', 'Liveness vs readiness — production impact?', 'Bad liveness kills pod; bad readiness removes from Service only'],
+        ['9', 'Liveness vs readiness — production impact?', 'Bad liveness restarts the container; bad readiness removes from Service only'],
         ['10', 'How prove it\'s DNS not app bug?', 'nslookup from debug pod in same namespace — isolate resolution layer'],
         ['11', 'CrashLoop after ConfigMap change?', 'Mount may be stale (subPath) or app can\'t parse new config — logs --previous'],
         ['12', 'What does AvailableReplicas < Desired mean?', 'Fewer pods Ready for ≥ minReadySeconds than desired (rollout lag, probes, or not Ready)'],
