@@ -30,9 +30,15 @@ const kindClass: Record<string, string> = {
       <>
         <div class:list={['flow-node', kindClass[node.kind ?? 'action']]}>
           {node.label}
-          {node.hint && <div class="mt-1 font-sans text-sm font-normal text-deck-muted">{node.hint}</div>}
+          {node.hint && <div class="mt-1.5 font-sans text-sm font-normal text-deck-muted">{node.hint}</div>}
         </div>
-        {i < nodes.length - 1 && <div class="flow-arrow" aria-hidden="true">↓</div>}
+        {i < nodes.length - 1 && (
+          <div class="flow-arrow" aria-hidden="true">
+            <svg width="20" height="28" viewBox="0 0 20 28" fill="none" class="opacity-70">
+              <path d="M10 2v20M4 16l6 8 6-8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+        )}
       </>
     ))
   }

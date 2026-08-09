@@ -1,30 +1,38 @@
 ---
 import Slide from '../ui/Slide.astro';
 import BranchTree from '../ui/BranchTree.astro';
+import Callout from '../ui/Callout.astro';
 ---
 
 <Slide
   id="s28b-tree-crashloop-exit"
   chapter="Decision Trees"
   title="CrashLoop — Exit Code Path"
-  notes="Exit 0 with restarts often means liveness killing a healthy process. Exit 1 → app/config. Empty logs → --previous."
+  track="core"
+  notes="Exit 0 with Always restart often means a one-shot/wrong command exiting cleanly. Liveness kills usually show Unhealthy Events and often exit 137 without Reason=OOMKilled. Exit 1 → app/config. Empty logs → --previous."
 >
-  <div class="stagger">
+  <div class="stagger space-y-6">
     <BranchTree
       title="Not OOM — what is the exit code?"
       branches={[
         {
-          question: 'Exit 0 + restarts?',
-          yes: 'Liveness probe killing the container',
-          yesHint: 'Fix probe timing or startup',
-          no: 'Check exit 1 / other',
+          question: 'Exit 0 + Always restart?',
+          yes: 'Process exited cleanly',
+          yesHint: 'Wrong command / one-shot / completed Job-like process',
+          no: 'Check exit 1 / 126 / 127 / other',
+          noHint: 'Also scan Unhealthy liveness Events',
         },
         {
-          question: 'Config / secret / env error in logs?',
-          yes: 'Fix mount, key, or env var',
-          no: 'Test dependency: DNS + TCP from debug pod',
+          question: 'Unhealthy liveness Events?',
+          yes: 'Probe killing a living process',
+          yesHint: 'Fix path/timing or add startupProbe',
+          no: 'Config / secret / env error in logs?',
+          noHint: 'Then test DNS + TCP from a debug pod',
         },
       ]}
     />
+    <Callout type="tip">
+      Exit 137 without <code class="text-deck-cyan">Reason: OOMKilled</code> can still be kubelet SIGKILL from liveness — check Events, not only the exit code.
+    </Callout>
   </div>
 </Slide>

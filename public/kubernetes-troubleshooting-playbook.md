@@ -125,7 +125,7 @@
   - [92. Production Incidents — Practice](#slide-92)
   - [93. Incident: Running Pods, HTTP 503](#slide-93)
   - [94. 503 — Fix, Validate, Prevent](#slide-94)
-  - [95. Incident: CrashLoop from Missing Secret](#slide-95)
+  - [95. Incident: Missing Secret (Config Error)](#slide-95)
   - [96. Missing Secret — Fix & Prevent](#slide-96)
   - [97. Incident: Pending from Affinity &amp; Taints](#slide-97)
   - [98. Affinity & Taints — Fix & Prevent](#slide-98)
@@ -582,7 +582,7 @@ Where most day-to-day debugging lives. Platform can be perfect while the app lie
 
 ### Speaker notes
 
-Draw attention to the triangle. Three corners are the classic observability trio — Logs (WHY), Metrics (WHEN), Traces (WHERE). The center is Kubernetes Events (WHAT) — always start here in a cluster incident. Ask: which corner answers the question you have right now?
+Draw attention to the triangle. Three corners are the classic observability trio — Logs (WHY), Metrics (WHEN), Traces (WHERE). The center is Kubernetes Events (WHAT). Often start with Events/Conditions; reorder when the symptom already points at logs (e.g. CrashLoop).
 
 ### Content
 
@@ -861,7 +861,7 @@ API server, etcd, scheduler, controller-manager. Cluster-wide create/update fail
 
         - • HTTP 429/503, watch disconnects
 
-        - • Everything Pending; stale replicas or missing endpoints
+        - • Everything Pending; stale replicas or API/etcd health issues
 
 ---
 
@@ -915,7 +915,7 @@ kubelet + container runtime on each worker. NodeNotReady and pressure conditions
 
 | Condition | What you see |
 | --- | --- |
-| NodeNotReady | Pods on node stuck Terminating / Unknown |
+| NodeNotReady | Schedule/attach impaired; pods may keep running or go Unknown |
 | DiskPressure | Evictions, emptyDir fills, image pull fails |
 | MemoryPressure | OOM evictions, best-effort pods killed first |
 
@@ -948,7 +948,7 @@ kubelet + container runtime on each worker. NodeNotReady and pressure conditions
       Observable symptoms
 
       
-        - • Pods on one node stuck Terminating or Unknown
+        - • New scheduling impaired; pods may keep running or go Unknown
 
         - • Evictions, emptyDir fills, image pull fails
 
@@ -1256,7 +1256,7 @@ kubectl get pod <pod> -n <ns> -o jsonpath='{.status.phase}{"\
 "}{end}'
 ```
 
-> **MYTH:** Running means healthy. A pod can be Running with failing probes, partial init success, or containers in CrashLoopBackOff.
+> **MYTH:** Running means healthy. A pod can be Running with failing probes or CrashLoopBackOff; unfinished inits keep phase Pending, not Running.
 
 ### Content
 
@@ -1266,7 +1266,7 @@ kubectl get pod <pod> -n <ns> -o jsonpath='{.status.phase}{"\
     
 
     
-      Running means healthy. A pod can be Running with failing probes, partial init success, or containers in CrashLoopBackOff.
+      Running means healthy. A pod can be Running with failing probes or CrashLoopBackOff; unfinished inits keep phase Pending, not Running.
     
 
     
@@ -1707,7 +1707,9 @@ Exit 137 = SIGKILL. Verify Last State.Reason: OOMKilled before concluding OOM. O
 
 ### Speaker notes
 
-Exit 0 with restarts often means liveness killing a healthy process. Exit 1 → app/config. Empty logs → --previous.
+Exit 0 with Always restart often means a one-shot/wrong command exiting cleanly. Liveness kills usually show Unhealthy Events and often exit 137 without Reason=OOMKilled. Exit 1 → app/config. Empty logs → --previous.
+
+> **TIP:** Exit 137 without Reason: OOMKilled can still be kubelet SIGKILL from liveness — check Events, not only the exit code.
 
 ---
 
@@ -2088,7 +2090,7 @@ Three boxes, three different kubelet actions. Readiness drains traffic; liveness
 
 ### Speaker notes
 
-Approximate failure window ≈ initialDelaySeconds + failureThreshold × periodSeconds. timeoutSeconds and probe scheduling can affect the actual timing. Prefer EndpointSlice when checking traffic membership.
+Approximate failure window ≈ initialDelaySeconds + (failureThreshold − 1) × periodSeconds, plus timeoutSeconds per attempt. Prefer EndpointSlice when checking traffic membership.
 
 ### Commands
 
@@ -2275,7 +2277,7 @@ kubectl get endpointslices -n NS -l kubernetes.io/service-name=SERVICE -o wide
 
 ### Speaker notes
 
-Edge architecture: client → LB → ingress/gateway controller → Service → pods. Split responsibility: Ingress/HTTPRoute is config; controller is data plane (nginx, traefik, istio). Gateway API adds GatewayClass, Gateway, HTTPRoute — check parentRefs and Accepted conditions. Common: wrong ingressClassName, host rule mismatch, path Type Prefix vs Exact. 502 often means empty endpoints upstream. Next slide: TLS and cert-manager.
+Edge architecture: client → LB → ingress/gateway controller → Service → pods. Split responsibility: Ingress/HTTPRoute is config; controller is data plane (nginx, traefik, istio). Gateway API adds GatewayClass, Gateway, HTTPRoute — check parentRefs and Accepted conditions. Common: wrong ingressClassName, host rule mismatch, path Type Prefix vs Exact. 502 often means empty/not-ready EndpointSlice upstream. Next slide: TLS and cert-manager.
 
 > **EDGE DEBUG ORDER:** DNS → LB reachable → Ingress/Gateway rules → EndpointSlice → Pod logs
 
@@ -2733,27 +2735,27 @@ Complete the study card: fix probe, validate EndpointSlice Ready addresses, prev
 
 ---
 
-## Slide 95: Incident: CrashLoop from Missing Secret {#slide-95}
+## Slide 95: Incident: Missing Secret (Config Error) {#slide-95}
 
 *File: `S47_IncidentSecret.astro` · id: `s47-incident-secret`*
 
 ### Speaker notes
 
-Symptom: new deployment after secret rotation — CrashLoopBackOff. Observe: describe pod shows CreateContainerConfigError or mount failure events. Locate: Secret db-credentials-v3 referenced in deployment but only v2 exists (External Secrets sync lag or typo). Narrow: compare deployment envFrom secretRef name vs kubectl get secrets. Verify: create missing secret or fix reference, watch pod start. Fix: restore secret from vault backup or fix ExternalSecret template. Validate: pod reaches Running, logs show successful DB auth. Prevent: pre-deploy validation hook, alert on CreateContainerConfigError rate, never delete old secret until consumers updated.
+Symptom: new deployment after secret rotation — pods stuck CreateContainerConfigError (not CrashLoop; container never started). Observe: describe shows Waiting CreateContainerConfigError + Events. Locate: Secret db-credentials-v3 referenced but only v2 exists. Narrow: compare envFrom secretRef vs kubectl get secrets. Fix: restore secret or fix reference. Prevent: pre-deploy validation, alert on CreateContainerConfigError, keep old secret until consumers updated.
 
-> **SYMPTOM:** Post-rotation deploy: all new pods CrashLoopBackOff. Previous ReplicaSet still serving — silent partial outage.
+> **SYMPTOM:** Post-rotation deploy: new pods stuck CreateContainerConfigError. Previous ReplicaSet still serving — silent partial outage.
 
-> **RULE:** Check events before logs — CreateContainerConfigError is the smoking gun.
+> **RULE:** For CreateContainerConfigError, Events beat app logs — the container never started (this is not CrashLoopBackOff).
 
 ### Content
 
-- Post-rotation deploy: all new pods CrashLoopBackOff. Previous ReplicaSet still serving — silent partial outage.
+- Post-rotation deploy: new pods stuck CreateContainerConfigError. Previous ReplicaSet still serving — silent partial outage.
     
 
     
       
         Observe
-- CrashLoopBackOff, Restarts climbing
+- STATUS: CreateContainerConfigError (not CrashLoop)
 - Event: secret "db-credentials-v3" not found
 - Only new ReplicaSet affected; old pods use v2
 
@@ -3181,7 +3183,7 @@ Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslook
 | 9 | Liveness vs readiness — production impact? | Bad liveness kills pod; bad readiness removes from Service only |
 | 10 | How prove it's DNS not app bug? | nslookup from debug pod in same namespace — isolate resolution layer |
 | 11 | CrashLoop after ConfigMap change? | Mount may be stale (subPath) or app can't parse new config — logs --previous |
-| 12 | What does AvailableReplicas < Desired mean? | Not enough Available replicas — check Ready, minReadySeconds, rollout, probes |
+| 12 | What does AvailableReplicas < Desired mean? | Fewer pods Ready for ≥ minReadySeconds than desired (rollout lag, probes, or not Ready) |
 | 13 | PVC stuck Pending? | No matching PV / wrong storageClass / quota — describe pvc Events |
 | 14 | MultiAttach error on RWO volume? | Volume still attached to pod on another node — wait detach or delete stuck pod |
 | 15 | Node NotReady — pod impact? | Pods may continue temporarily; scheduling/lifecycle impaired — check kubelet, conditions, connectivity |

@@ -24,7 +24,7 @@ kubectl get pod <pod> -n <ns> -o jsonpath='{.status.phase}{"\\n"}{range .status.
     </section>
 
     <Callout type="myth">
-      Running means healthy. A pod can be Running with failing probes, partial init success, or containers in CrashLoopBackOff.
+      Running means healthy. A pod can be Running with failing probes or CrashLoopBackOff; unfinished inits keep phase Pending, not Running.
     </Callout>
 
     <div class="flex flex-wrap items-center gap-2 border-t border-deck-border/60 pt-4">

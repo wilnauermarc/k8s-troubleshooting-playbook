@@ -11,7 +11,7 @@ import Callout from '../ui/Callout.astro';
   chapter="Failure Patterns"
   title="Probe Failures — Symptoms & Commands"
   track="core"
-  notes="Approximate failure window ≈ initialDelaySeconds + failureThreshold × periodSeconds. timeoutSeconds and probe scheduling can affect the actual timing. Prefer EndpointSlice when checking traffic membership."
+  notes="Approximate failure window ≈ initialDelaySeconds + (failureThreshold − 1) × periodSeconds, plus timeoutSeconds per attempt. Prefer EndpointSlice when checking traffic membership."
 >
   <div class="stagger flex flex-col gap-8">
     <SignalGrid
@@ -19,7 +19,7 @@ import Callout from '../ui/Callout.astro';
         { label: 'Liveness too eager', value: 'Slow start → restart loop → looks like CrashLoop' },
         { label: 'First signal', value: 'Unhealthy + probe type in describe Events' },
         { label: 'Fix pattern', value: 'Startup probe OR raise initialDelaySeconds' },
-        { label: 'Timing math', value: '≈ initialDelaySeconds + failureThreshold × periodSeconds' },
+        { label: 'Timing math', value: '≈ initialDelay + (failureThreshold−1) × period (+ timeout)' },
       ]}
     />
 

@@ -17,7 +17,7 @@ import Matrix from '../ui/Matrix.astro';
         ['9', 'Liveness vs readiness — production impact?', 'Bad liveness kills pod; bad readiness removes from Service only'],
         ['10', 'How prove it\'s DNS not app bug?', 'nslookup from debug pod in same namespace — isolate resolution layer'],
         ['11', 'CrashLoop after ConfigMap change?', 'Mount may be stale (subPath) or app can\'t parse new config — logs --previous'],
-        ['12', 'What does AvailableReplicas < Desired mean?', 'Not enough Available replicas — check Ready, minReadySeconds, rollout, probes'],
+        ['12', 'What does AvailableReplicas < Desired mean?', 'Fewer pods Ready for ≥ minReadySeconds than desired (rollout lag, probes, or not Ready)'],
         ['13', 'PVC stuck Pending?', 'No matching PV / wrong storageClass / quota — describe pvc Events'],
         ['14', 'MultiAttach error on RWO volume?', 'Volume still attached to pod on another node — wait detach or delete stuck pod'],
         ['15', 'Node NotReady — pod impact?', 'Pods may continue temporarily; scheduling/lifecycle impaired — check kubelet, conditions, connectivity'],

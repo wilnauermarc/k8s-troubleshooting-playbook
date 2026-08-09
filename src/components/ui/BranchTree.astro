@@ -19,26 +19,30 @@ interface Props {
 const { title, branches, class: className = '' } = Astro.props;
 ---
 
-<div class:list={['w-full space-y-6', className]}>
-  <div class="flow-node flow-node-start mx-auto max-w-xl">{title}</div>
+<div class:list={['w-full space-y-5', className]}>
+  <div class="flow-node flow-node-start mx-auto max-w-xl shadow-[0_0_24px_rgba(45,212,191,0.08)]">{title}</div>
 
   {
     branches.map((b) => (
-      <div class="grid items-stretch gap-3 md:grid-cols-[1fr_auto_1fr]">
+      <div class="grid items-stretch gap-3 md:grid-cols-[1fr_auto_1fr] md:gap-4">
         <div class="flow-node flow-node-ok order-2 md:order-1">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wider text-deck-cyan">Yes →</span>
-          {b.yes}
-          {b.yesHint && <div class="mt-1 font-sans text-sm font-normal text-deck-muted">{b.yesHint}</div>}
+          <span class="mb-1.5 inline-flex items-center gap-1.5 rounded-md bg-deck-cyan/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-deck-cyan">
+            Yes →
+          </span>
+          <div>{b.yes}</div>
+          {b.yesHint && <div class="mt-1.5 font-sans text-sm font-normal text-deck-muted">{b.yesHint}</div>}
         </div>
 
-        <div class="flow-node flow-node-decision order-1 md:order-2 md:self-center">
+        <div class="flow-node flow-node-decision order-1 md:order-2 md:min-w-[12rem] md:self-center">
           {b.question}
         </div>
 
         <div class="flow-node flow-node-bad order-3">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-wider text-deck-rose">No →</span>
-          {b.no}
-          {b.noHint && <div class="mt-1 font-sans text-sm font-normal text-deck-muted">{b.noHint}</div>}
+          <span class="mb-1.5 inline-flex items-center gap-1.5 rounded-md bg-deck-rose/15 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-deck-rose">
+            No →
+          </span>
+          <div>{b.no}</div>
+          {b.noHint && <div class="mt-1.5 font-sans text-sm font-normal text-deck-muted">{b.noHint}</div>}
         </div>
       </div>
     ))

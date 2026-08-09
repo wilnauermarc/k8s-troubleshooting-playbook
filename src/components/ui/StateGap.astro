@@ -19,6 +19,12 @@ const { class: className = '' } = Astro.props;
       <stop offset="50%" stop-color="#fb7185" stop-opacity="0.5" />
       <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.35" />
     </linearGradient>
+    <marker id="gap-arrow-cyan" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2dd4bf" />
+    </marker>
+    <marker id="gap-arrow-amber" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#fbbf24" />
+    </marker>
   </defs>
 
   <!-- Desired -->
@@ -52,8 +58,8 @@ const { class: className = '' } = Astro.props;
   </text>
 
   <!-- Arrows -->
-  <path d="M260 160 L285 160" stroke="#2dd4bf" stroke-width="2.5" marker-end="url(#arrow)" />
-  <path d="M430 160 L455 160" stroke="#fbbf24" stroke-width="2.5" />
+  <path d="M260 160 L282 160" stroke="#2dd4bf" stroke-width="2.5" marker-end="url(#gap-arrow-cyan)" />
+  <path d="M430 160 L452 160" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#gap-arrow-amber)" />
 
   <!-- Current -->
   <rect x="460" y="60" width="220" height="200" rx="20" fill="#0d1526" stroke="#fbbf24" stroke-width="3" />
@@ -70,6 +76,6 @@ const { class: className = '' } = Astro.props;
     1× CrashLoop
   </text>
   <text x="570" y="239" text-anchor="middle" fill="#e8eef9" font-family="Source Sans 3, sans-serif" font-size="16">
-    events tell WHAT
+    Events tell WHAT
   </text>
 </svg>
