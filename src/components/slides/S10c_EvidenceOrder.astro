@@ -11,7 +11,7 @@ import Callout from '../ui/Callout.astro';
   track="core"
   notes="Default order — skip only with a reason. CrashLoop often makes logs --previous the fastest win after describe. Exec/debug last."
 >
-  <div class="stagger flex flex-col gap-8">
+  <div class="stagger flex flex-col gap-6">
     <Flow
       nodes={[
         { label: '1. kubectl describe', kind: 'start', hint: 'Events + Conditions + Reasons' },
@@ -21,8 +21,8 @@ import Callout from '../ui/Callout.astro';
         { label: '5. exec / debug (only if needed)', kind: 'bad', hint: 'Invasive — last resort' },
       ]}
     />
-    <Callout type="rule">
-      Default path: describe → Events/Conditions → logs → YAML → then debug. Reorder when the symptom already points at logs (CrashLoop).
-    </Callout>
+    <p class="text-center text-lg text-deck-muted">
+      Reorder only with a reason — CrashLoop already points at <code class="text-deck-cyan">logs --previous</code>.
+    </p>
   </div>
 </Slide>

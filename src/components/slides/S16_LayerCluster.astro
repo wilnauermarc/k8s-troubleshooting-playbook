@@ -27,17 +27,8 @@ import Matrix from '../ui/Matrix.astro';
       </ul>
     </section>
 
-    <section>
-      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
-      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
-        <li>• Changes land in prod; staging looks broken</li>
-        <li>• TLS handshake errors on kubectl</li>
-        <li>• DNS, ingress, or metrics missing cluster-wide</li>
-      </ul>
-    </section>
-
     <Matrix
-      headers={['Failure', 'Symptom']}
+      headers={['Failure', 'Observable symptom']}
       rows={[
         ['Wrong kubeconfig context', 'Changes land in prod; staging looks broken'],
         ['Expired cluster certs', 'Unable to connect, TLS handshake errors'],

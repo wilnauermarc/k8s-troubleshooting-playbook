@@ -7,7 +7,7 @@ import Matrix from '../ui/Matrix.astro';
   id="s54-interview-more"
   chapter="Interview Prep"
   title="Interview Bank — Questions 17–24"
-  notes="Q17-20: networking and TLS edge cases. Q21-24: observability and operations. Q17: Ingress 502 — no Ready addresses in EndpointSlice or wrong port. Q18: TLS — secret, SNI, expiry. Q19: CoreDNS — upstream, cache, limits. Q20: Headless Service — stable per-pod DNS for StatefulSets. Q21: logs --previous after crash. Q22: metrics for SLOs, logs for diagnosis. Q23: validate under load with canary + error rate. Q24: startup probe for slow-starting apps."
+  notes="Q17-20: networking and TLS edge cases. Q21-24: observability and operations. Q17: Ingress 502 — no Ready addresses in EndpointSlice or wrong port. Q18: TLS — secret, SNI, expiry. Q19: CoreDNS — upstream, cache, limits. Q20: Headless Service — stable per-pod DNS for StatefulSets. Q21: logs --previous after crash. Q22: metrics for SLOs, logs for diagnosis. Q23: validate under load with canary + error rate. Q24: startup probe for slow-starting apps — gates liveness AND readiness until first success."
 >
   <div class="stagger flex flex-col gap-6">
     <Matrix
@@ -20,7 +20,7 @@ import Matrix from '../ui/Matrix.astro';
         ['21', 'When use kubectl logs --previous?', 'Container crashed — capture last run output before restart'],
         ['22', 'Metric vs log for alerting?', 'Metrics for thresholds & SLOs; logs for diagnostic detail after alert fires'],
         ['23', 'How validate fix under load?', 'Rollout canary + watch error rate, latency, saturation — not just pod status'],
-        ['24', 'What is a startup probe for?', 'Slow-starting apps — blocks liveness until initial boot completes'],
+        ['24', 'What is a startup probe for?', 'Slow-starting apps — gates liveness & readiness until first success'],
       ]}
     />
   </div>

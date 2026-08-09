@@ -13,7 +13,7 @@ import Pill from '../ui/Pill.astro';
   track="core"
   notes="ReadWriteOnce = read-write from a single node; multiple pods on that node may share it. MultiAttach when volume is still attached to another node. Prefer ReadWriteOncePod when only one pod may attach. StatefulSet is not a MultiAttach fix by itself."
 >
-  <div class="stagger flex flex-col gap-8">
+  <div class="stagger flex flex-col gap-6">
     <div class="flex flex-wrap items-center gap-2">
       <Pill tone="amber">MultiAttach</Pill>
       <Pill tone="violet">CSI driver</Pill>

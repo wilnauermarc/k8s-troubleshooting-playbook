@@ -27,14 +27,9 @@ import Matrix from '../ui/Matrix.astro';
       </ul>
     </section>
 
-    <section>
-      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
-      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
-        <li>• Restart count climbing; CrashLoopBackOff</li>
-        <li>• Empty current logs after crash</li>
-        <li>• Ready=False; traffic withheld</li>
-      </ul>
-    </section>
+    <p class="text-lg text-deck-muted">
+      Symptom: restart count climbing, empty current logs after crash — read <span class="text-deck-cyan">Last State</span> in describe.
+    </p>
 
     <Matrix
       headers={['Signal', 'Likely cause']}

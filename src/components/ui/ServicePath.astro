@@ -13,12 +13,18 @@ const { class: className = '' } = Astro.props;
   role="img"
   aria-label="Traffic path from client through Service and EndpointSlice to Ready pods"
 >
+  <defs>
+    <marker id="svc-arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#8b9bb8" />
+    </marker>
+  </defs>
+
   <!-- Client -->
   <rect x="20" y="90" width="130" height="100" rx="16" fill="#0d1526" stroke="#2dd4bf" stroke-width="2.5" />
   <text x="85" y="140" text-anchor="middle" fill="#2dd4bf" font-family="Sora, sans-serif" font-size="18" font-weight="700">Client</text>
   <text x="85" y="165" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="13">curl / app</text>
 
-  <text x="175" y="145" fill="#8b9bb8" font-size="28">→</text>
+  <path d="M158 140 L190 140" stroke="#8b9bb8" stroke-width="2" marker-end="url(#svc-arr)" />
 
   <!-- Service -->
   <rect x="200" y="90" width="140" height="100" rx="16" fill="#0d1526" stroke="#60a5fa" stroke-width="2.5" />
@@ -26,7 +32,7 @@ const { class: className = '' } = Astro.props;
   <text x="270" y="160" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="13">ClusterIP</text>
   <text x="270" y="178" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="12">+ selector</text>
 
-  <text x="360" y="145" fill="#8b9bb8" font-size="28">→</text>
+  <path d="M348 140 L380 140" stroke="#8b9bb8" stroke-width="2" marker-end="url(#svc-arr)" />
 
   <!-- EndpointSlice gate -->
   <rect x="390" y="70" width="160" height="140" rx="16" fill="#0d1526" stroke="#fbbf24" stroke-width="2.5" />
@@ -35,7 +41,8 @@ const { class: className = '' } = Astro.props;
   <rect x="415" y="150" width="110" height="32" rx="8" fill="#fbbf24" fill-opacity="0.12" stroke="#fbbf24" stroke-width="1.5" />
   <text x="470" y="171" text-anchor="middle" fill="#fbbf24" font-family="Sora, sans-serif" font-size="13" font-weight="700">READY GATE</text>
 
-  <text x="570" y="145" fill="#8b9bb8" font-size="28">→</text>
+  <path d="M558 110 L590 75" stroke="#2dd4bf" stroke-width="2" marker-end="url(#svc-arr)" />
+  <path d="M558 170 L590 160" stroke="#fb7185" stroke-width="2" stroke-dasharray="5 4" opacity="0.7" />
 
   <!-- Pods -->
   <g>

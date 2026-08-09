@@ -119,7 +119,7 @@ body.nav-hint-active [data-next] {
 
 /* CSS flow diagrams — projector-readable */
 .flow-node {
-  @apply rounded-xl border-2 px-5 py-3 text-center font-display text-base font-semibold leading-snug md:text-lg;
+  @apply rounded-xl border-2 px-5 py-3.5 text-center font-display text-base font-semibold leading-snug md:text-lg;
 }
 
 .flow-node-start {
@@ -135,7 +135,7 @@ body.nav-hint-active [data-next] {
 }
 
 .flow-node-ok {
-  @apply border-deck-cyan/50 bg-deck-panel text-deck-text;
+  @apply border-deck-cyan/45 bg-deck-panel text-deck-text;
 }
 
 .flow-node-bad {
@@ -143,7 +143,7 @@ body.nav-hint-active [data-next] {
 }
 
 .flow-arrow {
-  @apply flex items-center justify-center py-1 font-display text-xl text-deck-muted;
+  @apply flex items-center justify-center py-0.5 text-deck-muted;
 }
 
 .flow-label {

@@ -9,20 +9,20 @@ import CodeBlock from '../ui/CodeBlock.astro';
   chapter="Production Incidents"
   title="Incident: Running Pods, HTTP 503"
   track="practice"
-  notes="Study format: symptom, wrong assumption, discriminating check, cause. Prefer EndpointSlice."
+  notes="Study format: symptom, wrong assumption, discriminating check, cause. Readiness probe includes a Postgres dependency check; DB outage flips all pods Ready=False, EndpointSlice has no Ready addresses, LB returns 503 while pods stay Running. Prefer EndpointSlice. Next slide: fix the DB path first, then decide deliberately whether readiness should include dependencies."
 >
-  <div class="stagger flex flex-col gap-5">
+  <div class="stagger flex flex-col gap-4">
     <Callout type="signal" title="Symptom">Checkout returns HTTP 503. Dashboards show pods Running.</Callout>
     <Callout type="myth" title="First wrong assumption">“Restart the Deployment — pods look fine.”</Callout>
     <Callout type="tip" title="Fastest discriminating check">
       <code class="text-deck-cyan">kubectl get endpointslices -l kubernetes.io/service-name=checkout</code> — empty / not ready?
     </Callout>
     <Callout type="framework" title="Root cause">
-      Readiness always 200 while app cannot reach Postgres → Ready=False → no backends.
+      Readiness probe checks Postgres — DB unreachable → Ready=False on every pod → zero Ready addresses → LB answers 503.
     </Callout>
     <CodeBlock
-      code={`kubectl get endpointslices -l kubernetes.io/service-name=checkout -o wide
-kubectl describe pod -l app=checkout | grep -A5 Conditions`}
+      caption="Verify"
+      code={`kubectl describe pod -l app=checkout | grep -A5 Conditions`}
     />
   </div>
 </Slide>

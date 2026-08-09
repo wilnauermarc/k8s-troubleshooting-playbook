@@ -7,42 +7,46 @@ interface Props {
 const { class: className = '' } = Astro.props;
 
 const hops = [
-  { label: 'Pod IP', hint: 'app listening?', color: '#2dd4bf' },
-  { label: 'Service', hint: 'endpoints?', color: '#60a5fa' },
-  { label: 'Ingress', hint: 'route / TLS?', color: '#fbbf24' },
+  { label: 'Pod IP', hint: 'listening?', color: '#2dd4bf' },
+  { label: 'EndpointSlice', hint: 'Ready?', color: '#60a5fa' },
+  { label: 'Service', hint: 'selector?', color: '#38bdf8' },
   { label: 'DNS', hint: 'resolve?', color: '#a78bfa' },
   { label: 'NetPol', hint: 'allowed?', color: '#fb7185' },
 ];
 ---
 
 <svg
-  viewBox="0 0 800 200"
+  viewBox="0 0 820 192"
   class:list={['mx-auto h-auto w-full max-w-5xl', className]}
   role="img"
-  aria-label="Networking debug hops from pod to NetworkPolicy"
+  aria-label="Networking debug hops from pod through EndpointSlice to NetworkPolicy"
 >
+  <defs>
+    <marker id="hop-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#8b9bb8" />
+    </marker>
+  </defs>
   {
     hops.map((hop, i) => {
-      const x = 30 + i * 155;
+      const x = 20 + i * 160;
       return (
         <g>
-          <rect x={x} y="50" width="130" height="90" rx="14" fill="#0d1526" stroke={hop.color} stroke-width="2.5" />
-          <text x={x + 65} y="90" text-anchor="middle" fill={hop.color} font-family="Sora, sans-serif" font-size="16" font-weight="700">
+          <rect x={x} y="48" width="140" height="96" rx="16" fill="#0d1526" stroke={hop.color} stroke-width="2.5" />
+          <circle cx={x + 28} cy="72" r="10" fill={hop.color} fill-opacity="0.2" stroke={hop.color} stroke-width="1.5" />
+          <text x={x + 28} y="76" text-anchor="middle" fill={hop.color} font-family="Sora, sans-serif" font-size="12" font-weight="700">
+            {i + 1}
+          </text>
+          <text x={x + 70} y="98" text-anchor="middle" fill={hop.color} font-family="Sora, sans-serif" font-size="15" font-weight="700">
             {hop.label}
           </text>
-          <text x={x + 65} y="118" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="13">
+          <text x={x + 70} y="122" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="13">
             {hop.hint}
           </text>
           {i < hops.length - 1 && (
-            <text x={x + 138} y="100" fill="#8b9bb8" font-size="24">
-              →
-            </text>
+            <path d={`M${x + 142} 96 L${x + 156} 96`} stroke="#8b9bb8" stroke-width="2" marker-end="url(#hop-arrow)" />
           )}
         </g>
       );
     })
   }
-  <text x="400" y="180" text-anchor="middle" fill="#8b9bb8" font-family="Source Sans 3, sans-serif" font-size="14">
-    Fail at hop N → debug layer N. Don’t skip hops.
-  </text>
 </svg>

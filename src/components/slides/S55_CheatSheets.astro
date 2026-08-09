@@ -14,7 +14,8 @@ import Callout from '../ui/Callout.astro';
   <div class="stagger flex flex-col gap-8">
     <CodeBlock
       caption="First 60 seconds — any broken workload"
-      code={`kubectl get pods,events -n <ns> --sort-by='.lastTimestamp'
+      code={`kubectl get pods -n <ns> -o wide
+kubectl get events -n <ns> --sort-by='.lastTimestamp'
 kubectl describe pod <pod> | less          # Events + Conditions
 kubectl logs <pod> --previous               # if restarted / CrashLoop
 kubectl get endpointslices,svc -n <ns>`}

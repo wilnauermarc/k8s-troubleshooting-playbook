@@ -14,8 +14,8 @@ import CodeBlock from '../ui/CodeBlock.astro';
     <Matrix
       headers={['Intent', 'Command', 'When NOT']}
       rows={[
-        ['App output now?', 'kubectl logs POD -f --tail=100', 'Never started — use --previous'],
-        ['Last crash output?', 'kubectl logs POD --previous', 'No previous instance'],
+        ['App output now?', 'kubectl logs POD -f --tail=100', 'Never started — describe Events instead'],
+        ['Last crash output?', 'kubectl logs POD --previous', 'No previous instance (never started)'],
         ['Quick check inside?', 'kubectl exec … -- CMD', 'Prod deep debug — use debug'],
         ['Isolated shell?', 'kubectl debug POD -it --image=…', 'First move — describe first'],
         ['Rollout done?', 'kubectl rollout status deploy/X', 'Need history / undo'],

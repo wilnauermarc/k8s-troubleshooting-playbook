@@ -27,21 +27,12 @@ import Matrix from '../ui/Matrix.astro';
       </ul>
     </section>
 
-    <section>
-      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
-      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
-        <li>• Pods on one node stuck Terminating or Unknown</li>
-        <li>• Evictions, emptyDir fills, image pull fails</li>
-        <li>• Cannot start new containers on that node</li>
-      </ul>
-    </section>
-
     <Matrix
-      headers={['Condition', 'What you see']}
+      headers={['Condition', 'Observable symptom']}
       rows={[
-        ['NodeNotReady', 'Pods on node stuck Terminating / Unknown'],
+        ['NodeNotReady', 'Schedule/attach impaired; pods may keep running or go Unknown'],
         ['DiskPressure', 'Evictions, emptyDir fills, image pull fails'],
-        ['MemoryPressure', 'OOM evictions, best-effort pods killed first'],
+        ['MemoryPressure', 'Pods Evicted — BestEffort pods first'],
       ]}
     />
   </div>

@@ -27,20 +27,11 @@ import Matrix from '../ui/Matrix.astro';
       </ul>
     </section>
 
-    <section>
-      <h3 class="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-deck-amber">Observable symptoms</h3>
-      <ul class="space-y-2 text-lg text-deck-text/90 md:text-xl">
-        <li>• ContainerCreating forever</li>
-        <li>• App starts but cannot write to volume</li>
-        <li>• Pod events name attach or mount failure</li>
-      </ul>
-    </section>
-
     <Matrix
       headers={['Failure', 'Symptom']}
       rows={[
         ['PVC Pending', 'No matching PV / StorageClass / quota'],
-        ['FailedMount', 'ContainerCreating forever, mount path wrong'],
+        ['FailedMount', 'ContainerCreating forever — attach, fsType, permissions, CSI'],
         ['MultiAttachError', 'RWO still attached on another node after reschedule'],
       ]}
     />

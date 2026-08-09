@@ -12,7 +12,7 @@ import Callout from '../ui/Callout.astro';
   track="core"
   notes="10-second check: get svc, get endpointslices, get pods --show-labels. Prefer EndpointSlice (Endpoints is legacy). Selector mismatch: compare svc selector to pod labels."
 >
-  <div class="stagger flex flex-col gap-8">
+  <div class="stagger flex flex-col gap-6">
     <Matrix
       headers={['Symptom', 'Check', 'Common fix']}
       rows={[
@@ -28,15 +28,8 @@ import Callout from '../ui/Callout.astro';
       code={`kubectl get svc SVC -n NAMESPACE -o wide
 kubectl get endpointslices -n NAMESPACE -l kubernetes.io/service-name=SVC -o wide
 # Endpoints is legacy — still works, prefer slices
-kubectl get pods -n NAMESPACE --show-labels
-
-kubectl exec CLIENT -n NAMESPACE -- \\
-  curl -sv http://SVC.NAMESPACE.svc.cluster.local:PORT/health`}
+kubectl get pods -n NAMESPACE --show-labels`}
     />
-
-    <Callout type="tip">
-      <code class="text-deck-cyan">Endpoints</code> is the legacy API; prefer <code class="text-deck-cyan">EndpointSlice</code> on current Kubernetes clusters.
-    </Callout>
 
     <Callout type="myth" title="Myth">
       "Service is broken because kubectl get svc shows CLUSTER-IP." — Svc is virtual; Ready addresses in EndpointSlice are real.

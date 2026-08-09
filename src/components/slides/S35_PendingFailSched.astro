@@ -9,8 +9,8 @@ import Pill from '../ui/Pill.astro';
 <Slide
   id="s35-pending-failsched"
   chapter="Failure Patterns"
-  title="Pending — Nothing Scheduled Yet"
-  notes="Pending means no node accepted the pod — scheduler or admission blocking. FailedScheduling Events list exact reasons. 0/N nodes breakdown — each reason is a filter pass. PVC Pending blocks pod with WaitForFirstConsumer. Don't confuse with ContainerCreating — that's post-schedule. Next slide: reason matrix and commands."
+  title="Pending — FailedScheduling"
+  notes="This slide covers the unscheduled case: PodScheduled=False, FailedScheduling Events list exact reasons. 0/N nodes breakdown — each reason is a filter pass. Unbound PVC with Immediate binding blocks scheduling; WaitForFirstConsumer instead delays PV binding until the pod is scheduled. Pending can also mean scheduled-but-not-started (init/image/mount) — check PodScheduled first (see S27b). Next slide: reason matrix and commands."
 >
   <div class="stagger flex flex-col gap-8">
     <div class="flex flex-wrap items-center gap-2">
@@ -22,14 +22,14 @@ import Pill from '../ui/Pill.astro';
     <SignalGrid
       class="lg:grid-cols-2"
       items={[
-        { label: 'Status', value: 'Scheduled to no node yet (or waiting on PVC)' },
+        { label: 'Status', value: 'PodScheduled=False — no node accepted the pod' },
         { label: 'First signal', value: 'Events: 0/N nodes available: insufficient memory, …' },
         { label: 'Not scheduled', value: 'No nodeName in pod spec — still in scheduler queue' },
-        { label: 'Related', value: 'PVC Pending blocks pod with volumeClaimTemplates' },
+        { label: 'Related', value: 'Unbound PVC (Immediate binding) blocks scheduling' },
       ]}
     />
 
-    <Lifecycle steps={['describe pod Events', 'check requests/limits', 'node labels/taints', 'PVC status', 'fix spec or scale']} active={0} />
+    <Lifecycle steps={['describe pod Events', 'requests vs Allocatable', 'node labels/taints', 'PVC status', 'fix spec or scale']} active={0} />
 
     <Callout type="framework" title="Decision">
       Resource in Events? Compare pod <code class="text-deck-cyan">requests</code> to node <code class="text-deck-cyan">Allocatable</code>.

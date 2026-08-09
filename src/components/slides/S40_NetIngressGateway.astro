@@ -10,7 +10,7 @@ import Pill from '../ui/Pill.astro';
   id="s40-net-ingress-gateway"
   chapter="Failure Patterns"
   title="Ingress vs Gateway API"
-  notes="Edge architecture: client → LB → ingress/gateway controller → Service → pods. Split responsibility: Ingress/HTTPRoute is config; controller is data plane (nginx, traefik, istio). Gateway API adds GatewayClass, Gateway, HTTPRoute — check parentRefs and Accepted conditions. Common: wrong ingressClassName, host rule mismatch, path Type Prefix vs Exact. 502 often means empty endpoints upstream. Next slide: TLS and cert-manager."
+  notes="Edge architecture: client → LB → ingress/gateway controller → Service → pods. Split responsibility: Ingress/HTTPRoute is config; controller is data plane (nginx, traefik, istio). Gateway API adds GatewayClass, Gateway, HTTPRoute — check parentRefs and Accepted conditions. Common: wrong ingressClassName, host rule mismatch, path Type Prefix vs Exact. 502 often means empty/not-ready EndpointSlice upstream. Next slide: TLS and cert-manager."
 >
   <div class="stagger flex flex-col gap-8">
     <div class="flex flex-wrap items-center gap-2">

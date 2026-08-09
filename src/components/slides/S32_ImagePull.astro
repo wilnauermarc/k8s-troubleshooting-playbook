@@ -2,7 +2,6 @@
 import Slide from '../ui/Slide.astro';
 import BranchTree from '../ui/BranchTree.astro';
 import SignalGrid from '../ui/SignalGrid.astro';
-import Callout from '../ui/Callout.astro';
 import Pill from '../ui/Pill.astro';
 ---
 
@@ -10,9 +9,9 @@ import Pill from '../ui/Pill.astro';
   id="s32-imagepull"
   chapter="Failure Patterns"
   title="ImagePullBackOff — No Container Starts"
-  notes="Image pull failures block pod creation — no container starts, logs empty. ErrImagePull immediate; ImagePullBackOff is retry with backoff. Decision tree: typo vs auth vs registry down vs rate limit. Events in describe are explicit. imagePullSecrets on SA OR pod — common miss across namespaces. Next slide: event matrix and commands."
+  notes="Image pull failures block container start — the Pod object exists, but no process runs and logs stay empty. ErrImagePull immediate; ImagePullBackOff is retry with backoff. Decision tree: typo vs auth vs registry down vs rate limit. Events in describe are explicit. imagePullSecrets on SA OR pod — common miss across namespaces. Next slide: event matrix and commands."
 >
-  <div class="stagger flex flex-col gap-8">
+  <div class="stagger flex flex-col gap-6">
     <div class="flex flex-wrap items-center gap-2">
       <Pill tone="rose">ImagePullBackOff</Pill>
       <Pill tone="amber">ErrImagePull</Pill>
@@ -45,8 +44,5 @@ import Pill from '../ui/Pill.astro';
       ]}
     />
 
-    <Callout type="myth" title="Myth">
-      Deleting the pod repeatedly without fixing the image — you'll stay in BackOff forever.
-    </Callout>
   </div>
 </Slide>

@@ -2,7 +2,6 @@
 import Slide from '../ui/Slide.astro';
 import Flow from '../ui/Flow.astro';
 import Callout from '../ui/Callout.astro';
-import Pill from '../ui/Pill.astro';
 ---
 
 <Slide
@@ -12,18 +11,13 @@ import Pill from '../ui/Pill.astro';
   track="core"
   notes="Ingress deny ≠ egress deny. Policies select pods — not automatically cluster-wide. Default-deny egress without DNS allow can break name resolution for selected workloads."
 >
-  <div class="stagger flex flex-col gap-8">
-    <div class="flex flex-wrap items-center gap-2">
-      <Pill tone="rose">Silent drop</Pill>
-      <Pill tone="amber">policyTypes matter</Pill>
-    </div>
-
+  <div class="stagger flex flex-col gap-6">
     <Flow
       nodes={[
         { label: 'CNI enforces NetworkPolicy?', kind: 'start', hint: 'Calico/Cilium yes; some CNIs no-op' },
         { label: 'default-deny ingress and/or egress?', kind: 'decision', hint: 'separate dimensions' },
         { label: 'For that direction: explicit allows required', kind: 'action', hint: 'selected pods only' },
-        { label: 'Symptom: timeout (not ICMP unreachable)', kind: 'bad' },
+        { label: 'Symptom: silent timeout — no ICMP unreachable', kind: 'bad' },
       ]}
     />
 

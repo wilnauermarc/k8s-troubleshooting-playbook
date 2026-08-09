@@ -1,6 +1,5 @@
 ---
 import Slide from '../ui/Slide.astro';
-import SignalGrid from '../ui/SignalGrid.astro';
 import Matrix from '../ui/Matrix.astro';
 import CodeBlock from '../ui/CodeBlock.astro';
 import Callout from '../ui/Callout.astro';
@@ -11,9 +10,9 @@ import Pill from '../ui/Pill.astro';
   id="s34b-evicted-pressure"
   chapter="Failure Patterns"
   title="Evicted & Node Resource Pressure"
-  notes="Evicted: kubelet removed pod due to node pressure — memory, disk, inodes, or PID limits. Pod is gone — check events on the node and sibling pods. Walk describe node Conditions: MemoryPressure, DiskPressure, PIDPressure. Disk pressure: emptyDir + logs, image layers, container logs filling node. PID pressure: fork bombs or too many threads. Fix: expand node disk, tune eviction thresholds, reduce pod count, add requests/limits. LimitRange and ResourceQuota can block scheduling fixes. VPA as prevention hint."
+  notes="Evicted: kubelet removed pod due to node pressure — memory, disk, inodes, or PID limits. The pod usually remains listed as Failed/Evicted until GC — describe it plus the node Conditions. Walk describe node Conditions: MemoryPressure, DiskPressure, PIDPressure. Disk pressure: emptyDir + logs, image layers, container logs filling node. PID pressure: fork bombs or too many threads. Fix: expand node disk, tune eviction thresholds, reduce pod count, add requests/limits. LimitRange and ResourceQuota can block scheduling fixes. VPA as prevention hint."
 >
-  <div class="stagger flex flex-col gap-8">
+  <div class="stagger flex flex-col gap-6">
     <div class="flex flex-wrap items-center gap-2">
       <Pill tone="amber">Evicted</Pill>
       <Pill tone="blue">MemoryPressure</Pill>
@@ -21,13 +20,9 @@ import Pill from '../ui/Pill.astro';
       <Pill tone="rose">PIDPressure</Pill>
     </div>
 
-    <SignalGrid
-      items={[
-        { label: 'Evicted', value: 'Kubelet removed pod — node ran out of resources' },
-        { label: 'First signal', value: 'describe node Conditions + who else on that node' },
-        { label: 'Pod is gone', value: 'Check node events and sibling pods — not the evicted pod itself' },
-      ]}
-    />
+    <Callout type="signal" title="First signal">
+      Evicted pods usually stay listed as Failed (<code class="text-deck-cyan">Reason: Evicted</code>) — describe the pod <em>and</em> the node Conditions. BestEffort pods (no requests/limits) go first under MemoryPressure.
+    </Callout>
 
     <Matrix
       headers={['Pressure', 'Typical cause', 'First command']}
@@ -44,9 +39,5 @@ import Pill from '../ui/Pill.astro';
 kubectl get pods -A --field-selector spec.nodeName=NODE -o wide
 kubectl top pod -A --sort-by=memory | head`}
     />
-
-    <Callout type="tip">
-      BestEffort pods (no requests/limits) are evicted first under MemoryPressure.
-    </Callout>
   </div>
 </Slide>
