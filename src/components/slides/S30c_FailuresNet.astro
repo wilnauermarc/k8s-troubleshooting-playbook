@@ -18,6 +18,7 @@ import Matrix from '../ui/Matrix.astro';
         ['No Ready backends', 'EndpointSlice empty / not ready', 'get endpointslices -o wide'],
         ['Ingress / Gateway / TLS', '502/503 or cert expired', 'describe ingress + cert check'],
         ['NetworkPolicy block', 'timeout (works without NP)', 'get networkpolicy'],
+        ['After hard reboot', 'network unreachable · Node IP drift', 'get nodes -o wide vs ip addr'],
       ]}
     />
   </div>

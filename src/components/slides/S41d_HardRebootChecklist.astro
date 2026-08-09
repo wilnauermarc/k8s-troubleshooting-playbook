@@ -1,0 +1,44 @@
+---
+import Slide from '../ui/Slide.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+import Callout from '../ui/Callout.astro';
+import Lifecycle from '../ui/Lifecycle.astro';
+---
+
+<Slide
+  id="s41d-hard-reboot-checklist"
+  chapter="Failure Patterns"
+  title="Hard Reboot — Networking Sanity Check"
+  track="core"
+  notes="Checklist after unexpected reboot. Compare reported Node IP ↔ actual interface IP ↔ default route. Do NOT recommend blind iptables flush as best practice — high blast radius on production nodes."
+>
+  <div class="stagger flex flex-col gap-6">
+    <Lifecycle
+      steps={['get nodes -o wide', 'ip addr / route', 'compare IPs', 'then CNI path']}
+      active={0}
+    />
+
+    <CodeBlock
+      caption="First evidence after a hard reboot"
+      code={`kubectl get nodes -o wide
+# on the node (or via debug/node shell):
+ip addr
+ip route
+hostname -I
+
+# Compare:
+#   Kubernetes INTERNAL-IP
+#   ↔ actual interface address
+#   ↔ default route / expected network`}
+    />
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <Callout type="tip" title="If IPs disagree">
+        Investigate node address config, interface state, and agent/runtime settings for that distribution — then re-check Pod ↔ Pod / Service.
+      </Callout>
+      <Callout type="danger" title="Anti-pattern">
+        Do not start with <code class="text-deck-cyan">iptables -F</code> / flush-all. That can break production dataplanes. Enter firewall tables only with a hypothesis.
+      </Callout>
+    </div>
+  </div>
+</Slide>

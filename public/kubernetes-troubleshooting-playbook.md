@@ -4,8 +4,8 @@
 
 > Markdown export of the conference presentation. Same content as the Astro deck — for reading, studying, and sharing offline.
 
-- Slides: **115**
-- Generated: **2026-08-08**
+- Slides: **119**
+- Generated: **2026-08-09**
 - Navigation in the live deck: `→` next · `N` notes · `O` overview
 
 ## Mental models (quick reference)
@@ -108,48 +108,52 @@
   - [79. TLS & cert-manager](#slide-79)
   - [80. NetworkPolicy: Default-Deny Mental Model](#slide-80)
   - [81. NetworkPolicy — Debug Commands](#slide-81)
+  - [82. Node Networking After Hard Reboot](#slide-82)
+  - [83. Hard Reboot — Networking Sanity Check](#slide-83)
 - **kubectl by Intention**
-  - [82. kubectl by Intention](#slide-82)
-  - [83. Observe & Locate](#slide-83)
-  - [84. Narrow & Verify](#slide-84)
+  - [84. kubectl by Intention](#slide-84)
+  - [85. Observe & Locate](#slide-85)
+  - [86. Narrow & Verify](#slide-86)
 - **Observability**
-  - [85. Signals — WHAT, WHY, WHEN, WHERE](#slide-85)
-  - [86. Stack — Which Tool Answers Which Question?](#slide-86)
+  - [87. Signals — WHAT, WHY, WHEN, WHERE](#slide-87)
+  - [88. Stack — Which Tool Answers Which Question?](#slide-88)
 - **Advanced Debugging**
-  - [87. kubectl debug — Ephemeral Containers](#slide-87)
-  - [88. When NOT to Use Invasive Tools](#slide-88)
-  - [89. exec vs kubectl debug](#slide-89)
+  - [89. kubectl debug — Ephemeral Containers](#slide-89)
+  - [90. When NOT to Use Invasive Tools](#slide-90)
+  - [91. exec vs kubectl debug](#slide-91)
 - **Production Incidents**
-  - [90. Production Incidents — Practice](#slide-90)
-  - [91. Incident: Running Pods, HTTP 503](#slide-91)
-  - [92. 503 — Fix, Validate, Prevent](#slide-92)
-  - [93. Incident: CrashLoop from Missing Secret](#slide-93)
-  - [94. Missing Secret — Fix & Prevent](#slide-94)
-  - [95. Incident: Pending from Affinity &amp; Taints](#slide-95)
-  - [96. Affinity & Taints — Fix & Prevent](#slide-96)
-  - [97. Incident: OOMKilled — Memory Leak](#slide-97)
-  - [98. OOMKilled — Fix & Prevent](#slide-98)
-  - [99. Incident: Gateway API Route Misconfiguration](#slide-99)
-  - [100. Gateway Route — Fix & Prevent](#slide-100)
-  - [101. Incident: Timeout — DNS or NetPol?](#slide-101)
-  - [102. DNS vs NetPol — Fix Paths](#slide-102)
-  - [103. Incident: PVC MultiAttach](#slide-103)
-  - [104. Incident: Stale ConfigMap Rollout](#slide-104)
+  - [92. Production Incidents — Practice](#slide-92)
+  - [93. Incident: Running Pods, HTTP 503](#slide-93)
+  - [94. 503 — Fix, Validate, Prevent](#slide-94)
+  - [95. Incident: CrashLoop from Missing Secret](#slide-95)
+  - [96. Missing Secret — Fix & Prevent](#slide-96)
+  - [97. Incident: Pending from Affinity &amp; Taints](#slide-97)
+  - [98. Affinity & Taints — Fix & Prevent](#slide-98)
+  - [99. Incident: OOMKilled — Memory Leak](#slide-99)
+  - [100. OOMKilled — Fix & Prevent](#slide-100)
+  - [101. Incident: Gateway API Route Misconfiguration](#slide-101)
+  - [102. Gateway Route — Fix & Prevent](#slide-102)
+  - [103. Incident: Timeout — DNS or NetPol?](#slide-103)
+  - [104. DNS vs NetPol — Fix Paths](#slide-104)
+  - [105. Incident: Unreachable After Reboot](#slide-105)
+  - [106. After Reboot — Fix, Validate, Prevent](#slide-106)
+  - [107. Incident: PVC MultiAttach](#slide-107)
+  - [108. Incident: Stale ConfigMap Rollout](#slide-108)
 - **Interview Prep**
-  - [105. Interview Bank — Questions 1–8](#slide-105)
-  - [106. Interview Bank — Questions 9–16](#slide-106)
-  - [107. Interview Bank — Questions 17–24](#slide-107)
-  - [108. Interview Bank — Questions 25–32](#slide-108)
+  - [109. Interview Bank — Questions 1–8](#slide-109)
+  - [110. Interview Bank — Questions 9–16](#slide-110)
+  - [111. Interview Bank — Questions 17–24](#slide-111)
+  - [112. Interview Bank — Questions 25–32](#slide-112)
 - **Reference**
-  - [109. Cheat Sheet — First 60 Seconds](#slide-109)
-  - [110. Cheat Sheet — Status Meanings](#slide-110)
-  - [111. Cheat Sheet — Networking Quick Path](#slide-111)
-  - [112. Checkpoint — Core Basics](#slide-112)
+  - [113. Cheat Sheet — First 60 Seconds](#slide-113)
+  - [114. Cheat Sheet — Status Meanings](#slide-114)
+  - [115. Cheat Sheet — Networking Quick Path](#slide-115)
+  - [116. Checkpoint — Core Basics](#slide-116)
 - **Synthesis**
-  - [113. Final Playbook — The Loop](#slide-113)
-  - [114. Three Models to Take Home](#slide-114)
+  - [117. Final Playbook — The Loop](#slide-117)
+  - [118. Three Models to Take Home](#slide-118)
 - **Closing**
-  - [115. Closing — Keep the Thought Process](#slide-115)
+  - [119. Closing — Keep the Thought Process](#slide-119)
 
 ---
 
@@ -605,6 +609,7 @@ Orientation table. First classify, then open the matching decision tree or layer
 | NXDOMAIN / lookup fail | DNS / CoreDNS / NetPol :53 | nslookup from debug pod |
 | OOMKilled | Limits / leak / burst | describe Last State + top / metrics |
 | CrashLoopBackOff | Container / config / probe | logs --previous + exit code |
+| Network unreachable post-reboot | Node address / host route | get nodes -o wide vs ip addr |
 
 > **FRAMEWORK:** Classify first. Commands second.
 
@@ -1521,7 +1526,7 @@ Trace the path: DNS name → Service → EndpointSlice → kube-proxy/CNI → Po
 
 ### Speaker notes
 
-Prefer EndpointSlice for Service backends. Without Ready addresses the Service is an empty shell.
+Prefer EndpointSlice for Service backends. Without Ready addresses the Service is an empty shell. After unexpected node reboot, compare Node INTERNAL-IP to host interfaces before deep CNI/iptables work.
 
 ### Commands
 
@@ -1794,6 +1799,7 @@ Network rows often look like app bugs. First command isolates the layer.
 | No Ready backends | EndpointSlice empty / not ready | get endpointslices -o wide |
 | Ingress / Gateway / TLS | 502/503 or cert expired | describe ingress + cert check |
 | NetworkPolicy block | timeout (works without NP) | get networkpolicy |
+| After hard reboot | network unreachable · Node IP drift | get nodes -o wide vs ip addr |
 
 ---
 
@@ -2373,9 +2379,69 @@ kubectl run -it --rm np-test --image=nicolaka/netshoot --restart=Never -n NAMESP
 
 ---
 
+## Slide 82: Node Networking After Hard Reboot {#slide-82}
+
+*File: `S41c_NodeNetAfterReboot.astro` · id: `s41c-node-net-after-reboot`*
+
+### Speaker notes
+
+Pattern, not a distro fix. Network looks broken after unexpected reboot — verify node identity/addressing before CNI, iptables, or conntrack. Never lead with iptables -F.
+
+> **RULE:** Before blaming the app or CNI: does Kubernetes’ view of the node still match the host’s address and default route?
+
+### Content
+
+- network unreachable
+      Hard reboot
+      Node IP sanity
+
+---
+
+## Slide 83: Hard Reboot — Networking Sanity Check {#slide-83}
+
+*File: `S41d_HardRebootChecklist.astro` · id: `s41d-hard-reboot-checklist`*
+
+### Speaker notes
+
+Checklist after unexpected reboot. Compare reported Node IP ↔ actual interface IP ↔ default route. Do NOT recommend blind iptables flush as best practice — high blast radius on production nodes.
+
+### Commands
+
+```bash
+kubectl get nodes -o wide
+# on the node (or via debug/node shell):
+ip addr
+ip route
+hostname -I
+
+# Compare:
+#   Kubernetes INTERNAL-IP
+#   ↔ actual interface address
+#   ↔ default route / expected network
+```
+
+> **IF IPS DISAGREE:** Investigate node address config, interface state, and agent/runtime settings for that distribution — then re-check Pod ↔ Pod / Service.
+
+> **ANTI-PATTERN:** Do not start with iptables -F / flush-all. That can break production dataplanes. Enter firewall tables only with a hypothesis.
+
+### Content
+
+- 
+
+    
+
+    
+      
+        Investigate node address config, interface state, and agent/runtime settings for that distribution — then re-check Pod ↔ Pod / Service.
+      
+      
+        Do not start with iptables -F / flush-all. That can break production dataplanes. Enter firewall tables only with a hypothesis.
+
+---
+
 # kubectl by Intention
 
-## Slide 82: kubectl by Intention {#slide-82}
+## Slide 84: kubectl by Intention {#slide-84}
 
 *File: `S42_KubectlPhilosophy.astro` · id: `s42-kubectl-philosophy` · variant: chapter*
 
@@ -2392,7 +2458,7 @@ Commands match questions. Observe/Locate/Narrow/Verify map to get/describe/logs/
 
 ---
 
-## Slide 83: Observe & Locate {#slide-83}
+## Slide 85: Observe & Locate {#slide-85}
 
 *File: `S42b_KubectlObserve.astro` · id: `s42b-kubectl-observe`*
 
@@ -2411,7 +2477,7 @@ get = snapshot. describe = Events + why. Never stop at get during an incident.
 
 ---
 
-## Slide 84: Narrow & Verify {#slide-84}
+## Slide 86: Narrow & Verify {#slide-86}
 
 *File: `S42c_KubectlNarrow.astro` · id: `s42c-kubectl-narrow`*
 
@@ -2443,7 +2509,7 @@ kubectl rollout status deployment/DEPLOY -n NS
 
 # Observability
 
-## Slide 85: Signals — WHAT, WHY, WHEN, WHERE {#slide-85}
+## Slide 87: Signals — WHAT, WHY, WHEN, WHERE {#slide-87}
 
 *File: `S43_Observability.astro` · id: `s43-observability`*
 
@@ -2460,7 +2526,7 @@ Kubernetes tells you WHAT happened; other signals tell you WHY, WHEN, WHERE, and
 
 ---
 
-## Slide 86: Stack — Which Tool Answers Which Question? {#slide-86}
+## Slide 88: Stack — Which Tool Answers Which Question? {#slide-88}
 
 *File: `S43b_ObservabilityStack.astro` · id: `s43b-observability-stack`*
 
@@ -2489,7 +2555,7 @@ CNCF stack: Prometheus scrapes metrics, Grafana correlates dashboards, Loki inde
 
 # Advanced Debugging
 
-## Slide 87: kubectl debug — Ephemeral Containers {#slide-87}
+## Slide 89: kubectl debug — Ephemeral Containers {#slide-89}
 
 *File: `S44_AdvancedDebug.astro` · id: `s44-advanced-debug`*
 
@@ -2527,7 +2593,7 @@ kubectl rollout status deployment/checkout
 
 ---
 
-## Slide 88: When NOT to Use Invasive Tools {#slide-88}
+## Slide 90: When NOT to Use Invasive Tools {#slide-90}
 
 *File: `S44b_AdvancedCaution.astro` · id: `s44b-advanced-caution`*
 
@@ -2555,7 +2621,7 @@ Invasive tools need change control, blast-radius limits, exit plan. kubectl debu
 
 ---
 
-## Slide 89: exec vs kubectl debug {#slide-89}
+## Slide 91: exec vs kubectl debug {#slide-91}
 
 *File: `S44c_ExecVsDebug.astro` · id: `s44c-exec-vs-debug`*
 
@@ -2577,7 +2643,7 @@ exec = quick read-only-ish check in existing container. debug = ephemeral toolbo
 
 # Production Incidents
 
-## Slide 90: Production Incidents — Practice {#slide-90}
+## Slide 92: Production Incidents — Practice {#slide-92}
 
 *File: `S45_IncidentsIntro.astro` · id: `s45-incidents-intro` · variant: chapter*
 
@@ -2602,11 +2668,11 @@ Practice section. Predict root cause before opening the Fix slide. Each incident
       Affinity
       OOM
       Gateway
-      DNS · NetPol · PVC
+      DNS · NetPol · Node reboot · PVC
 
 ---
 
-## Slide 91: Incident: Running Pods, HTTP 503 {#slide-91}
+## Slide 93: Incident: Running Pods, HTTP 503 {#slide-93}
 
 *File: `S46_Incident503.astro` · id: `s46-incident-503`*
 
@@ -2641,7 +2707,7 @@ kubectl describe pod -l app=checkout | grep -A5 Conditions
 
 ---
 
-## Slide 92: 503 — Fix, Validate, Prevent {#slide-92}
+## Slide 94: 503 — Fix, Validate, Prevent {#slide-94}
 
 *File: `S46b_Incident503Fix.astro` · id: `s46b-incident-503-fix`*
 
@@ -2667,7 +2733,7 @@ Complete the study card: fix probe, validate EndpointSlice Ready addresses, prev
 
 ---
 
-## Slide 93: Incident: CrashLoop from Missing Secret {#slide-93}
+## Slide 95: Incident: CrashLoop from Missing Secret {#slide-95}
 
 *File: `S47_IncidentSecret.astro` · id: `s47-incident-secret`*
 
@@ -2693,7 +2759,7 @@ Symptom: new deployment after secret rotation — CrashLoopBackOff. Observe: des
 
 ---
 
-## Slide 94: Missing Secret — Fix & Prevent {#slide-94}
+## Slide 96: Missing Secret — Fix & Prevent {#slide-96}
 
 *File: `S47b_IncidentSecretFix.astro` · id: `s47b-incident-secret-fix`*
 
@@ -2726,7 +2792,7 @@ kubectl get secret db-credentials-v3   # NotFound
 
 ---
 
-## Slide 95: Incident: Pending from Affinity &amp; Taints {#slide-95}
+## Slide 97: Incident: Pending from Affinity &amp; Taints {#slide-97}
 
 *File: `S48_IncidentAffinity.astro` · id: `s48-incident-affinity`*
 
@@ -2752,7 +2818,7 @@ Symptom: new microservice pods stuck Pending for 20+ minutes. Observe: kubectl g
 
 ---
 
-## Slide 96: Affinity & Taints — Fix & Prevent {#slide-96}
+## Slide 98: Affinity & Taints — Fix & Prevent {#slide-98}
 
 *File: `S48b_IncidentAffinityFix.astro` · id: `s48b-incident-affinity-fix`*
 
@@ -2785,7 +2851,7 @@ kubectl describe node gpu-node-1 | grep -i taint
 
 ---
 
-## Slide 97: Incident: OOMKilled — Memory Leak {#slide-97}
+## Slide 99: Incident: OOMKilled — Memory Leak {#slide-99}
 
 *File: `S49_IncidentOOM.astro` · id: `s49-incident-oom`*
 
@@ -2811,7 +2877,7 @@ Symptom: service degrades over hours then pods restart in a loop. Observe: descr
 
 ---
 
-## Slide 98: OOMKilled — Fix & Prevent {#slide-98}
+## Slide 100: OOMKilled — Fix & Prevent {#slide-100}
 
 *File: `S49b_IncidentOOMFix.astro` · id: `s49b-incident-oom-fix`*
 
@@ -2844,7 +2910,7 @@ kubectl logs cache-9xk2p --previous | tail -20
 
 ---
 
-## Slide 99: Incident: Gateway API Route Misconfiguration {#slide-99}
+## Slide 101: Incident: Gateway API Route Misconfiguration {#slide-101}
 
 *File: `S50_IncidentGateway.astro` · id: `s50-incident-gateway`*
 
@@ -2870,7 +2936,7 @@ Symptom: new API version returns 404 at public URL; internal ClusterIP works fin
 
 ---
 
-## Slide 100: Gateway Route — Fix & Prevent {#slide-100}
+## Slide 102: Gateway Route — Fix & Prevent {#slide-102}
 
 *File: `S50b_IncidentGatewayFix.astro` · id: `s50b-incident-gateway-fix`*
 
@@ -2903,7 +2969,7 @@ kubectl get svc api-v1 api-v2 -o wide
 
 ---
 
-## Slide 101: Incident: Timeout — DNS or NetPol? {#slide-101}
+## Slide 103: Incident: Timeout — DNS or NetPol? {#slide-103}
 
 *File: `S51_IncidentDNSNetPol.astro` · id: `s51-incident-dns-netpol`*
 
@@ -2915,7 +2981,7 @@ Same user pain, two causes. Branch on nslookup first.
 
 ---
 
-## Slide 102: DNS vs NetPol — Fix Paths {#slide-102}
+## Slide 104: DNS vs NetPol — Fix Paths {#slide-104}
 
 *File: `S51b_IncidentDNSNetPolFix.astro` · id: `s51b-incident-dns-netpol-fix`*
 
@@ -2942,7 +3008,76 @@ kubectl get pods -n kube-system -l k8s-app=kube-dns
 
 ---
 
-## Slide 103: Incident: PVC MultiAttach {#slide-103}
+## Slide 105: Incident: Unreachable After Reboot {#slide-105}
+
+*File: `S51c_IncidentNodeNetReboot.astro` · id: `s51c-incident-node-net-reboot`*
+
+### Speaker notes
+
+Case study for the hard-reboot pattern. Symptom looks like app CrashLoop; logs say network unreachable. Discriminating check is Node IP vs host reality — not restart the Deployment.
+
+> **SYMPTOM:** After an unexpected node reboot, Pods CrashLoop. Logs: network is unreachable.
+
+> **FIRST WRONG ASSUMPTION:** “Application bug — restart the Deployment / bump image.”
+
+> **FASTEST DISCRIMINATING CHECK:** kubectl get nodes -o wide vs ip addr / ip route on the node — reported IP ≠ actual interface?
+
+> **HYPOTHESIS:** Node networking identity/addressing is wrong after reboot; CNI and Service paths inherit a bad foundation.
+
+### Content
+
+- After an unexpected node reboot, Pods CrashLoop. Logs: network is unreachable.
+    
+    
+      “Application bug — restart the Deployment / bump image.”
+    
+    
+      kubectl get nodes -o wide vs ip addr / ip route on the node — reported IP ≠ actual interface?
+    
+    
+      Node networking identity/addressing is wrong after reboot; CNI and Service paths inherit a bad foundation.
+    
+
+    -
+
+---
+
+## Slide 106: After Reboot — Fix, Validate, Prevent {#slide-106}
+
+*File: `S51d_IncidentNodeNetRebootFix.astro` · id: `s51d-incident-node-net-reboot-fix`*
+
+### Speaker notes
+
+Keep distribution-specific recovery out of the main claim. Fix = restore correct node address/agent state. Validate Pod-to-Pod and Service. Prevent = reboot drills + IP consistency checks. Never teach iptables flush as the default fix.
+
+### Commands
+
+```bash
+kubectl get nodes -o wide
+kubectl run -it --rm netcheck --image=nicolaka/netshoot --restart=Never -- \\
+  curl -m5 -sv telnet://SERVICE.NAMESPACE.svc:PORT
+# Also test Pod IP on another node if multi-node
+```
+
+> **FIX:** Restore correct node addressing / agent networking state for that platform. Only then revisit CNI or firewall tables — with a written hypothesis.
+
+> **VALIDATE:** Pod → Pod and Service DNS/TCP from a debug pod on the same node and from another node. Confirm get nodes -o wide matches ip addr.
+
+> **PREVENT:** Reboot drills in staging; alert when Node INTERNAL-IP drifts from host interface; document expected interface and route.
+
+### Content
+
+- Restore correct node addressing / agent networking state for that platform. Only then revisit CNI or firewall tables — with a written hypothesis.
+    
+    
+      Pod → Pod and Service DNS/TCP from a debug pod on the same node and from another node. Confirm get nodes -o wide matches ip addr.
+    
+    
+      Reboot drills in staging; alert when Node INTERNAL-IP drifts from host interface; document expected interface and route.
+
+---
+
+## Slide 107: Incident: PVC MultiAttach {#slide-107}
 
 *File: `S52_IncidentPVCConfig.astro` · id: `s52-incident-pvc-config`*
 
@@ -2972,7 +3107,7 @@ kubectl get volumeattachment | grep pvc-data-db-0
 
 ---
 
-## Slide 104: Incident: Stale ConfigMap Rollout {#slide-104}
+## Slide 108: Incident: Stale ConfigMap Rollout {#slide-108}
 
 *File: `S52b_IncidentConfigMap.astro` · id: `s52b-incident-configmap`*
 
@@ -3006,7 +3141,7 @@ kubectl rollout restart statefulset/app
 
 # Interview Prep
 
-## Slide 105: Interview Bank — Questions 1–8 {#slide-105}
+## Slide 109: Interview Bank — Questions 1–8 {#slide-109}
 
 *File: `S53_Interview.astro` · id: `s53-interview`*
 
@@ -3031,7 +3166,7 @@ Q1 Ready vs Running. Q2 highest-signal evidence. Q3 Pending Events. Q4 Exit 137 
 
 ---
 
-## Slide 106: Interview Bank — Questions 9–16 {#slide-106}
+## Slide 110: Interview Bank — Questions 9–16 {#slide-110}
 
 *File: `S53b_Interview.astro` · id: `s53b-interview`*
 
@@ -3054,7 +3189,7 @@ Q9: Bad liveness kills pod; bad readiness removes from Service only. Q10: nslook
 
 ---
 
-## Slide 107: Interview Bank — Questions 17–24 {#slide-107}
+## Slide 111: Interview Bank — Questions 17–24 {#slide-111}
 
 *File: `S54_InterviewMore.astro` · id: `s54-interview-more`*
 
@@ -3077,7 +3212,7 @@ Q17-20: networking and TLS edge cases. Q21-24: observability and operations. Q17
 
 ---
 
-## Slide 108: Interview Bank — Questions 25–32 {#slide-108}
+## Slide 112: Interview Bank — Questions 25–32 {#slide-112}
 
 *File: `S54b_InterviewMore.astro` · id: `s54b-interview-more`*
 
@@ -3104,7 +3239,7 @@ Q25-28: security and multi-tenancy. Q29-32: design and prevention mindset. Q25: 
 
 # Reference
 
-## Slide 109: Cheat Sheet — First 60 Seconds {#slide-109}
+## Slide 113: Cheat Sheet — First 60 Seconds {#slide-113}
 
 *File: `S55_CheatSheets.astro` · id: `s55-cheatsheets`*
 
@@ -3125,7 +3260,7 @@ kubectl get endpointslices,svc -n <ns>
 
 ---
 
-## Slide 110: Cheat Sheet — Status Meanings {#slide-110}
+## Slide 114: Cheat Sheet — Status Meanings {#slide-114}
 
 *File: `S55b_CheatStatus.astro` · id: `s55b-cheat-status`*
 
@@ -3154,7 +3289,7 @@ OOM: Reason OOMKilled is proof; 137 is SIGKILL. Readiness: not Ready in Endpoint
 
 ---
 
-## Slide 111: Cheat Sheet — Networking Quick Path {#slide-111}
+## Slide 115: Cheat Sheet — Networking Quick Path {#slide-115}
 
 *File: `S55c_CheatNetPath.astro` · id: `s55c-cheat-net-path`*
 
@@ -3162,11 +3297,11 @@ OOM: Reason OOMKilled is proof; 137 is SIGKILL. Readiness: not Ready in Endpoint
 
 Walk hops left to right. curl pod IP first, then Service DNS, then Ingress URL, then DNS/NetPol.
 
-> **FRAMEWORK:** Fail at hop N → debug layer N.
+> **FRAMEWORK:** Fail at hop N → debug layer N. After a hard reboot, sanity-check Node IP vs host before CNI/iptables.
 
 ---
 
-## Slide 112: Checkpoint — Core Basics {#slide-112}
+## Slide 116: Checkpoint — Core Basics {#slide-116}
 
 *File: `S55d_CheckpointBasics.astro` · id: `s55d-checkpoint-basics`*
 
@@ -3178,7 +3313,7 @@ Quick self-test before closing. If any fail, revisit Core models and evidence or
 
 # Synthesis
 
-## Slide 113: Final Playbook — The Loop {#slide-113}
+## Slide 117: Final Playbook — The Loop {#slide-117}
 
 *File: `S56_FinalPlaybook.astro` · id: `s56-final-playbook`*
 
@@ -3205,7 +3340,7 @@ Leave them with the ring. Mantras next; pyramid/onion/signals on the models slid
 
 ---
 
-## Slide 114: Three Models to Take Home {#slide-114}
+## Slide 118: Three Models to Take Home {#slide-118}
 
 *File: `S56b_FinalModels.astro` · id: `s56b-final-models`*
 
@@ -3217,7 +3352,7 @@ Pyramid = where to start. Onion = how to peel. Triangle = which signal answers t
 
 # Closing
 
-## Slide 115: Closing — Keep the Thought Process {#slide-115}
+## Slide 119: Closing — Keep the Thought Process {#slide-119}
 
 *File: `S57_Closing.astro` · id: `s57-closing` · variant: quote*
 

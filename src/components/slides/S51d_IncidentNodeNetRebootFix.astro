@@ -1,0 +1,34 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+import CodeBlock from '../ui/CodeBlock.astro';
+---
+
+<Slide
+  id="s51d-incident-node-net-reboot-fix"
+  chapter="Production Incidents"
+  title="After Reboot — Fix, Validate, Prevent"
+  track="practice"
+  notes="Keep distribution-specific recovery out of the main claim. Fix = restore correct node address/agent state. Validate Pod-to-Pod and Service. Prevent = reboot drills + IP consistency checks. Never teach iptables flush as the default fix."
+>
+  <div class="stagger grid gap-5 md:grid-cols-3">
+    <Callout type="rule" title="Fix">
+      Restore correct node addressing / agent networking state for that platform. Only then revisit CNI or firewall tables — with a written hypothesis.
+    </Callout>
+    <Callout type="tip" title="Validate">
+      Pod → Pod and Service DNS/TCP from a debug pod on the same node and from another node. Confirm <code class="text-deck-cyan">get nodes -o wide</code> matches <code class="text-deck-cyan">ip addr</code>.
+    </Callout>
+    <Callout type="framework" title="Prevent">
+      Reboot drills in staging; alert when Node INTERNAL-IP drifts from host interface; document expected interface and route.
+    </Callout>
+  </div>
+
+  <CodeBlock
+    class="mt-6"
+    caption="Verify connectivity after recovery"
+    code={`kubectl get nodes -o wide
+kubectl run -it --rm netcheck --image=nicolaka/netshoot --restart=Never -- \\
+  curl -m5 -sv telnet://SERVICE.NAMESPACE.svc:PORT
+# Also test Pod IP on another node if multi-node`}
+  />
+</Slide>
