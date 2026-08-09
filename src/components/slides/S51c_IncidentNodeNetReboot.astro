@@ -1,0 +1,34 @@
+---
+import Slide from '../ui/Slide.astro';
+import Callout from '../ui/Callout.astro';
+import Lifecycle from '../ui/Lifecycle.astro';
+---
+
+<Slide
+  id="s51c-incident-node-net-reboot"
+  chapter="Production Incidents"
+  title="Incident: Unreachable After Reboot"
+  track="practice"
+  notes="Case study for the hard-reboot pattern. Symptom looks like app CrashLoop; logs say network unreachable. Discriminating check is Node IP vs host reality — not restart the Deployment."
+>
+  <div class="stagger flex flex-col gap-5">
+    <Callout type="signal" title="Symptom">
+      After an unexpected node reboot, Pods CrashLoop. Logs: <code class="text-deck-cyan">network is unreachable</code>.
+    </Callout>
+    <Callout type="myth" title="First wrong assumption">
+      “Application bug — restart the Deployment / bump image.”
+    </Callout>
+    <Callout type="tip" title="Fastest discriminating check">
+      <code class="text-deck-cyan">kubectl get nodes -o wide</code> vs <code class="text-deck-cyan">ip addr</code> / <code class="text-deck-cyan">ip route</code> on the node — reported IP ≠ actual interface?
+    </Callout>
+    <Callout type="framework" title="Hypothesis">
+      Node networking identity/addressing is wrong after reboot; CNI and Service paths inherit a bad foundation.
+    </Callout>
+
+    <Lifecycle
+      steps={['Logs', 'Node IP?', 'Mismatch?', 'Recover', 'Verify']}
+      active={1}
+      class="justify-center"
+    />
+  </div>
+</Slide>

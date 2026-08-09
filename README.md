@@ -44,7 +44,7 @@ Mental models reinforced throughout:
 - Signal Triangle — Events (WHAT) · Logs (WHY) · Metrics (WHEN) · Traces (WHERE)
 - Running ≠ Healthy · Ready ≠ Alive · Scheduled ≠ Working
 
-## Deck structure (104 slides)
+## Deck structure (119 slides)
 
 1. **Opening** — philosophy, lifecycle, why K8s is hard  
 2. **Mental models** — myths, golden rules, pyramid, onion, signals  

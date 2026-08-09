@@ -21,6 +21,7 @@ import Callout from '../ui/Callout.astro';
         ['NXDOMAIN / lookup fail', 'DNS / CoreDNS / NetPol :53', 'nslookup from debug pod'],
         ['OOMKilled', 'Limits / leak / burst', 'describe Last State + top / metrics'],
         ['CrashLoopBackOff', 'Container / config / probe', 'logs --previous + exit code'],
+        ['Network unreachable post-reboot', 'Node address / host route', 'get nodes -o wide vs ip addr'],
       ]}
     />
     <Callout type="framework">
